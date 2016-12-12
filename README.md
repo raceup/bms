@@ -6,7 +6,7 @@
 2. Compile and run the Java app in your PC. You can choose between the commandline or the GUI version: as default you're compiling the GUI version.
 
 ## Documentation:
-To extend the client Java app, you can browse the documentation [here](pc/documentation/).
+To extend the client Java app, you can browse the documentation [here](docs/index.html).
 
 ## LICENSE
 [Apache License](http://www.apache.org/licenses/LICENSE-2.0) Version 2.0, January 2004
