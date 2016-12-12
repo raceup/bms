@@ -1,4 +1,4 @@
-# Bms: a Arduino-Java tool that helps RaceUp ED Team view data about car battery pack.
+# Bms: a Java app that helps RaceUp ED view data about car battery pack.
 *Battery management system GUI (compatible with various OSs).*
 
 ## Usage:
