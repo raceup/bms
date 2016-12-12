@@ -1,0 +1,10 @@
+com.raceup.ed.bms
+com.raceup.ed.bms.battery
+com.raceup.ed.bms.gui.frame.chart
+com.raceup.ed.bms.gui.frame.data
+com.raceup.ed.bms.gui.frame.log
+com.raceup.ed.bms.gui.settings
+com.raceup.ed.bms.stream
+com.raceup.ed.bms.stream.bms.data
+com.raceup.ed.bms.utils
+com.raceup.ed.bms.utils.gui
