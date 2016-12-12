@@ -5,7 +5,7 @@
 ## Install and run
 1. You can compile the app (main class is [here]()) .. or
 2. you can run ```java -Xmx128m -XX:+UseSerialGC -jar bms.jar``` (the executable file is [here](bms.jar))
-3. of course you can grab a copy of the [executable](bms.jar) and import in your project.
+3. of course you can grab a copy of the [executable](bms/bms.jar) and import in your project.
 
 ## Usage:
 1. Load in an Arduino board the source code for Arduino (currently only UNO is supported).
