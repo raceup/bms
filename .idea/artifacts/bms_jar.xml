@@ -1,0 +1,12 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="bms:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/bms_jar</output-path>
+    <root id="archive" name="bms.jar">
+      <element id="module-output" name="bms" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/bms/bms/lib/RXTXcomm.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/bms/bms/lib/jcommon-1.0.23.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/bms/bms/lib/jfreechart-1.0.19.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/bms/bms/lib/json-20140107.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
