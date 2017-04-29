@@ -55,8 +55,8 @@ public class BmsData {
      *
      * @return True iff data represents a log
      */
-    public boolean isLog() {
-        return type.isLog();
+    public boolean isStatusType() {
+        return type.isStatus();
     }
 
     /**
@@ -64,7 +64,7 @@ public class BmsData {
      *
      * @return True iff data is a value
      */
-    public boolean isValue() {
+    public boolean isValueType() {
         return type.isValue();
     }
 

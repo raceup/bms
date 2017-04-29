@@ -22,6 +22,7 @@ package com.raceup.ed.bms.stream.bms.data;
  * Informs anyone of its status.
  */
 public class BmsLog extends BmsData {
+
     /**
      * Empty constructor as default
      */

@@ -31,11 +31,13 @@ import org.json.JSONTokener;
  * Provides data from arduino serial port
  */
 public class Bms extends ArduinoSerial implements Runnable, StartAndStop {
-    public static final String appName = "Bms manager";  // app settings
-    public static final String appVersion = "2.1";
-
+    public static final String appName = "BmsManager";  // app settings
+    static final String appVersion = "2.1";
+    private static final String RECHARGE_COMMAND = "RECHARGE";
     final Pack batteryPack;  // battery pack settings
     private final Logger logger;  // log data to file
+    int msLogIntervalUpdate = 200;  // logging interval update
+    private long nextLogIntervalUpdate = System.currentTimeMillis() + (long) msLogIntervalUpdate;  // time to log data
     private volatile boolean amIStarted = false;  // start and stop management
     private volatile boolean amIPaused = false;
     private volatile boolean amIStopped = false;
@@ -54,6 +56,10 @@ public class Bms extends ArduinoSerial implements Runnable, StartAndStop {
         this.batteryPack = batteryPack;  // create battery pack model
     }
 
+    /*
+     * Thread
+     */
+
     /**
      * Parse raw data
      *
@@ -70,10 +76,6 @@ public class Bms extends ArduinoSerial implements Runnable, StartAndStop {
                 root.getString("value")
         );
     }
-
-    /*
-     * Thread
-     */
 
     /**
      * Start reading data from arduino serial, wrapping it in BmsValue or BmsLog and updating battery pack
@@ -111,6 +113,10 @@ public class Bms extends ArduinoSerial implements Runnable, StartAndStop {
         }
     }
 
+    /*
+     * Recharge
+     */
+
     /**
      * Monitoring BMS
      * 1) read newest value from serial
@@ -125,12 +131,21 @@ public class Bms extends ArduinoSerial implements Runnable, StartAndStop {
         }
     }
 
+    /*
+     * Data
+     */
+
+    void sendRechargeAction() {
+        sendSerialDataOrFail(RECHARGE_COMMAND);
+        System.out.println("RECHARGE requested");
+    }
+
     /**
      * Read last value in serial, parse, and return it
      *
      * @return last value from serial
      */
-    public BmsData getNewestData() {
+    BmsData getNewestData() {
         return parseData(getNewestRawData());
     }
 
@@ -140,27 +155,31 @@ public class Bms extends ArduinoSerial implements Runnable, StartAndStop {
      * @return raw data
      */
     private String getNewestRawData() {
-        String typeData;
-        int randomSegment = (int) (Math.random() * batteryPack.getNumberOfCellsPerSegment().length);
-        int randomCell = (int) (Math.random() * batteryPack.getNumberOfCellsPerSegment()[randomSegment]);
-        String randomValue;
+        boolean isTest = false;  // TODO test only
+        if (isTest) {
+            String typeData;
+            int randomSegment = (int) (Math.random() * batteryPack.getNumberOfCellsPerSegment().length);
+            int randomCell = (int) (Math.random() * batteryPack.getNumberOfCellsPerSegment()[randomSegment]);
+            String randomValue;
 
-        if (Math.random() > 0.5) {  // half of the time generate a value
-            typeData = Data.values()[(int) (4 + Math.random() * 2)].toString();  // temperature or voltage
-            randomValue = Double.toString(Math.random() * 4400);
-        } else {  // the other time generate a log
-            typeData = Data.values()[(int) (4 * Math.random())].toString();  // log
-            randomValue = "Oh no! We received a " + typeData + "!";
+            if (Math.random() > 0.5) {  // half of the time generate a value
+                typeData = Data.values()[(int) (4 + Math.random() * 2)].toString();  // temperature or voltage
+                randomValue = Double.toString(Math.random() * 4400);
+            } else {  // the other time generate a log
+                typeData = Data.values()[(int) (4 * Math.random())].toString();  // log
+                randomValue = "Oh no! We received a " + typeData + "!";
+            }
+
+            return "{" +
+                    "\"type\":\"" + typeData + "\"," +
+                    "\"cell\":\"" + Integer.toString(randomCell) + "\"," +
+                    "\"segment\":\"" + Integer.toString(randomSegment) + "\"," +
+                    "\"value\":\"" + randomValue + "\"}";
+        } else {
+            return serialData;
         }
-//        return "{" +
-//                "\"type\":\"" + typeData + "\"," +
-//                "\"cell\":\"" + Integer.toString(randomCell) + "\"," +
-//                "\"segment\":\"" + Integer.toString(randomSegment) + "\"," +
-//                "\"value\":\"" + randomValue + "\"}";
-
-        // TODO: remove this for real data coming from arduino
-        return serialData;
     }
+
 
     /*
      * Battery manager
@@ -172,16 +191,27 @@ public class Bms extends ArduinoSerial implements Runnable, StartAndStop {
     private void updateOrFail() {
         try {
             BmsData newestData = getNewestData();  // retrieve newest data from arduino
-            logger.logBmsDataOrFail(newestData);  // log new data
-
             if (newestData != null) {
-                if (newestData.isValue()) {  // updateOrFail series bms with new data
+                if (newestData.isValueType()) {  // updateOrFail series bms with new data
                     updateBatteryPack(new BmsValue(newestData));
                 }
+
                 Thread.sleep(msSerialIntervalUpdate);  // wait for next updateOrFail series
             }
+
+            updateLogs();
         } catch (Exception e) {
             System.err.println(e.toString());
+        }
+    }
+
+    /**
+     * Update logger with new data
+     */
+    private void updateLogs() {
+        if (System.currentTimeMillis() >= nextLogIntervalUpdate) {  // time to log
+            logger.logBmsDataOrFail(getNewestData());
+            nextLogIntervalUpdate = System.currentTimeMillis() + msLogIntervalUpdate;
         }
     }
 
@@ -212,11 +242,7 @@ public class Bms extends ArduinoSerial implements Runnable, StartAndStop {
      * @param cell          number of cell to balance
      * @param segmentOfCell number of segment of cell to balance
      */
-    public void balanceCellOrFail(int cell, int segmentOfCell) {
-        try {
-            writeToSerial("BALANCE");  // TODO: send arduino message to balance cell in segment
-        } catch (Exception e) {
-            System.err.println(e.toString());
-        }
+    void balanceCellOrFail(int cell, int segmentOfCell) {
+        // TODO: send arduino message to balance cell in segment
     }
 }

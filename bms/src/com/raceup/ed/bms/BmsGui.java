@@ -45,11 +45,12 @@ public class BmsGui extends ApplicationFrame implements Runnable, StartAndStop {
     static final Image appIcon = Toolkit.getDefaultToolkit().getImage("com.raceup.ed.bms.BmsGui".getClass().getResource("/res/images/icon.png"));
     private static final Dimension SCREEN = Toolkit.getDefaultToolkit().getScreenSize();
     private static final Dimension QUARTER_SCREEN = new Dimension((int) (SCREEN.getWidth() * 0.5), (int) (SCREEN.getHeight() * 0.5));
-    private static int msGuiIntervalUpdate = 10;  // GUI interval updateOrFail
+    private static int msGuiIntervalUpdate = 10;  // GUI interval update
     private final Bms bms;  // bms manager
     private final JButton startButton = new JButton("Start");  // start and stop buttons
     private final JButton pauseButton = new JButton("Pause");
     private final JButton stopButton = new JButton("Stop");
+    private final JButton rechargeButton = new JButton("Recharge");  // recharge button
     private volatile boolean amIStarted = false;  // start and stop management
     private volatile boolean amIPaused = false;
     private volatile boolean amIStopped = false;
@@ -168,7 +169,8 @@ public class BmsGui extends ApplicationFrame implements Runnable, StartAndStop {
         getRootPane().setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));  // border
 
         setJMenuBar(createMenuBar());  // set menubar
-        add(createStartStopPanel());
+        add(createStartStopPanel());  // add panels
+        add(createRechargePanel());
     }
 
     /**
@@ -190,6 +192,15 @@ public class BmsGui extends ApplicationFrame implements Runnable, StartAndStop {
         return panel;
     }
 
+    private JPanel createRechargePanel() {
+        JPanel panel = new JPanel();
+
+        rechargeButton.addActionListener(e -> sendRechargeAction());  // add action listeners
+
+        panel.add(rechargeButton);  // add to panel
+        return panel;
+    }
+
     /*
      * Update
      */
@@ -200,9 +211,10 @@ public class BmsGui extends ApplicationFrame implements Runnable, StartAndStop {
     private void updateOrFail() {
         try {
             BmsData data = bms.getNewestData();  // get newest data
-            if (data.isLog()) {  // if it's a log, update log frame
+
+            if (data.isStatusType()) {  // if it's a log, update log frame
                 updateLogFrameOrFail(data);
-            } else if (data.isValue()) {  // if it's a value update data and chart frames
+            } else if (data.isValueType()) {  // if it's a value update data and chart frames
                 updateDataFrameOrFail(data);
                 updateChartFrameOrFail();
             }
@@ -220,7 +232,7 @@ public class BmsGui extends ApplicationFrame implements Runnable, StartAndStop {
      */
     private void updateDataFrameOrFail(BmsData data) {
         try {
-            if (data.isValue()) {
+            if (data.isValueType()) {
                 dataFrame.updateCellValue(new BmsValue(data));
             }
         } catch (Exception e) {
@@ -334,8 +346,15 @@ public class BmsGui extends ApplicationFrame implements Runnable, StartAndStop {
 
         item = new JMenuItem("Bms update interval");
         item.addActionListener(e -> {
-            String userInput = JOptionPane.showInputDialog("Milliseconds between two consecutive Arduino serial updates", bms.msSerialIntervalUpdate);
+            String userInput = JOptionPane.showInputDialog("Milliseconds between two consecutive bms updates", bms.msSerialIntervalUpdate);
             bms.msSerialIntervalUpdate = Integer.parseInt(userInput);  // update
+        });
+        menu.add(item);
+
+        item = new JMenuItem("Log update interval");
+        item.addActionListener(e -> {
+            String userInput = JOptionPane.showInputDialog("Milliseconds between two consecutive log data updates", bms.msLogIntervalUpdate);
+            bms.msLogIntervalUpdate = Integer.parseInt(userInput);  // update
         });
         menu.add(item);
 
@@ -466,6 +485,17 @@ public class BmsGui extends ApplicationFrame implements Runnable, StartAndStop {
         String title = "Help";
         new AboutDialog(this, content, title).setVisible(true);
     }
+
+    /**
+     * Sends to Arduino recharge action
+     */
+    private void sendRechargeAction() {
+        bms.sendRechargeAction();
+    }
+
+    /*
+     * Recharge
+     */
 
     /**
      * Panel to get/set min, max values

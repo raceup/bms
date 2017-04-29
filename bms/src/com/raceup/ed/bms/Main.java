@@ -33,7 +33,7 @@ class Main {
      * @param args default args
      */
     public static void main(String[] args) {
-        setAppNameOrFail();
+        setAppUiOrFail();
         Os.setNativeLookAndFeelOrFail();  // set native look and feel in UIs
         BmsGui bmsGui = getGuiOrNull();  // create app
         startAppOrExit(bmsGui);  // start app
@@ -42,7 +42,7 @@ class Main {
     /**
      * Set application name or do nothing
      */
-    private static void setAppNameOrFail() {
+    private static void setAppUiOrFail() {
         try {
             Toolkit xToolkit = Toolkit.getDefaultToolkit();
             java.lang.reflect.Field awtAppClassNameField = xToolkit.getClass().getDeclaredField("awtAppClassName");

@@ -20,6 +20,7 @@ package com.raceup.ed.bms;
  * Useful when starting/stopping threads ot event-driven classes
  */
 public interface StartAndStop {
+
     /**
      * Start doing something
      */

@@ -1,6 +1,8 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## TODOs
+- add recharge
 
 ## 2.1 - 2016-11-29
 ### Added

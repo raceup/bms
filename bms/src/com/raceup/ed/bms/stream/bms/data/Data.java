@@ -27,12 +27,22 @@ public enum Data {
     Voltage,  // value
     Temperature;
 
+    /**
+     * Checks if data type is a value
+     *
+     * @return True iff data type is a value
+     */
     public boolean isValue() {
         return (this.name().equals(Data.Voltage.name()) ||
                 this.name().equals(Data.Temperature.name()));
     }
 
-    public boolean isLog() {
+    /**
+     * Checks if data type is a status
+     *
+     * @return True iff data type is a status
+     */
+    public boolean isStatus() {
         return (this.name().equals(Data.Status.name()) ||
                 this.name().equals(Data.Alert.name()) ||
                 this.name().equals(Data.Fault.name()) ||

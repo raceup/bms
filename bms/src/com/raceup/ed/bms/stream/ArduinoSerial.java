@@ -29,7 +29,6 @@ import java.io.OutputStream;
 import java.util.Enumeration;
 import java.util.NoSuchElementException;
 
-
 /**
  * Manage arduino byte stream
  */
@@ -117,6 +116,7 @@ public class ArduinoSerial implements SerialPortEventListener {
             configureSerialPortOrFail(portId);
             serialPort.addEventListener(this);  // ad listeners
             serialPort.notifyOnDataAvailable(true);
+            serialPort.notifyOnDataAvailable(true);
             serialOutput = serialPort.getOutputStream();  // get stream to write in serial
         } catch (Exception e) {
             System.err.println(e.toString());
@@ -138,6 +138,7 @@ public class ArduinoSerial implements SerialPortEventListener {
                 }
             }
         }
+
         throw new NoSuchElementException("No Arduino board found.");
     }
 
@@ -193,6 +194,19 @@ public class ArduinoSerial implements SerialPortEventListener {
             } catch (Exception e) {
                 System.err.println(e.toString());
             }
+        }
+    }
+
+    /**
+     * Sends data via serial to Arduino
+     *
+     * @param data data to send
+     */
+    protected void sendSerialDataOrFail(String data) {
+        try {
+            writeToSerial(data);
+        } catch (Exception e) {
+            System.err.println("ArduinoSerial cannot send data " + data + " because:\n" + e.toString());
         }
     }
 }

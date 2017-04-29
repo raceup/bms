@@ -29,6 +29,7 @@ import java.awt.*;
  * Let users set some settings that cannot be set after creating BmsGui
  */
 public class GuiSettings {
+
     /**
      * Create new bms based on settings
      *
