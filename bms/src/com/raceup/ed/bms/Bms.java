@@ -22,9 +22,8 @@ import com.raceup.ed.bms.stream.ArduinoSerial;
 import com.raceup.ed.bms.stream.Logger;
 import com.raceup.ed.bms.stream.bms.data.BmsData;
 import com.raceup.ed.bms.stream.bms.data.BmsValue;
-import com.raceup.ed.bms.stream.bms.data.Data;
 import org.json.JSONObject;
-import org.json.JSONTokener;
+
 
 /**
  * Battery management system (with multithreading support)
@@ -67,8 +66,7 @@ public class Bms extends ArduinoSerial implements Runnable, StartAndStop {
      * @return parsed data
      */
     private static BmsData parseData(String rawData) {
-        JSONTokener tokener = new JSONTokener(rawData);
-        JSONObject root = new JSONObject(tokener);
+        JSONObject root = new JSONObject(rawData.trim());
         return new BmsData(
                 root.getString("type"),
                 root.getString("cell"),
@@ -155,29 +153,7 @@ public class Bms extends ArduinoSerial implements Runnable, StartAndStop {
      * @return raw data
      */
     private String getNewestRawData() {
-        boolean isTest = false;  // TODO test only
-        if (isTest) {
-            String typeData;
-            int randomSegment = (int) (Math.random() * batteryPack.getNumberOfCellsPerSegment().length);
-            int randomCell = (int) (Math.random() * batteryPack.getNumberOfCellsPerSegment()[randomSegment]);
-            String randomValue;
-
-            if (Math.random() > 0.5) {  // half of the time generate a value
-                typeData = Data.values()[(int) (4 + Math.random() * 2)].toString();  // temperature or voltage
-                randomValue = Double.toString(Math.random() * 4400);
-            } else {  // the other time generate a log
-                typeData = Data.values()[(int) (4 * Math.random())].toString();  // log
-                randomValue = "Oh no! We received a " + typeData + "!";
-            }
-
-            return "{" +
-                    "\"type\":\"" + typeData + "\"," +
-                    "\"cell\":\"" + Integer.toString(randomCell) + "\"," +
-                    "\"segment\":\"" + Integer.toString(randomSegment) + "\"," +
-                    "\"value\":\"" + randomValue + "\"}";
-        } else {
-            return serialData;
-        }
+        return serialData;
     }
 
 

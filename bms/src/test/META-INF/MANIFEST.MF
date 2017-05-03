@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Class-Path: jcommon-1.0.23.jar jfreechart-1.0.19.jar json-20140107.jar
+  RXTXcomm.jar ardulink-core-base-2.0.1.jar ardulink-core-beans-2.0.1.
+ jar ardulink-core-proxy-2.0.1.jar ardulink-core-serial-rxtx-2.0.1.jar
+  ardulink-core-util-2.0.1.jar
+Main-Class: com.raceup.ed.bms.SerialTest
+

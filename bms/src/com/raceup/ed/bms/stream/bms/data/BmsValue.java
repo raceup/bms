@@ -33,7 +33,7 @@ public class BmsValue extends BmsData {
      * @param data generic data type
      */
     public BmsValue(BmsData data) {
-        super(data.getType().toString(), Integer.toString(data.getCell()), Integer.toString(data.getSegment()), data.value);
+        super(data.getType(), Integer.toString(data.getCell()), Integer.toString(data.getSegment()), data.value);
     }
 
     /**
@@ -54,7 +54,7 @@ public class BmsValue extends BmsData {
      * @return True iff data is a temperature value
      */
     public boolean isTemperature() {
-        return getType().name().equals(Data.Temperature.name());
+        return getType().equals("temperature");
     }
 
     /**
@@ -63,7 +63,7 @@ public class BmsValue extends BmsData {
      * @return True iff data is a voltage value
      */
     public boolean isVoltage() {
-        return getType().name().equals(Data.Voltage.name());
+        return getType().equals("voltage");
     }
 
     /**

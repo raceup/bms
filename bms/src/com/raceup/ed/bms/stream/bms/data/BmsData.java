@@ -21,7 +21,7 @@ package com.raceup.ed.bms.stream.bms.data;
  */
 public class BmsData {
     final String value;  // value of cell of segment
-    private final Data type;  // type of data
+    private final String type;  // type of data
     private final int cell;  // number of cell broadcasting value
     private final int segment;  // number of segment broadcasting value
 
@@ -44,7 +44,7 @@ public class BmsData {
      * @param value   value of cell of segment
      */
     public BmsData(String type, String cell, String segment, String value) {
-        this.type = Data.valueOf(type);
+        this.type = type;
         this.cell = Integer.parseInt(cell);
         this.segment = Integer.parseInt(segment);
         this.value = value;
@@ -56,7 +56,10 @@ public class BmsData {
      * @return True iff data represents a log
      */
     public boolean isStatusType() {
-        return type.isStatus();
+        return type.equals("Status") ||
+                type.equals("Alert") ||
+                type.equals("Fault") ||
+                type.equals("Log");
     }
 
     /**
@@ -65,7 +68,8 @@ public class BmsData {
      * @return True iff data is a value
      */
     public boolean isValueType() {
-        return type.isValue();
+        return (type.equals("voltage") ||
+                type.equals("temperature"));
     }
 
     /**
@@ -73,7 +77,7 @@ public class BmsData {
      *
      * @return data type
      */
-    public Data getType() {
+    public String getType() {
         return type;
     }
 

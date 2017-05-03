@@ -29,6 +29,7 @@ import java.io.OutputStream;
 import java.util.Enumeration;
 import java.util.NoSuchElementException;
 
+
 /**
  * Manage arduino byte stream
  */
@@ -110,17 +111,8 @@ public class ArduinoSerial implements SerialPortEventListener {
      * Finds arduino port, attach to it
      */
     private void initializeOrFail() {
-        try {
-            portId = findPort();
-            assert portId != null;
-            configureSerialPortOrFail(portId);
-            serialPort.addEventListener(this);  // ad listeners
-            serialPort.notifyOnDataAvailable(true);
-            serialPort.notifyOnDataAvailable(true);
-            serialOutput = serialPort.getOutputStream();  // get stream to write in serial
-        } catch (Exception e) {
-            System.err.println(e.toString());
-        }
+        portId = findPort();
+        configureSerialPortOrFail(portId);
     }
 
     /**
@@ -129,17 +121,25 @@ public class ArduinoSerial implements SerialPortEventListener {
      * @return port to read arduino from
      */
     private CommPortIdentifier findPort() throws NoSuchElementException {
+        CommPortIdentifier portId = null;
         Enumeration portEnum = CommPortIdentifier.getPortIdentifiers();
-        while (portEnum.hasMoreElements()) {  // find an instance of serial port as set in PORT_NAMES.
+
+        // find an instance of serial port as set in PORT_NAMES.
+        while (portEnum.hasMoreElements()) {
             CommPortIdentifier currPortId = (CommPortIdentifier) portEnum.nextElement();
             for (String portName : PORT_NAMES) {
                 if (currPortId.getName().equals(portName)) {
-                    return currPortId;
+                    portId = currPortId;
+                    break;
                 }
             }
         }
 
-        throw new NoSuchElementException("No Arduino board found.");
+        if (portId == null) {
+            throw new NoSuchElementException("No Arduino board found.");
+        } else {
+            return portId;
+        }
     }
 
     /**
@@ -149,14 +149,19 @@ public class ArduinoSerial implements SerialPortEventListener {
      */
     private void configureSerialPortOrFail(CommPortIdentifier portId) {
         try {
-            serialPort = (SerialPort) portId.open(this.getClass().getName(), TIME_OUT);  // use class name for the appName.
-            serialPort.setSerialPortParams(  // set port parameters
+            // open serial port, and use class name for the appName.
+            serialPort = (SerialPort) portId.open(this.getClass().getName(), TIME_OUT);
+            serialPort.setSerialPortParams(
                     BAUD_RATE,
                     SerialPort.DATABITS_8,
                     SerialPort.STOPBITS_1,
                     SerialPort.PARITY_NONE
-            );
-            serialInput = new BufferedReader(new InputStreamReader(serialPort.getInputStream()));  // get streams
+            );  // set port parameters
+
+            serialInput = new BufferedReader(new InputStreamReader(serialPort.getInputStream()));  // open the streams
+            output = serialPort.getOutputStream();
+            serialPort.addEventListener(this);  // add event listeners
+            serialPort.notifyOnDataAvailable(true);
         } catch (Exception e) {
             System.err.println(e.toString());
         }

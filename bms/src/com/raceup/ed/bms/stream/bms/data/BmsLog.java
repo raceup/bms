@@ -36,7 +36,7 @@ public class BmsLog extends BmsData {
      * @param data generic data type
      */
     public BmsLog(BmsData data) {
-        super(data.getType().toString(), Integer.toString(data.getCell()), Integer.toString(data.getSegment()), data.value);
+        super(data.getType(), Integer.toString(data.getCell()), Integer.toString(data.getSegment()), data.value);
     }
 
     /**
@@ -57,7 +57,7 @@ public class BmsLog extends BmsData {
      * @return type of log, one of [Status, Alert, Fault, Log]
      */
     public String getTypeOfLog() {
-        return getType().name();
+        return getType();
     }
 
     /**
@@ -75,7 +75,7 @@ public class BmsLog extends BmsData {
      * @return True iff data is a status log
      */
     public boolean isStatus() {
-        return getTypeOfLog().equals(Data.Status.name());
+        return getTypeOfLog().equals("Status");
     }
 
     /**
@@ -84,7 +84,7 @@ public class BmsLog extends BmsData {
      * @return True iff data is a alert log
      */
     public boolean isAlert() {
-        return getTypeOfLog().equals(Data.Alert.name());
+        return getTypeOfLog().equals("Alert");
     }
 
     /**
@@ -93,7 +93,7 @@ public class BmsLog extends BmsData {
      * @return True iff data is a fault log
      */
     public boolean isFault() {
-        return getTypeOfLog().equals(Data.Fault.name());
+        return getTypeOfLog().equals("Fault");
     }
 
     /**
@@ -102,7 +102,7 @@ public class BmsLog extends BmsData {
      * @return True iff data is a simple log
      */
     public boolean isLog() {
-        return getTypeOfLog().equals(Data.Log.name());
+        return getTypeOfLog().equals("Log");
     }
 
     /**
@@ -112,6 +112,6 @@ public class BmsLog extends BmsData {
      */
     @Override
     public String toString() {
-        return getType().toString() + " : " + getValue();
+        return getType() + " : " + getValue();
     }
 }
