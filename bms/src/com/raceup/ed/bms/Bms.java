@@ -33,6 +33,8 @@ public class Bms extends ArduinoSerial implements Runnable, StartAndStop {
     public static final String appName = "BmsManager";  // app settings
     static final String appVersion = "2.1";
     private static final String RECHARGE_COMMAND = "RECHARGE";
+    private static final String ARDUINO_START_LOGGING_MSG = "H";  // send this message to ask Arduino to start logging
+    private static final String ARDUINO_BALANCE_MSG = "B";  // send this message to ask Arduino to balance segments
     final Pack batteryPack;  // battery pack settings
     private final Logger logger;  // log data to file
     int msLogIntervalUpdate = 200;  // logging interval update
@@ -212,6 +214,24 @@ public class Bms extends ArduinoSerial implements Runnable, StartAndStop {
         }
     }
 
+    /*
+     * I/O with Arduino
+     */
+
+    /**
+     * Asks Arduino to start logging data
+     */
+    private void askArduinoToStartLogging() {
+        sendSerialDataOrFail(ARDUINO_START_LOGGING_MSG);
+    }
+
+    /**
+     * Asks Arduino to balance segments
+     */
+    private void askArduinoToBalanceCells() {
+        sendSerialDataOrFail(ARDUINO_BALANCE_MSG);
+    }
+
     /**
      * Balances cell of segment or fail
      *
@@ -219,6 +239,6 @@ public class Bms extends ArduinoSerial implements Runnable, StartAndStop {
      * @param segmentOfCell number of segment of cell to balance
      */
     void balanceCellOrFail(int cell, int segmentOfCell) {
-        // TODO: send arduino message to balance cell in segment
+        sendRechargeAction();
     }
 }
