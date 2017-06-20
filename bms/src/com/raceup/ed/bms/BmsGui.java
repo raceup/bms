@@ -43,6 +43,7 @@ import static com.raceup.ed.bms.utils.Streams.readAllFromStream;
  */
 public class BmsGui extends ApplicationFrame implements Runnable, StartAndStop {
     static final Image appIcon = Toolkit.getDefaultToolkit().getImage("com.raceup.ed.bms.BmsGui".getClass().getResource("/res/images/icon.png"));
+    private static final String TAG = "BmsGui";
     private static final Dimension SCREEN = Toolkit.getDefaultToolkit().getScreenSize();
     private static final Dimension QUARTER_SCREEN = new Dimension((int) (SCREEN.getWidth() * 0.5), (int) (SCREEN.getHeight() * 0.5));
     private static int msGuiIntervalUpdate = 10;  // GUI interval update
@@ -50,7 +51,7 @@ public class BmsGui extends ApplicationFrame implements Runnable, StartAndStop {
     private final JButton startButton = new JButton("Start");  // start and stop buttons
     private final JButton pauseButton = new JButton("Pause");
     private final JButton stopButton = new JButton("Stop");
-    private final JButton rechargeButton = new JButton("Recharge");  // recharge button
+    private final JButton balanceButton = new JButton("Balance cells");  // balance button
     private volatile boolean amIStarted = false;  // start and stop management
     private volatile boolean amIPaused = false;
     private volatile boolean amIStopped = false;
@@ -63,7 +64,7 @@ public class BmsGui extends ApplicationFrame implements Runnable, StartAndStop {
      *
      * @param bms bms manager to monitor
      */
-    public BmsGui(Bms bms) {
+    BmsGui(Bms bms) {
         super("Bms manager");  // set title
         setIconImage(appIcon);  // set icon
         System.setProperty("com.apple.mrj.application.apple.menu.about.name", "AppName");  // set app name
@@ -77,7 +78,7 @@ public class BmsGui extends ApplicationFrame implements Runnable, StartAndStop {
     /**
      * Start frontend GUI and backend engines
      */
-    public void open() {
+    void open() {
         dataFrame.pack();
         dataFrame.setLocation(0, 0);  // top left corner
         dataFrame.setVisible(true);
@@ -153,7 +154,7 @@ public class BmsGui extends ApplicationFrame implements Runnable, StartAndStop {
      * Setup gui and backend
      */
     private void setup() {
-        int[] numberOfCellsPerSegment = this.bms.batteryPack.getNumberOfCellsPerSegment();
+        int[] numberOfCellsPerSegment = bms.batteryPack.getNumberOfCellsPerSegment();
 
         setupFrame();  // setup frame manager
         chartFrame = new ChartFrame("Average voltage and temperature of battery pack over time", new String[]{"Voltage (mV)"});  // setup gui
@@ -170,7 +171,7 @@ public class BmsGui extends ApplicationFrame implements Runnable, StartAndStop {
 
         setJMenuBar(createMenuBar());  // set menubar
         add(createStartStopPanel());  // add panels
-        add(createRechargePanel());
+        add(createBalanceCellsPanel());
     }
 
     /**
@@ -192,12 +193,15 @@ public class BmsGui extends ApplicationFrame implements Runnable, StartAndStop {
         return panel;
     }
 
-    private JPanel createRechargePanel() {
+    /**
+     * Create panel that balances cells
+     *
+     * @return panel with buttons to balance cells
+     */
+    private JPanel createBalanceCellsPanel() {
         JPanel panel = new JPanel();
-
-        rechargeButton.addActionListener(e -> sendRechargeAction());  // add action listeners
-
-        panel.add(rechargeButton);  // add to panel
+        balanceButton.addActionListener(e -> sendBalanceCellsAction());  // add action listeners
+        panel.add(balanceButton);  // add to panel
         return panel;
     }
 
@@ -212,16 +216,17 @@ public class BmsGui extends ApplicationFrame implements Runnable, StartAndStop {
         try {
             BmsData data = bms.getNewestData();  // get newest data
 
-            if (data.isStatusType()) {  // if it's a log, update log frame
-                updateLogFrameOrFail(data);
-            } else if (data.isValueType()) {  // if it's a value update data and chart frames
-                updateDataFrameOrFail(data);
-                updateChartFrameOrFail();
+            if (data != null) {
+                if (data.isStatusType()) {  // if it's a log, update log frame
+                    updateLogFrameOrFail(data);
+                } else if (data.isValueType()) {  // if it's a value update data and chart frames
+                    updateDataFrameOrFail(data);
+                    updateChartFrameOrFail();
+                }
             }
-
             Thread.sleep(msGuiIntervalUpdate);  // wait until next update
-        } catch (Exception e) {
-            System.err.println(e.toString());
+        } catch (NullPointerException | InterruptedException e) {
+            System.err.println(TAG + " has encountered some errors while updateOrFail()");
         }
     }
 
@@ -279,7 +284,6 @@ public class BmsGui extends ApplicationFrame implements Runnable, StartAndStop {
         menuBar.add(createFileMenu());  // file
         menuBar.add(createShowFramesMenu());  // windows toggle status
         menuBar.add(createEditMenu());  // edit update intervals
-        menuBar.add(createCellBalanceMenu());  // balance cells
         menuBar.add(createHelpMenu());  // help/ about
 
         return menuBar;
@@ -361,30 +365,6 @@ public class BmsGui extends ApplicationFrame implements Runnable, StartAndStop {
         item = new JMenuItem("Values alert interval");
         item.addActionListener(e -> showValueAlertIntervalEditDialog());
         menu.add(item);
-
-        return menu;
-    }
-
-    /**
-     * Creates cell balance menu with balance cell methods
-     *
-     * @return balance cells menu
-     */
-    private JMenu createCellBalanceMenu() {
-        JMenu menu = new JMenu("Cell balance");  // file menu
-
-        for (int segment = 0; segment < bms.batteryPack.getNumberOfCellsPerSegment().length; segment++) {
-            JMenuItem item = new JMenu("Segment " + Integer.toString(segment + 1));
-            menu.add(item);  // add segment menu
-
-            for (int cell = 0; cell < bms.batteryPack.getNumberOfCellsPerSegment()[segment]; cell++) {
-                JMenuItem subMenuItem = new JMenuItem("Cell " + Integer.toString(cell + 1));
-                final int numberOfCell = cell;
-                final int numberOfSegment = segment;
-                subMenuItem.addActionListener(e -> bms.balanceCellOrFail(numberOfCell, numberOfSegment));  // balance cell in segment
-                item.add(subMenuItem);  // add cell menu
-            }
-        }
 
         return menu;
     }
@@ -489,8 +469,8 @@ public class BmsGui extends ApplicationFrame implements Runnable, StartAndStop {
     /**
      * Sends to Arduino recharge action
      */
-    private void sendRechargeAction() {
-        bms.sendRechargeAction();
+    private void sendBalanceCellsAction() {
+        bms.askArduinoToBalanceCells();
     }
 
     /*

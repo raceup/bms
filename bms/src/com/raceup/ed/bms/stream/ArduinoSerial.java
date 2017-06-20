@@ -58,7 +58,7 @@ public class ArduinoSerial implements SerialPortEventListener {
      */
     protected ArduinoSerial(int BAUD_RATE) {
         this.BAUD_RATE = BAUD_RATE;  // baud rate to read data
-        initializeOrFail();
+        // TODO: test only initializeOrFail();
     }
 
     /**

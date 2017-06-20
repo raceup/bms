@@ -32,7 +32,7 @@ import org.json.JSONObject;
 public class Bms extends ArduinoSerial implements Runnable, StartAndStop {
     public static final String appName = "BmsManager";  // app settings
     static final String appVersion = "2.1";
-    private static final String RECHARGE_COMMAND = "RECHARGE";
+    private static final String TAG = "Bms";
     private static final String ARDUINO_START_LOGGING_MSG = "H";  // send this message to ask Arduino to start logging
     private static final String ARDUINO_BALANCE_MSG = "B";  // send this message to ask Arduino to balance segments
     final Pack batteryPack;  // battery pack settings
@@ -83,8 +83,9 @@ public class Bms extends ArduinoSerial implements Runnable, StartAndStop {
     public void start() {
         if (!amIStopped && !amIStarted) {  // only when i'm not stopped
             amIStarted = true;  // start updating
+            askArduinoToStartLogging();  // start logging
 
-            if (!amIPaused) {  // firs time
+            if (!amIPaused) {  // first time
                 new Thread(this, this.getClass().getName()).start();  // start in new thread
             }
         }
@@ -135,11 +136,6 @@ public class Bms extends ArduinoSerial implements Runnable, StartAndStop {
      * Data
      */
 
-    void sendRechargeAction() {
-        sendSerialDataOrFail(RECHARGE_COMMAND);
-        System.out.println("RECHARGE requested");
-    }
-
     /**
      * Read last value in serial, parse, and return it
      *
@@ -174,12 +170,11 @@ public class Bms extends ArduinoSerial implements Runnable, StartAndStop {
                     updateBatteryPack(new BmsValue(newestData));
                 }
 
-                Thread.sleep(msSerialIntervalUpdate);  // wait for next updateOrFail series
+                updateLogs();
             }
-
-            updateLogs();
-        } catch (Exception e) {
-            System.err.println(e.toString());
+            Thread.sleep(msSerialIntervalUpdate);  // wait for next updateOrFail series
+        } catch (NullPointerException | InterruptedException e) {
+            System.err.println(TAG + " has encountered some errors while updateOrFail()");
         }
     }
 
@@ -228,17 +223,7 @@ public class Bms extends ArduinoSerial implements Runnable, StartAndStop {
     /**
      * Asks Arduino to balance segments
      */
-    private void askArduinoToBalanceCells() {
+    void askArduinoToBalanceCells() {
         sendSerialDataOrFail(ARDUINO_BALANCE_MSG);
-    }
-
-    /**
-     * Balances cell of segment or fail
-     *
-     * @param cell          number of cell to balance
-     * @param segmentOfCell number of segment of cell to balance
-     */
-    void balanceCellOrFail(int cell, int segmentOfCell) {
-        sendRechargeAction();
     }
 }

@@ -1,8 +1,16 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
-## TODOs
-- add recharge
+## 2.3 - 2017-06-20
+
+### Fixed
+- catching all exceptions
+
+### Removed
+- balance cells panels one by one
+
+### Added
+- ask Arduino to start logs and to balance cells
 
 ## 2.2 - 2017-05-03
 
