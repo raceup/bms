@@ -34,6 +34,7 @@ import java.util.NoSuchElementException;
  * Manage arduino byte stream
  */
 public class ArduinoSerial implements SerialPortEventListener {
+    private static final String TAG = "ArduinoSerial";
     private static final int TIME_OUT = 2000;  // milliseconds to block while waiting for port open
     private static final String PORT_NAMES[] = {  // The port we're normally going to use.
             "/dev/tty.usbserial-A9007UX1", // Mac OS X
@@ -159,10 +160,11 @@ public class ArduinoSerial implements SerialPortEventListener {
             );  // set port parameters
 
             serialInput = new BufferedReader(new InputStreamReader(serialPort.getInputStream()));  // open the streams
-            output = serialPort.getOutputStream();
+            serialOutput = serialPort.getOutputStream();
             serialPort.addEventListener(this);  // add event listeners
             serialPort.notifyOnDataAvailable(true);
         } catch (Exception e) {
+            System.err.println(TAG + " has encountered some errors in configureSerialPortOrFail(CommPortIdentifier portId)");
             System.err.println(e.toString());
         }
     }

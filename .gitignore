@@ -1,6 +1,6 @@
-### Java ###
-*.class
+BmsManager/log/
 
+### Java ###
 # BlueJ files
 *.ctxt
 

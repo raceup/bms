@@ -24,6 +24,7 @@ public class BmsData {
     private final String type;  // type of data
     private final int cell;  // number of cell broadcasting value
     private final int segment;  // number of segment broadcasting value
+    private String jsonValue;
 
     /**
      * Empty constructor as default
@@ -48,6 +49,14 @@ public class BmsData {
         this.cell = Integer.parseInt(cell);
         this.segment = Integer.parseInt(segment);
         this.value = value;
+
+        jsonValue = "" +
+                "{\n" +
+                "\t\"type\": \"" + this.type + "\",\n" +
+                "\t\"cell\": \"" + Integer.toString(this.cell) + "\",\n" +
+                "\t\"segment\": \"" + Integer.toString(this.segment) + "\",\n" +
+                "\t\"value\": \"" + this.value + "\"\n" +
+                "}";
     }
 
     /**
@@ -97,5 +106,14 @@ public class BmsData {
      */
     public int getSegment() {
         return segment;
+    }
+
+    /**
+     * Getter for value as json format
+     *
+     * @return Json value with info about this data
+     */
+    public String getJsonValue() {
+        return jsonValue;
     }
 }
