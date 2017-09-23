@@ -21,31 +21,12 @@ package com.raceup.ed.bms.stream.bms.data;
  */
 public class BmsValue extends BmsData {
     /**
-     * Empty constructor as default
-     */
-    public BmsValue() {
-        super();
-    }
-
-    /**
      * Cast from generic data to value
      *
      * @param data generic data type
      */
     public BmsValue(BmsData data) {
         super(data.getType(), Integer.toString(data.getCell()), Integer.toString(data.getSegment()), data.value);
-    }
-
-    /**
-     * Create and set params of new data
-     *
-     * @param type    type of data
-     * @param cell    number of cell broadcasting value
-     * @param segment number of segment broadcasting value
-     * @param value   value of cell of segment
-     */
-    public BmsValue(String type, String cell, String segment, String value) {
-        super(type, cell, segment, value);
     }
 
     /**

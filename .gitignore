@@ -1,5 +1,3 @@
-BmsManager/log/
-
 ### Java ###
 # BlueJ files
 *.ctxt
@@ -163,3 +161,5 @@ fabric.properties
 modules.xml
 .idea/misc.xml 
 *.ipr
+Bms manager/
+BmsManager/

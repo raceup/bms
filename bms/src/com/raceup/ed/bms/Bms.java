@@ -31,13 +31,13 @@ import org.json.JSONObject;
  */
 public class Bms extends ArduinoSerial implements Runnable, StartAndStop {
     public static final String appName = "BmsManager";  // app settings
-    static final String appVersion = "2.1";
+    static final String appVersion = "2.4";
     private static final String TAG = "Bms";
     private static final String ARDUINO_START_LOGGING_MSG = "H";  // send this message to ask Arduino to start logging
     private static final String ARDUINO_BALANCE_MSG = "B";  // send this message to ask Arduino to balance segments
     final Pack batteryPack;  // battery pack settings
     private final Logger logger;  // log data to file
-    int msLogIntervalUpdate = 200;  // logging interval update
+    int msLogIntervalUpdate = 1000;  // logging interval update
     private long nextLogIntervalUpdate = System.currentTimeMillis() + (long) msLogIntervalUpdate;  // time to log data
     private volatile boolean amIStarted = false;  // start and stop management
     private volatile boolean amIPaused = false;
@@ -60,22 +60,6 @@ public class Bms extends ArduinoSerial implements Runnable, StartAndStop {
     /*
      * Thread
      */
-
-    /**
-     * Parse raw data
-     *
-     * @param rawData raw data string from arduino
-     * @return parsed data
-     */
-    private static BmsData parseData(String rawData) {
-        JSONObject root = new JSONObject(rawData.trim());
-        return new BmsData(
-                root.getString("type"),
-                root.getString("cell"),
-                root.getString("segment"),
-                root.getString("value")
-        );
-    }
 
     /**
      * Start reading data from arduino serial, wrapping it in BmsValue or BmsLog and updating battery pack
@@ -142,7 +126,7 @@ public class Bms extends ArduinoSerial implements Runnable, StartAndStop {
      * @return last value from serial
      */
     BmsData getNewestData() {
-        return parseData(getNewestRawData());
+        return new BmsData(new JSONObject(getNewestRawData()));
     }
 
     /**
@@ -191,8 +175,9 @@ public class Bms extends ArduinoSerial implements Runnable, StartAndStop {
             }
         }
 
-        return getRawDataFromValues(type, cell, segment, value);
-        // TODO: debug only return serialData;
+        String data = getRawDataFromValues(type, cell, segment, value);
+        // TODO: debug only String data = serialData;
+        return data.trim();
     }
 
     /**

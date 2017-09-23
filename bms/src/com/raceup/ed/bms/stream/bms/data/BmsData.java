@@ -16,6 +16,8 @@
 
 package com.raceup.ed.bms.stream.bms.data;
 
+import org.json.JSONObject;
+
 /**
  * Generic data coming from arduino
  */
@@ -25,16 +27,6 @@ public class BmsData {
     private final int cell;  // number of cell broadcasting value
     private final int segment;  // number of segment broadcasting value
     private String jsonValue;
-
-    /**
-     * Empty constructor as default
-     */
-    BmsData() {
-        type = null;
-        cell = -1;
-        segment = -1;
-        value = null;
-    }
 
     /**
      * Create and set params of new data
@@ -57,6 +49,20 @@ public class BmsData {
                 "\t\"segment\": \"" + Integer.toString(this.segment) + "\",\n" +
                 "\t\"value\": \"" + this.value + "\"\n" +
                 "}";
+    }
+
+    /**
+     * Parse raw data
+     *
+     * @param root json data
+     */
+    public BmsData(JSONObject root) {
+        this(
+                root.getString("type"),
+                root.getString("cell"),
+                root.getString("segment"),
+                root.getString("value")
+        );
     }
 
     /**
@@ -86,7 +92,7 @@ public class BmsData {
      *
      * @return data type
      */
-    public String getType() {
+    String getType() {
         return type;
     }
 

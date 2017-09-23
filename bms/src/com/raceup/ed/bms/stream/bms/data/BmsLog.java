@@ -22,14 +22,6 @@ package com.raceup.ed.bms.stream.bms.data;
  * Informs anyone of its status.
  */
 public class BmsLog extends BmsData {
-
-    /**
-     * Empty constructor as default
-     */
-    public BmsLog() {
-        super();
-    }
-
     /**
      * Cast from generic data to value
      *
@@ -37,18 +29,6 @@ public class BmsLog extends BmsData {
      */
     public BmsLog(BmsData data) {
         super(data.getType(), Integer.toString(data.getCell()), Integer.toString(data.getSegment()), data.value);
-    }
-
-    /**
-     * Create and set params of new data
-     *
-     * @param type    type of data
-     * @param cell    number of cell broadcasting value
-     * @param segment number of segment broadcasting value
-     * @param value   value of cell of segment
-     */
-    public BmsLog(String type, String cell, String segment, String value) {
-        super(type, cell, segment, value);
     }
 
     /**
