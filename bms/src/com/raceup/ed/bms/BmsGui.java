@@ -92,7 +92,7 @@ public class BmsGui extends ApplicationFrame implements Runnable, StartAndStop {
         logFrame.setVisible(true);
 
         pack();
-        setLocation((int) SCREEN.getWidth(), 0);  // right top corner
+        setLocation((int) SCREEN.getWidth() / 2, (int) SCREEN.getHeight() / 2);  // right top corner
         setVisible(true);
     }
 

@@ -1,6 +1,11 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2.4 - 2017-09-23
+
+### Fixed
+- showing panel manager outside screen boundaries
+
 ## 2.3 - 2017-06-20
 
 ### Fixed

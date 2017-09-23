@@ -151,13 +151,12 @@ public class Bms extends ArduinoSerial implements Runnable, StartAndStop {
      * @return raw data
      */
     private String getNewestRawData() {
-        String type = "", value = "-1";
-
+        String type, value;
         double randTypeNum = Math.random();
         double minCell = 0, maxCell = 18;
-        double minSegm = 0, maxSegm = 8;
+        double minSegment = 0, maxSegment = 8;
         double randCell = minCell + Math.random() * (maxCell - minCell);
-        double randSegment = minSegm + Math.random() * (maxSegm - minCell);
+        double randSegment = minSegment + Math.random() * (maxSegment - minCell);
 
         String cell = Integer.toString((int) randCell);
         String segment = Integer.toString((int) randSegment);

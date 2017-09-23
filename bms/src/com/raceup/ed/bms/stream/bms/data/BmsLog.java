@@ -112,6 +112,6 @@ public class BmsLog extends BmsData {
      */
     @Override
     public String toString() {
-        return getType() + " : " + getValue();
+        return getValue();
     }
 }
