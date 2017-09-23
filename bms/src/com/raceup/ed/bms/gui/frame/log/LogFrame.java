@@ -20,6 +20,7 @@ package com.raceup.ed.bms.gui.frame.log;
 import com.raceup.ed.bms.stream.bms.data.BmsLog;
 
 import javax.swing.*;
+import javax.swing.text.BadLocationException;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
@@ -172,7 +173,9 @@ public class LogFrame extends JFrame {
      * Autoscroll pane
      */
     private class ConsolePane extends JTextPane {
-        private boolean isAutoscrolling = true;
+        private final Style textStyle = addStyle("default", null);  // add style
+        private final int BUFFER_SIZE = 50 * 10;  // ~10 rows
+        private boolean isAutoScrolling = true;
 
         ConsolePane() {
             super();
@@ -186,10 +189,7 @@ public class LogFrame extends JFrame {
          * @param c   color of message to set in pane
          */
         private void updateOrFail(String msg, Color c) {
-            Style textStyle = addStyle("default", null);  // add style
-            StyleConstants.setBold(textStyle, true);  // bold
             StyleConstants.setForeground(textStyle, c);  // change color
-
             StyledDocument doc = (StyledDocument) getDocument();  // get document in pane
             try {
                 doc.insertString(doc.getLength(), msg, textStyle);
@@ -197,18 +197,29 @@ public class LogFrame extends JFrame {
                 System.err.println(e.toString());
             }
 
-            if (isAutoscrolling) {
-                setCaretPosition(getDocument().getLength());  // set position on lsat line
+            if (isAutoScrolling) {
+                setCaretPosition(doc.getLength());  // set position on last line
+            }
+
+            if (doc.getLength() > BUFFER_SIZE) {  // panel buffer is at max size -> shift
+                try {
+                    int firstLineBreak = doc.getText(0, doc.getLength()).indexOf("\n");
+                    int secondLineBreak = doc.getText(0, doc.getLength()).indexOf("\n", firstLineBreak + 1);
+                    getDocument().remove(0, secondLineBreak);
+                    System.out.println(secondLineBreak);
+                } catch (BadLocationException e) {
+                    System.err.println("Cannot edit buffer size in console pane");
+                }
             }
         }
 
         /**
          * Set autoscroll mode
          *
-         * @param isAutoscrolling True iff pane should be autoscrolling on new lines
+         * @param isAutoScrolling True iff pane should be autoscrolling on new lines
          */
-        private void setAutoscroll(boolean isAutoscrolling) {
-            this.isAutoscrolling = isAutoscrolling;
+        private void setAutoScroll(boolean isAutoScrolling) {
+            this.isAutoScrolling = isAutoScrolling;
         }
 
         /**
@@ -221,12 +232,14 @@ public class LogFrame extends JFrame {
                 @Override
                 public void mouseClicked(MouseEvent mouseEvent) {
                     if (SwingUtilities.isLeftMouseButton(mouseEvent)) {  // left button
-                        setAutoscroll(true);
+                        setAutoScroll(true);
                     } else if (SwingUtilities.isRightMouseButton(mouseEvent)) {  // right button
-                        setAutoscroll(false);
+                        setAutoScroll(false);
                     }
                 }
             });
+
+            StyleConstants.setBold(textStyle, true);  // bold
         }
     }
 }
