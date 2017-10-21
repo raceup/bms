@@ -27,6 +27,10 @@ import java.awt.*;
  * Run BmsGUI or simple Bms monitor here
  */
 class Main {
+    private static final String APP_NAME_SETTINGS = "awtAppClassName";
+    private static final String ERROR_MESSAGE_TITLE =
+            "Failure when starting app";
+
     /**
      * Open a gui and start bms manager
      *
@@ -45,8 +49,8 @@ class Main {
     private static void setAppUiOrFail() {
         try {
             Toolkit xToolkit = Toolkit.getDefaultToolkit();
-            java.lang.reflect.Field awtAppClassNameField = xToolkit.getClass
-                    ().getDeclaredField("awtAppClassName");
+            java.lang.reflect.Field awtAppClassNameField =
+                    xToolkit.getClass().getDeclaredField(APP_NAME_SETTINGS);
             awtAppClassNameField.setAccessible(true);
             awtAppClassNameField.set(xToolkit, Bms.appName + " " + Bms
                     .appVersion);
@@ -111,7 +115,7 @@ class Main {
             JOptionPane.showMessageDialog(  // alert dialog with exception
                     null,
                     errorMessage,
-                    "Failure when starting app",
+                    ERROR_MESSAGE_TITLE,
                     JOptionPane.ERROR_MESSAGE
             );
 
