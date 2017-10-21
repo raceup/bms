@@ -60,10 +60,10 @@ public class ChartPanel extends org.jfree.chart.ChartPanel {
      */
     public void updateSeriesOrFail(int timeSeries, double var) {
         try {
-            TimeSeries series = (TimeSeries) getChart().getXYPlot()
-                    .getDataset()
-                    .getSeriesKey(timeSeries);
-            series.addOrUpdate(new Millisecond(), var);
+            TimeSeriesCollection dataSet = (TimeSeriesCollection) getChart()
+                    .getXYPlot()
+                    .getDataset();
+            dataSet.getSeries(timeSeries).addOrUpdate(new Millisecond(), var);
         } catch (Exception e) {
             System.err.println(e.toString());
         }
