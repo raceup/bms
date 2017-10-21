@@ -17,7 +17,7 @@
 
 package com.raceup.ed.bms;
 
-import com.raceup.ed.bms.gui.frame.chart.ChartFrame;
+import com.raceup.ed.bms.gui.frame.chart.ChartPanel;
 import com.raceup.ed.bms.gui.frame.data.DataFrame;
 import com.raceup.ed.bms.gui.frame.log.LogFrame;
 import com.raceup.ed.bms.stream.bms.data.BmsData;
@@ -58,7 +58,7 @@ public class BmsGui extends ApplicationFrame implements Runnable,
             (int) (SCREEN.getWidth() * 0.8), (int) (SCREEN.getHeight() * 0.8)
     );
     private static final Dimension QUARTER_SCREEN = new Dimension(
-            (int) (SCREEN.getWidth() * 0.5), (int) (SCREEN.getHeight() * 0.5)
+            (int) (SCREEN.getWidth() * 0.4), (int) (SCREEN.getHeight() * 0.4)
     );
     private int msGuiIntervalUpdate = 100;  // GUI interval update
     private final Bms bms;  // bms manager
@@ -71,9 +71,9 @@ public class BmsGui extends ApplicationFrame implements Runnable,
     private volatile boolean amIStarted = false;  // start and stop management
     private volatile boolean amIPaused = false;
     private volatile boolean amIStopped = false;
-    private DataFrame dataFrame;  // gui frames
-    private ChartFrame chartFrame;
-    private LogFrame logFrame;  // frame used for logging
+    private DataFrame dataPanel;  // gui frames
+    private ChartPanel chartPanel;
+    private LogFrame logPanel;  // frame used for logging
 
     /**
      * Prepare and run gui
@@ -96,10 +96,9 @@ public class BmsGui extends ApplicationFrame implements Runnable,
      * Start frontend GUI and backend engines
      */
     void open() {
-        dataFrame.setVisible(true);
-        chartFrame.pack();
-        chartFrame.setVisible(true);
-        logFrame.setVisible(true);
+        dataPanel.setVisible(true);
+        chartPanel.setVisible(true);
+        logPanel.setVisible(true);
 
         pack();
         setLocation(0, 0);  // top left corner
@@ -169,31 +168,41 @@ public class BmsGui extends ApplicationFrame implements Runnable,
     private void setup() {
         int[] numberOfCellsPerSegment = bms.batteryPack
                 .getNumberOfCellsPerSegment();
-        chartFrame = new ChartFrame("Average voltage and temperature of " +
-                "battery pack over time", new String[]{"Voltage (mV)"});  //
-        // setup gui
-        dataFrame = new DataFrame(numberOfCellsPerSegment);
-        logFrame = new LogFrame();
-        setupFrame();  // setup frame manager
+        chartPanel = new ChartPanel(new String[]{"Voltage (mV)"});
+        dataPanel = new DataFrame(numberOfCellsPerSegment);
+        logPanel = new LogFrame();
+        setupLayout();  // setup frame manager
     }
 
     /**
      * Setup gui of main frame (manager)
      */
-    private void setupFrame() {
-        getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout
-                .PAGE_AXIS));  // add components vertically
+    private void setupLayout() {
+        getContentPane().setLayout(
+                new BoxLayout(getContentPane(), BoxLayout.LINE_AXIS)
+        );  // add components horizontally
         getRootPane().setBorder(
                 BorderFactory.createEmptyBorder(
                         10, 10, 10, 10
                 )
         );  // border
 
+        // data and chart
+        JSplitPane leftPane = new JSplitPane(
+                JSplitPane.VERTICAL_SPLIT,
+                chartPanel,
+                dataPanel
+        );
+        add(leftPane);
+
+        JSplitPane rightPane = new JSplitPane(
+                JSplitPane.VERTICAL_SPLIT,
+                createStartStopPanel(),
+                createBalanceCellsPanel()
+        );
+        add(rightPane);
+
         setJMenuBar(createMenuBar());  // set menu-bar
-        add(createStartStopPanel());  // add panels
-        add(createBalanceCellsPanel());
-        add(dataFrame);
-        add(logFrame);
     }
 
     /**
@@ -263,7 +272,7 @@ public class BmsGui extends ApplicationFrame implements Runnable,
     private void updateDataFrameOrFail(BmsData data) {
         try {
             if (data.isValueType()) {
-                dataFrame.updateCellValue(new BmsValue(data));
+                dataPanel.updateCellValue(new BmsValue(data));
             }
         } catch (Exception e) {
             System.err.println(e.toString());
@@ -275,7 +284,7 @@ public class BmsGui extends ApplicationFrame implements Runnable,
      */
     private void updateChartFrameOrFail() {
         try {
-            chartFrame.updateOrFail(0, bms.batteryPack
+            chartPanel.updateSeriesOrFail(0, bms.batteryPack
                     .getSumOfAllVoltages());  // update voltage
         } catch (Exception e) {
             System.err.println(e.toString());
@@ -290,7 +299,7 @@ public class BmsGui extends ApplicationFrame implements Runnable,
      */
     private void updateLogFrameOrFail(BmsData data) {
         try {
-            logFrame.update(new BmsLog(data));
+            logPanel.update(new BmsLog(data));
         } catch (Exception e) {
             System.err.println(e.toString());
         }
@@ -340,21 +349,21 @@ public class BmsGui extends ApplicationFrame implements Runnable,
 
         JMenuItem item = new JMenu("Data");
         JMenuItem subMenuItem = new JMenuItem("Toggle view status");
-        subMenuItem.addActionListener(e -> dataFrame.setVisible(!dataFrame
+        subMenuItem.addActionListener(e -> dataPanel.setVisible(!dataPanel
                 .isVisible()));
         item.add(subMenuItem);
         menu.add(item);
 
         item = new JMenu("Chart");
         subMenuItem = new JMenuItem("Toggle view status");
-        subMenuItem.addActionListener(e -> chartFrame.setVisible(!chartFrame
-                .isVisible()));
+        subMenuItem.addActionListener(e -> chartPanel.setVisible(
+                !chartPanel.isVisible()));
         item.add(subMenuItem);
         menu.add(item);
 
         item = new JMenu("Log");
         subMenuItem = new JMenuItem("Toggle view status");
-        subMenuItem.addActionListener(e -> logFrame.setVisible(!logFrame
+        subMenuItem.addActionListener(e -> logPanel.setVisible(!logPanel
                 .isVisible()));
         item.add(subMenuItem);
         menu.add(item);
@@ -434,14 +443,14 @@ public class BmsGui extends ApplicationFrame implements Runnable,
     private void showValueAlertIntervalEditDialog() {
         MinMaxValuePanel minMaxTemperaturePanel = new MinMaxValuePanel(
                 "Temperature bounds (K)",  // title
-                dataFrame.getTemperatureBounds()[0],  // min value
-                dataFrame.getTemperatureBounds()[1]  // max value
+                dataPanel.getTemperatureBounds()[0],  // min value
+                dataPanel.getTemperatureBounds()[1]  // max value
         );
 
         MinMaxValuePanel minMaxVoltagePanel = new MinMaxValuePanel(
                 "Voltage bounds (mV)",  // title
-                dataFrame.getVoltageBounds()[0],  // min value
-                dataFrame.getVoltageBounds()[1]  // max value
+                dataPanel.getVoltageBounds()[0],  // min value
+                dataPanel.getVoltageBounds()[1]  // max value
         );
 
         JPanel panel = new JPanel();
@@ -460,12 +469,12 @@ public class BmsGui extends ApplicationFrame implements Runnable,
 
         if (!(userInput == JOptionPane.CANCEL_OPTION || userInput < 0)) {  //
             // user has not clicked "Cancel" button nor exited panel
-            dataFrame.setTemperatureBounds(
+            dataPanel.setTemperatureBounds(
                     minMaxTemperaturePanel.getMin(),
                     minMaxTemperaturePanel.getMax()
             );  // update values
 
-            dataFrame.setVoltageBounds(
+            dataPanel.setVoltageBounds(
                     minMaxVoltagePanel.getMin(),
                     minMaxVoltagePanel.getMax()
             );  // update values
