@@ -83,7 +83,7 @@ public class ChartFrame extends JFrame {
 
         for (int i = 0; i < titleOfSeries.length; i++) {  // loop through
             // series
-            series[i] = new TimeSeries(titleOfSeries[i], Millisecond.class);
+            series[i] = new TimeSeries(titleOfSeries[i]);
             // setup series
             dataset.addSeries(series[i]);
         }
