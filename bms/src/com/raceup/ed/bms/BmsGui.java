@@ -44,9 +44,10 @@ import static com.raceup.ed.bms.utils.Streams.readAllFromStream;
  */
 public class BmsGui extends ApplicationFrame implements Runnable,
         StartAndStop {
+    private static final String THIS_PACKAGE = "com.raceup.ed.bms.BmsGui";
+    private static final String ICON_PATH = "/res/images/icon.png";
     private static final Image appIcon = Toolkit.getDefaultToolkit().getImage(
-            "com.raceup.ed.bms.BmsGui".getClass().getResource
-                    ("/res/images/icon.png")
+            THIS_PACKAGE.getClass().getResource(ICON_PATH)
     );
     private static final String TAG = "BmsGui";
     private static final Dimension SCREEN = Toolkit.getDefaultToolkit()

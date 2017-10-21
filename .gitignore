@@ -1,3 +1,6 @@
+### Project specifics
+.idea/
+
 ### Java ###
 # BlueJ files
 *.ctxt
@@ -82,7 +85,6 @@ nbdist/
 # Reference: https://intellij-support.jetbrains.com/hc/en-us/articles/206544839
 
 # User-specific stuff:
-.idea/workspace.xml
 .idea/tasks.xml
 
 # Sensitive or high-churn files:
@@ -96,7 +98,6 @@ nbdist/
 
 # Gradle:
 .idea/gradle.xml
-.idea/libraries
 
 # Mongo Explorer plugin:
 .idea/mongoSettings.xml
@@ -158,8 +159,7 @@ fabric.properties
 # Reason: https://github.com/joeblau/gitignore.io/issues/186#issuecomment-249601023 
 
 *.iml
-modules.xml
-.idea/misc.xml 
+
 *.ipr
 Bms manager/
 BmsManager/
