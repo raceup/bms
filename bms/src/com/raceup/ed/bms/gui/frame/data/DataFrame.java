@@ -27,11 +27,11 @@ import java.awt.event.MouseEvent;
 /**
  * Frame containing raw data from BMS
  */
-public class DataFrame extends JFrame {
+public class DataFrame extends JPanel {
     private Segment[] segments;  // battery segments
 
     public DataFrame(int[] numberOfCellsPerSegment) {
-        super("Battery pack visualizer");
+        super();  // TODO title should be "Battery pack visualizer"
 
         setup(numberOfCellsPerSegment);
     }
@@ -114,7 +114,7 @@ public class DataFrame extends JFrame {
      * @param numberOfCellsPerSegment list of number of cells per segment
      */
     private void setup(int[] numberOfCellsPerSegment) {
-        getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.PAGE_AXIS));  // add components vertically
+        setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));  // add components vertically
         segments = new Segment[numberOfCellsPerSegment.length];
         for (int i = 0; i < numberOfCellsPerSegment.length; i++) {  // open all segments
             segments[i] = new Segment(numberOfCellsPerSegment[i]);

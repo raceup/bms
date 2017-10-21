@@ -31,7 +31,7 @@ import javax.swing.*;
 /**
  * Frame containing chart with data from BMS
  */
-public class ChartFrame extends JPanel {
+public class ChartFrame extends JFrame {
     private static final int CHART_RANGE_SECONDS = 60 * 1000;  // chart range in seconds
     private TimeSeries[] series;  // list of time series of chart
 
@@ -42,13 +42,14 @@ public class ChartFrame extends JPanel {
      * @param titleOfSeries list of title of series to add to chart
      */
     public ChartFrame(final String title, final String[] titleOfSeries) {
-        super();  // new frame with title
-        setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
+        super(title);  // new frame with title
+        getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.PAGE_AXIS));
 
-        TimeSeriesCollection dataSet = createChartDataset(titleOfSeries);
-        ChartPanel chartPanel = new ChartPanel(createChart(dataSet));
+        TimeSeriesCollection dataset = createChartDataset(titleOfSeries);
+        ChartPanel chartPanel = new ChartPanel(createChart(dataset));
         add(chartPanel);  // add chart in chartPanel
 
+        pack();
         setVisible(true);
     }
 
@@ -74,13 +75,13 @@ public class ChartFrame extends JPanel {
      */
     private TimeSeriesCollection createChartDataset(String[] titleOfSeries) {
         series = new TimeSeries[titleOfSeries.length];  // create list of time series
-        final TimeSeriesCollection dataSet = new TimeSeriesCollection();  // create chart dataset
+        final TimeSeriesCollection dataset = new TimeSeriesCollection();  // create chart dataset
 
         for (int i = 0; i < titleOfSeries.length; i++) {  // loop through series
             series[i] = new TimeSeries(titleOfSeries[i], Millisecond.class);  // setup series
-            dataSet.addSeries(series[i]);
+            dataset.addSeries(series[i]);
         }
-        return dataSet;
+        return dataset;
     }
 
     /**
