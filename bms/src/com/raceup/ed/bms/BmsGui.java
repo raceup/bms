@@ -1,5 +1,5 @@
 /*
- *  Copyright 2016-2017 RaceUp ED
+ *  Copyright 2016-2018 Race Up Electric Division
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -83,7 +83,6 @@ public class BmsGui extends ApplicationFrame implements Runnable, StartAndStop {
      * Start frontend GUI and backend engines
      */
     void open() {
-        dataFrame.pack();
         dataFrame.setLocation(0, 0);  // top left corner
         dataFrame.setVisible(true);
 
