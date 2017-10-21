@@ -28,7 +28,8 @@ public class BmsLog extends BmsData {
      * @param data generic data type
      */
     public BmsLog(BmsData data) {
-        super(data.getType(), Integer.toString(data.getCell()), Integer.toString(data.getSegment()), data.value);
+        super(data.getType(), Integer.toString(data.getCell()), Integer
+                .toString(data.getSegment()), data.value);
     }
 
     /**

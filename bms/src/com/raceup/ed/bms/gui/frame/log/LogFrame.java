@@ -31,12 +31,14 @@ import java.awt.event.MouseEvent;
 /**
  * Frame containing errors, failures and debug notes from BMS
  */
-public class LogFrame extends JFrame {
-    private final StatusPanel statusPanel = new StatusPanel();  // panel with last log status
-    private final ConsolePane consolePane = new ConsolePane();  // setup pane with log status
+public class LogFrame extends JPanel {
+    private final StatusPanel statusPanel = new StatusPanel();  // panel
+    // with last log status
+    private final ConsolePane consolePane = new ConsolePane();  // setup
+    // pane with log status
 
     public LogFrame() {
-        super("Logging");
+        super();  // super("Logging");
         setLayout(new BorderLayout());
         setup();
     }
@@ -47,8 +49,10 @@ public class LogFrame extends JFrame {
      * @param data bms log data
      */
     public void update(BmsLog data) {
-        statusPanel.update(data.getTypeOfLog(), getColorOfStatus(data), data.getValue());
-        consolePane.updateOrFail(data.toString() + "\n", getColorOfStatus(data));
+        statusPanel.update(data.getTypeOfLog(), getColorOfStatus(data), data
+                .getValue());
+        consolePane.updateOrFail(data.toString() + "\n", getColorOfStatus
+                (data));
     }
 
     /**
@@ -75,10 +79,13 @@ public class LogFrame extends JFrame {
      * Setup gui
      */
     private void setup() {
-        add(statusPanel, BorderLayout.NORTH);  // add status panel on top layout
+        add(statusPanel, BorderLayout.NORTH);  // add status panel on top
+        // layout
 
-        JScrollPane scrollPane = new JScrollPane(consolePane);  // add scrollbar
-        add(scrollPane, BorderLayout.CENTER);  // add scrollbar on rest of layout
+        JScrollPane scrollPane = new JScrollPane(consolePane);  // add
+        // scrollbar
+        add(scrollPane, BorderLayout.CENTER);  // add scrollbar on rest of
+        // layout
     }
 
     /**
@@ -150,7 +157,7 @@ public class LogFrame extends JFrame {
              *
              * @param c color to fill this component
              */
-            public void setColor(Color c) {
+            void setColor(Color c) {
                 this.c = c;
                 repaint();
             }
@@ -173,7 +180,8 @@ public class LogFrame extends JFrame {
      * Autoscroll pane
      */
     private class ConsolePane extends JTextPane {
-        private final Style textStyle = addStyle("default", null);  // add style
+        private final Style textStyle = addStyle("default", null);  // add
+        // style
         private final int BUFFER_SIZE = 50 * 10;  // ~10 rows
         private boolean isAutoScrolling = true;
 
@@ -190,7 +198,8 @@ public class LogFrame extends JFrame {
          */
         private void updateOrFail(String msg, Color c) {
             StyleConstants.setForeground(textStyle, c);  // change color
-            StyledDocument doc = (StyledDocument) getDocument();  // get document in pane
+            StyledDocument doc = (StyledDocument) getDocument();  // get
+            // document in pane
             try {
                 doc.insertString(doc.getLength(), msg, textStyle);
             } catch (Exception e) {
@@ -198,17 +207,22 @@ public class LogFrame extends JFrame {
             }
 
             if (isAutoScrolling) {
-                setCaretPosition(doc.getLength());  // set position on last line
+                setCaretPosition(doc.getLength());  // set position on last
+                // line
             }
 
-            if (doc.getLength() > BUFFER_SIZE) {  // panel buffer is at max size -> shift
+            if (doc.getLength() > BUFFER_SIZE) {  // panel buffer is at max
+                // size -> shift
                 try {
-                    int firstLineBreak = doc.getText(0, doc.getLength()).indexOf("\n");
-                    int secondLineBreak = doc.getText(0, doc.getLength()).indexOf("\n", firstLineBreak + 1);
+                    int firstLineBreak = doc.getText(0, doc.getLength())
+                            .indexOf("\n");
+                    int secondLineBreak = doc.getText(0, doc.getLength())
+                            .indexOf("\n", firstLineBreak + 1);
                     getDocument().remove(0, secondLineBreak);
                     System.out.println(secondLineBreak);
                 } catch (BadLocationException e) {
-                    System.err.println("Cannot edit buffer size in console pane");
+                    System.err.println("Cannot edit buffer size in console " +
+                            "pane");
                 }
             }
         }
@@ -216,7 +230,8 @@ public class LogFrame extends JFrame {
         /**
          * Set autoscroll mode
          *
-         * @param isAutoScrolling True iff pane should be autoscrolling on new lines
+         * @param isAutoScrolling True iff pane should be autoscrolling on
+         *                        new lines
          */
         private void setAutoScroll(boolean isAutoScrolling) {
             this.isAutoScrolling = isAutoScrolling;
@@ -231,9 +246,11 @@ public class LogFrame extends JFrame {
             addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseClicked(MouseEvent mouseEvent) {
-                    if (SwingUtilities.isLeftMouseButton(mouseEvent)) {  // left button
+                    if (SwingUtilities.isLeftMouseButton(mouseEvent)) {  //
+                        // left button
                         setAutoScroll(true);
-                    } else if (SwingUtilities.isRightMouseButton(mouseEvent)) {  // right button
+                    } else if (SwingUtilities.isRightMouseButton(mouseEvent)
+                            ) {  // right button
                         setAutoScroll(false);
                     }
                 }

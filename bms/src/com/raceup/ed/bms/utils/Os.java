@@ -22,7 +22,8 @@ import javax.swing.*;
  * Utils method to deal with different OSs
  */
 public class Os {
-    private static final String nameOfOs = System.getProperty("os.name").toLowerCase();
+    private static final String nameOfOs = System.getProperty("os.name")
+            .toLowerCase();
 
     public static boolean isWindows() {
         return nameOfOs.contains("win");
@@ -33,7 +34,8 @@ public class Os {
     }
 
     public static boolean isUnix() {
-        return nameOfOs.contains("nix") || nameOfOs.contains("nux") || nameOfOs.contains("aix");
+        return nameOfOs.contains("nix") || nameOfOs.contains("nux") ||
+                nameOfOs.contains("aix");
     }
 
     public static boolean isSolaris() {
@@ -45,20 +47,25 @@ public class Os {
             String nativeLookAndFeelPackage = "";
 
             if (isWindows()) {
-                nativeLookAndFeelPackage = "com.sun.java.swing.plaf.windows.WindowsLookAndFeel";
+                nativeLookAndFeelPackage = "com.sun.java.swing.plaf.windows" +
+                        ".WindowsLookAndFeel";
             } else if (isMac()) {
-                nativeLookAndFeelPackage = "com.sun.java.swing.plaf.motif.MotifLookAndFeel";
+                nativeLookAndFeelPackage = "com.sun.java.swing.plaf.motif" +
+                        ".MotifLookAndFeel";
             } else if (isUnix()) {
-                nativeLookAndFeelPackage = "com.sun.java.swing.plaf.gtk.GTKLookAndFeel";
+                nativeLookAndFeelPackage = "com.sun.java.swing.plaf.gtk" +
+                        ".GTKLookAndFeel";
             } else if (isSolaris()) {
-                nativeLookAndFeelPackage = "com.sun.java.swing.plaf.gtk.GTKLookAndFeel";
+                nativeLookAndFeelPackage = "com.sun.java.swing.plaf.gtk" +
+                        ".GTKLookAndFeel";
             }
 
             UIManager.setLookAndFeel(nativeLookAndFeelPackage);
         } catch (Exception e) {
             System.err.println(
                     "Native look and feel not supported in this Os.\n" +
-                            "System.getProperty(\"os.name\") = " + System.getProperty("os.name") + "\n" +
+                            "System.getProperty(\"os.name\") = " + System
+                            .getProperty("os.name") + "\n" +
                             "Exception = " + e.toString()
             );
         }

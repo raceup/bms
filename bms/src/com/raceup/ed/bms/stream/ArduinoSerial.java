@@ -35,20 +35,25 @@ import java.util.NoSuchElementException;
  */
 public class ArduinoSerial implements SerialPortEventListener {
     private static final String TAG = "ArduinoSerial";
-    private static final int TIME_OUT = 2000;  // milliseconds to block while waiting for port open
-    private static final String PORT_NAMES[] = {  // The port we're normally going to use.
+    private static final int TIME_OUT = 2000;  // milliseconds to block
+    // while waiting for port open
+    private static final String PORT_NAMES[] = {  // The port we're normally
+            // going to use.
             "/dev/tty.usbserial-A9007UX1", // Mac OS X
             "/dev/ttyACM0", // Raspberry Pi
             "/dev/ttyUSB0", // Linux
             "COM3" // Windows
     };
-    public int msSerialIntervalUpdate = 10;  // interval (in milliseconds) between 2 updates
+    public int msSerialIntervalUpdate = 10;  // interval (in milliseconds)
+    // between 2 updates
     protected int BAUD_RATE;  // reading baud rate
     protected String serialData;  // last data from serial
     private long lastUpdateMs;  // ms of last update series
-    private SerialPort serialPort;  // serial port reading raw data from arduino
+    private SerialPort serialPort;  // serial port reading raw data from
+    // arduino
     private CommPortIdentifier portId;  // id of serial port
-    private BufferedReader serialInput;  // a BufferedReader which will be fed by a InputStreamReader converting the bytes into characters
+    private BufferedReader serialInput;  // a BufferedReader which will be
+    // fed by a InputStreamReader converting the bytes into characters
     private OutputStream serialOutput;  // stream to write to serial port
     private OutputStream output;  // the output stream from the port
 
@@ -63,7 +68,8 @@ public class ArduinoSerial implements SerialPortEventListener {
     }
 
     /**
-     * Create new arduino binding with custom baud rate and redirection of output
+     * Create new arduino binding with custom baud rate and redirection of
+     * output
      *
      * @param BAUD_RATE read rate of arduino serial
      * @param output    std output where to send serial data
@@ -94,7 +100,8 @@ public class ArduinoSerial implements SerialPortEventListener {
     }
 
     /**
-     * This should be called when you stop using the port. This will prevent port locking on platforms like Linux.
+     * This should be called when you stop using the port. This will prevent
+     * port locking on platforms like Linux.
      *
      * @throws IOException when streams cannot be found
      */
@@ -127,7 +134,8 @@ public class ArduinoSerial implements SerialPortEventListener {
 
         // find an instance of serial port as set in PORT_NAMES.
         while (portEnum.hasMoreElements()) {
-            CommPortIdentifier currPortId = (CommPortIdentifier) portEnum.nextElement();
+            CommPortIdentifier currPortId = (CommPortIdentifier) portEnum
+                    .nextElement();
             for (String portName : PORT_NAMES) {
                 if (currPortId.getName().equals(portName)) {
                     portId = currPortId;
@@ -151,7 +159,8 @@ public class ArduinoSerial implements SerialPortEventListener {
     private void configureSerialPortOrFail(CommPortIdentifier portId) {
         try {
             // open serial port, and use class name for the appName.
-            serialPort = (SerialPort) portId.open(this.getClass().getName(), TIME_OUT);
+            serialPort = (SerialPort) portId.open(this.getClass().getName(),
+                    TIME_OUT);
             serialPort.setSerialPortParams(
                     BAUD_RATE,
                     SerialPort.DATABITS_8,
@@ -159,12 +168,14 @@ public class ArduinoSerial implements SerialPortEventListener {
                     SerialPort.PARITY_NONE
             );  // set port parameters
 
-            serialInput = new BufferedReader(new InputStreamReader(serialPort.getInputStream()));  // open the streams
+            serialInput = new BufferedReader(new InputStreamReader
+                    (serialPort.getInputStream()));  // open the streams
             serialOutput = serialPort.getOutputStream();
             serialPort.addEventListener(this);  // add event listeners
             serialPort.notifyOnDataAvailable(true);
         } catch (Exception e) {
-            System.err.println(TAG + " has encountered some errors in configureSerialPortOrFail(CommPortIdentifier portId)");
+            System.err.println(TAG + " has encountered some errors in " +
+                    "configureSerialPortOrFail(CommPortIdentifier portId)");
             System.err.println(e.toString());
         }
     }
@@ -175,8 +186,10 @@ public class ArduinoSerial implements SerialPortEventListener {
      * @throws IOException if cannot read to serial
      */
     private synchronized void readFromSerial() throws IOException {
-        long timeNowMs = System.currentTimeMillis();  // get ms when updated with new data
-        if (timeNowMs - lastUpdateMs >= msSerialIntervalUpdate) {  // update series interval
+        long timeNowMs = System.currentTimeMillis();  // get ms when updated
+        // with new data
+        if (timeNowMs - lastUpdateMs >= msSerialIntervalUpdate) {  // update
+            // series interval
             String newData = serialInput.readLine();  // get new data
             if (newData != null) {
                 lastUpdateMs = timeNowMs;  // update last time of update
@@ -184,7 +197,8 @@ public class ArduinoSerial implements SerialPortEventListener {
             }
 
             if (output != null) {
-                output.write((timeNowMs + " - " + newData + "\n").getBytes());  // write new data to output
+                output.write((timeNowMs + " - " + newData + "\n").getBytes()
+                );  // write new data to output
             }
         }
     }
@@ -213,7 +227,8 @@ public class ArduinoSerial implements SerialPortEventListener {
         try {
             writeToSerial(data);
         } catch (Exception e) {
-            System.err.println("ArduinoSerial cannot send data " + data + " because:\n" + e.toString());
+            System.err.println("ArduinoSerial cannot send data " + data + " " +
+                    "because:\n" + e.toString());
         }
     }
 }

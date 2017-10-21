@@ -37,15 +37,20 @@ public class GuiSettings {
      */
     public static Bms buildBms() {
         JPanel mainPanel = new JPanel();
-        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.PAGE_AXIS));  // add items vertically
+        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.PAGE_AXIS));
+        // add items vertically
 
-        ArduinoSettings arduinoSettings = new ArduinoSettings();  // create panels
+        ArduinoSettings arduinoSettings = new ArduinoSettings();  // create
+        // panels
         BatterySettings batterySettings = new BatterySettings();
         LoggerSettings loggerSettings = new LoggerSettings();
 
-        mainPanel.add(createSettingsPanel(arduinoSettings, "Arduino serial data rate"));  // setup layout
-        mainPanel.add(createSettingsPanel(loggerSettings, "Folder to store logs"));
-        mainPanel.add(createSettingsPanel(new JScrollPane(batterySettings), "Battery pack model"));
+        mainPanel.add(createSettingsPanel(arduinoSettings, "Arduino serial " +
+                "data rate"));  // setup layout
+        mainPanel.add(createSettingsPanel(loggerSettings, "Folder to store " +
+                "logs"));
+        mainPanel.add(createSettingsPanel(new JScrollPane(batterySettings),
+                "Battery pack model"));
 
         int userInput = JOptionPane.showConfirmDialog(
                 null,
@@ -54,14 +59,16 @@ public class GuiSettings {
                 JOptionPane.CANCEL_OPTION
         );
 
-        if (userInput == JOptionPane.CANCEL_OPTION || userInput < 0) {  // user has clicked "Cancel" button or exited panel -> exit
+        if (userInput == JOptionPane.CANCEL_OPTION || userInput < 0) {  //
+            // user has clicked "Cancel" button or exited panel -> exit
             System.exit(0);
             return null;
         } else {  // user has decided options and not cancelled operations
             return new Bms(
                     arduinoSettings.getBaudRate(),  // baud rate
                     new Logger(loggerSettings.getPathChosen()),  // log folder
-                    new Pack(batterySettings.getNumberOfCellsPerSegment())  // new battery pack
+                    new Pack(batterySettings.getNumberOfCellsPerSegment())
+                    // new battery pack
             );
         }
     }
@@ -73,13 +80,16 @@ public class GuiSettings {
      * @param title         title of panel
      * @return panel with settings
      */
-    private static JPanel createSettingsPanel(Component settingsPanel, String title) {
+    private static JPanel createSettingsPanel(Component settingsPanel,
+                                              String title) {
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.PAGE_AXIS));
 
-        mainPanel.add(Box.createRigidArea(new Dimension(0, 10)));  // add spacing
+        mainPanel.add(Box.createRigidArea(new Dimension(0, 10)));  // add
+        // spacing
         mainPanel.add(settingsPanel);  // add settings panel
-        JPanelsUtils.addTitleBorderOnPanel(mainPanel, title);  // add title and border
+        JPanelsUtils.addTitleBorderOnPanel(mainPanel, title);  // add title
+        // and border
 
         return mainPanel;
     }

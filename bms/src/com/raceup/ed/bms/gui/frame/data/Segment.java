@@ -33,7 +33,8 @@ class Segment extends JPanel {
      * @param numberOfCells number of cells in segment
      */
     Segment(int numberOfCells) {
-        setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));  // horizontal alignment
+        setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));  // horizontal
+        // alignment
         cells = new Cell[numberOfCells];  // build cells list
         setup();
     }
@@ -52,17 +53,22 @@ class Segment extends JPanel {
         String[] temperatureLabels = new String[cells.length];
         for (int c = 0; c < cells.length; c++) {
             voltageLabels[c] = "Voltage of cell " + Integer.toString(c + 1);
-            temperatureLabels[c] = "Temperature of cell " + Integer.toString(c + 1);
+            temperatureLabels[c] = "Temperature of cell " + Integer.toString
+                    (c + 1);
         }
 
-        ChartFrame voltagesChart = createAndSetupChart("Voltage of cells in " + title, voltageLabels);  // create charts
-        ChartFrame temperaturesChart = createAndSetupChart("Temperature of cells in " + title, temperatureLabels);
-        temperaturesChart.setLocation(voltagesChart.getX(), voltagesChart.getY() + voltagesChart.getHeight());  // under voltages chart
+        ChartFrame voltagesChart = createAndSetupChart("Voltage of cells in " +
+                "" + title, voltageLabels);  // create charts
+        ChartFrame temperaturesChart = createAndSetupChart("Temperature of " +
+                "cells in " + title, temperatureLabels);
+        temperaturesChart.setLocation(voltagesChart.getX(), voltagesChart
+                .getY() + voltagesChart.getHeight());  // under voltages chart
 
         Timer updater = new Timer(10, e -> {
             for (int c = 0; c < cells.length; c++) {
                 voltagesChart.updateSeriesOrFail(c, getVoltageOfCell(c));
-                temperaturesChart.updateSeriesOrFail(c, getTemperatureOfCell(c));
+                temperaturesChart.updateSeriesOrFail(c, getTemperatureOfCell
+                        (c));
             }
         });  // timer to update dialog values
         updater.start();
@@ -121,7 +127,8 @@ class Segment extends JPanel {
      */
     private void setup() {
         JPanel labelsPanel = new JPanel();
-        labelsPanel.setLayout(new BoxLayout(labelsPanel, BoxLayout.PAGE_AXIS));  // vertical alignment
+        labelsPanel.setLayout(new BoxLayout(labelsPanel, BoxLayout
+                .PAGE_AXIS));  // vertical alignment
         labelsPanel.add(new JLabel("Cell number"));  // add headers
         labelsPanel.add(new JLabel("Temperature (K)"));
         labelsPanel.add(new JLabel("Voltage (mV)"));
@@ -132,8 +139,10 @@ class Segment extends JPanel {
             cells[i] = new Cell();
 
             JPanel cellPanel = new JPanel();
-            cellPanel.setLayout(new BoxLayout(cellPanel, BoxLayout.PAGE_AXIS));  // vertical alignment
-            cellPanel.add(new JLabel(Integer.toString(i + 1)));  // number of cell
+            cellPanel.setLayout(new BoxLayout(cellPanel, BoxLayout
+                    .PAGE_AXIS));  // vertical alignment
+            cellPanel.add(new JLabel(Integer.toString(i + 1)));  // number
+            // of cell
             cellPanel.add(cells[i]);
             add(cellPanel);
             add(Box.createRigidArea(new Dimension(10, 0)));  // add spacing
@@ -148,7 +157,8 @@ class Segment extends JPanel {
      * @param titleOfSeries list of title of series to add to chart
      * @return info dialog with chart
      */
-    private ChartFrame createAndSetupChart(final String title, final String[] titleOfSeries) {
+    private ChartFrame createAndSetupChart(final String title, final
+    String[] titleOfSeries) {
         ChartFrame dialog = new ChartFrame(title, titleOfSeries);
         dialog.setLocationRelativeTo(null);  // center in screen
         return dialog;

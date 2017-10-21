@@ -24,7 +24,8 @@ public class Pack {
 
     public Pack(int[] numberOfCellsPerSegment) {
         final int numberOfSegments = numberOfCellsPerSegment.length;
-        this.segments = new Segment[numberOfSegments];  // create list of segments
+        this.segments = new Segment[numberOfSegments];  // create list of
+        // segments
         for (int i = 0; i < numberOfSegments; i++) {  // open segments
             segments[i] = new Segment(numberOfCellsPerSegment[i]);
         }
@@ -45,9 +46,12 @@ public class Pack {
      * @return list of number of cells
      */
     public int[] getNumberOfCellsPerSegment() {
-        int[] numberOfCellsPerSegment = new int[getNumberOfSegments()];  // result list
-        for (int i = 0; i < numberOfCellsPerSegment.length; i++) {   // loop through each segment
-            numberOfCellsPerSegment[i] = segments[i].getNumberOfCells();  // count cells in each segment
+        int[] numberOfCellsPerSegment = new int[getNumberOfSegments()];  //
+        // result list
+        for (int i = 0; i < numberOfCellsPerSegment.length; i++) {   // loop
+            // through each segment
+            numberOfCellsPerSegment[i] = segments[i].getNumberOfCells();  //
+            // count cells in each segment
         }
         return numberOfCellsPerSegment;
     }
@@ -103,7 +107,8 @@ public class Pack {
      * @param cellPosition cell position in segment (numbers open from 0)
      * @param temperature  new temperature reading
      */
-    public void setTemperatureOfCell(int segment, int cellPosition, double temperature) {
+    public void setTemperatureOfCell(int segment, int cellPosition, double
+            temperature) {
         segments[segment].setTemperatureOfCell(cellPosition, temperature);
     }
 
@@ -171,7 +176,8 @@ public class Pack {
      * @param cellPosition cell position in segment (numbers open from 0)
      * @param voltage      new voltage reading
      */
-    public void setVoltageOfCell(int segment, int cellPosition, double voltage) {
+    public void setVoltageOfCell(int segment, int cellPosition, double
+            voltage) {
         segments[segment].setVoltageOfCell(cellPosition, voltage);
     }
 }

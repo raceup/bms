@@ -37,25 +37,31 @@ import static com.raceup.ed.bms.utils.Streams.readAllFromStream;
 
 /**
  * Font-end (gui) of BMS
- * - ~spreadsheet with rae data values and dialog to get more info (i.e DataFrame)
+ * - ~spreadsheet with race data values and dialog to get more info (i.e
+ * DataFrame)
  * - chart with total tension of battery (i.e ChartFrame)
  * - text area with errors (i.e ErrorsAreaFrame)
  */
-public class BmsGui extends ApplicationFrame implements Runnable, StartAndStop {
-    static final Image appIcon = Toolkit.getDefaultToolkit().getImage(
-            "com.raceup.ed.bms.BmsGui".getClass().getResource("/res/images/icon.png")
+public class BmsGui extends ApplicationFrame implements Runnable,
+        StartAndStop {
+    private static final Image appIcon = Toolkit.getDefaultToolkit().getImage(
+            "com.raceup.ed.bms.BmsGui".getClass().getResource
+                    ("/res/images/icon.png")
     );
     private static final String TAG = "BmsGui";
-    private static final Dimension SCREEN = Toolkit.getDefaultToolkit().getScreenSize();
+    private static final Dimension SCREEN = Toolkit.getDefaultToolkit()
+            .getScreenSize();
     private static final Dimension QUARTER_SCREEN = new Dimension(
             (int) (SCREEN.getWidth() * 0.5), (int) (SCREEN.getHeight() * 0.5)
     );
     private static int msGuiIntervalUpdate = 10;  // GUI interval update
     private final Bms bms;  // bms manager
-    private final JButton startButton = new JButton("Start");  // start and stop buttons
+    private final JButton startButton = new JButton("Start");  // start
+    // stop buttons
     private final JButton pauseButton = new JButton("Pause");
     private final JButton stopButton = new JButton("Stop");
-    private final JButton balanceButton = new JButton("Balance cells");  // balance button
+    // balance button
+    private final JButton balanceButton = new JButton("Balance cells");
     private volatile boolean amIStarted = false;  // start and stop management
     private volatile boolean amIPaused = false;
     private volatile boolean amIStopped = false;
@@ -71,9 +77,11 @@ public class BmsGui extends ApplicationFrame implements Runnable, StartAndStop {
     BmsGui(Bms bms) {
         super("Bms manager");  // set title
         setIconImage(appIcon);  // set icon
-        System.setProperty("com.apple.mrj.application.apple.menu.about.name", "AppName");  // set app name
+        System.setProperty("com.apple.mrj.application.apple.menu.about.name",
+                "AppName");  // set app name
 
-        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);  // destroy app when closed
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);  // destroy
+        // app when closed
         this.bms = bms;  // setup bms
 
         setup();
@@ -87,15 +95,19 @@ public class BmsGui extends ApplicationFrame implements Runnable, StartAndStop {
         dataFrame.setVisible(true);
 
         chartFrame.pack();
-        chartFrame.setLocation(dataFrame.getX(), dataFrame.getY() + dataFrame.getHeight());  // under data frame
+        chartFrame.setLocation(dataFrame.getX(), dataFrame.getY() + dataFrame
+                .getHeight());  // under data frame
         chartFrame.setVisible(true);
 
-        logFrame.setSize(new Dimension((int) (QUARTER_SCREEN.getWidth() * 0.5), (int) (QUARTER_SCREEN.getHeight() * 0.5)));
-        logFrame.setLocation(chartFrame.getX() + chartFrame.getWidth(), chartFrame.getY());  // right of chart frame
+        logFrame.setSize(new Dimension((int) (QUARTER_SCREEN.getWidth() *
+                0.5), (int) (QUARTER_SCREEN.getHeight() * 0.5)));
+        logFrame.setLocation(chartFrame.getX() + chartFrame.getWidth(),
+                chartFrame.getY());  // right of chart frame
         logFrame.setVisible(true);
 
         pack();
-        setLocation((int) SCREEN.getWidth() / 2, (int) SCREEN.getHeight() / 2);  // right top corner
+        setLocation((int) SCREEN.getWidth() / 2, (int) SCREEN.getHeight() /
+                2);  // right top corner
         setVisible(true);
     }
 
@@ -112,7 +124,8 @@ public class BmsGui extends ApplicationFrame implements Runnable, StartAndStop {
             amIStarted = true;  // start updating
 
             if (!amIPaused) {  // first time to start
-                new Thread(this, this.getClass().getName()).start();  // start gui thread
+                new Thread(this, this.getClass().getName()).start();  //
+                // start gui thread
             }
         }
     }
@@ -139,7 +152,8 @@ public class BmsGui extends ApplicationFrame implements Runnable, StartAndStop {
     }
 
     /**
-     * Start monitoring arduino port in new thread and updateOrFail series screen with values
+     * Start monitoring arduino port in new thread and updateOrFail series
+     * screen with values
      */
     public void run() {
         while (!amIStopped) {
@@ -157,10 +171,13 @@ public class BmsGui extends ApplicationFrame implements Runnable, StartAndStop {
      * Setup gui and backend
      */
     private void setup() {
-        int[] numberOfCellsPerSegment = bms.batteryPack.getNumberOfCellsPerSegment();
+        int[] numberOfCellsPerSegment = bms.batteryPack
+                .getNumberOfCellsPerSegment();
 
         setupFrame();  // setup frame manager
-        chartFrame = new ChartFrame("Average voltage and temperature of battery pack over time", new String[]{"Voltage (mV)"});  // setup gui
+        chartFrame = new ChartFrame("Average voltage and temperature of " +
+                "battery pack over time", new String[]{"Voltage (mV)"});  //
+        // setup gui
         dataFrame = new DataFrame(numberOfCellsPerSegment);
         logFrame = new LogFrame();
     }
@@ -169,8 +186,10 @@ public class BmsGui extends ApplicationFrame implements Runnable, StartAndStop {
      * Setup gui of main frame (manager)
      */
     private void setupFrame() {
-        getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.PAGE_AXIS));  // add components vertically
-        getRootPane().setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));  // border
+        getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout
+                .PAGE_AXIS));  // add components vertically
+        getRootPane().setBorder(BorderFactory.createEmptyBorder(10, 10, 10,
+                10));  // border
 
         setJMenuBar(createMenuBar());  // set menubar
         add(createStartStopPanel());  // add panels
@@ -203,7 +222,8 @@ public class BmsGui extends ApplicationFrame implements Runnable, StartAndStop {
      */
     private JPanel createBalanceCellsPanel() {
         JPanel panel = new JPanel();
-        balanceButton.addActionListener(e -> sendBalanceCellsAction());  // add action listeners
+        balanceButton.addActionListener(e -> sendBalanceCellsAction());  //
+        // add action listeners
         panel.add(balanceButton);  // add to panel
         return panel;
     }
@@ -222,14 +242,16 @@ public class BmsGui extends ApplicationFrame implements Runnable, StartAndStop {
             if (data != null) {
                 if (data.isStatusType()) {  // if it's a log, update log frame
                     updateLogFrameOrFail(data);
-                } else if (data.isValueType()) {  // if it's a value update data and chart frames
+                } else if (data.isValueType()) {  // if it's a value update
+                    // data and chart frames
                     updateDataFrameOrFail(data);
                     updateChartFrameOrFail();
                 }
             }
             Thread.sleep(msGuiIntervalUpdate);  // wait until next update
         } catch (NullPointerException | InterruptedException e) {
-            System.err.println(TAG + " has encountered some errors while updateOrFail()");
+            System.err.println(TAG + " has encountered some errors while " +
+                    "updateOrFail()");
         }
     }
 
@@ -253,7 +275,8 @@ public class BmsGui extends ApplicationFrame implements Runnable, StartAndStop {
      */
     private void updateChartFrameOrFail() {
         try {
-            chartFrame.updateSeriesOrFail(0, bms.batteryPack.getSumOfAllVoltages());  // update voltage
+            chartFrame.updateSeriesOrFail(0, bms.batteryPack
+                    .getSumOfAllVoltages());  // update voltage
         } catch (Exception e) {
             System.err.println(e.toString());
         }
@@ -317,19 +340,22 @@ public class BmsGui extends ApplicationFrame implements Runnable, StartAndStop {
 
         JMenuItem item = new JMenu("Data");
         JMenuItem subMenuItem = new JMenuItem("Toggle view status");
-        subMenuItem.addActionListener(e -> dataFrame.setVisible(!dataFrame.isVisible()));
+        subMenuItem.addActionListener(e -> dataFrame.setVisible(!dataFrame
+                .isVisible()));
         item.add(subMenuItem);
         menu.add(item);
 
         item = new JMenu("Chart");
         subMenuItem = new JMenuItem("Toggle view status");
-        subMenuItem.addActionListener(e -> chartFrame.setVisible(!chartFrame.isVisible()));
+        subMenuItem.addActionListener(e -> chartFrame.setVisible(!chartFrame
+                .isVisible()));
         item.add(subMenuItem);
         menu.add(item);
 
         item = new JMenu("Log");
         subMenuItem = new JMenuItem("Toggle view status");
-        subMenuItem.addActionListener(e -> logFrame.setVisible(!logFrame.isVisible()));
+        subMenuItem.addActionListener(e -> logFrame.setVisible(!logFrame
+                .isVisible()));
         item.add(subMenuItem);
         menu.add(item);
 
@@ -346,21 +372,28 @@ public class BmsGui extends ApplicationFrame implements Runnable, StartAndStop {
 
         JMenuItem item = new JMenuItem("GUI update interval");
         item.addActionListener(e -> {
-            String userInput = JOptionPane.showInputDialog("Milliseconds between two consecutive GUI updates", msGuiIntervalUpdate);
+            String userInput = JOptionPane.showInputDialog("Milliseconds " +
+                            "between two consecutive GUI updates",
+                    msGuiIntervalUpdate);
             msGuiIntervalUpdate = Integer.parseInt(userInput);  // update
         });
         menu.add(item);
 
         item = new JMenuItem("Bms update interval");
         item.addActionListener(e -> {
-            String userInput = JOptionPane.showInputDialog("Milliseconds between two consecutive bms updates", bms.msSerialIntervalUpdate);
-            bms.msSerialIntervalUpdate = Integer.parseInt(userInput);  // update
+            String userInput = JOptionPane.showInputDialog("Milliseconds " +
+                    "between two consecutive bms updates", bms
+                    .msSerialIntervalUpdate);
+            bms.msSerialIntervalUpdate = Integer.parseInt(userInput);  //
+            // update
         });
         menu.add(item);
 
         item = new JMenuItem("Log update interval");
         item.addActionListener(e -> {
-            String userInput = JOptionPane.showInputDialog("Milliseconds between two consecutive log data updates", bms.msLogIntervalUpdate);
+            String userInput = JOptionPane.showInputDialog("Milliseconds " +
+                    "between two consecutive log data updates", bms
+                    .msLogIntervalUpdate);
             bms.msLogIntervalUpdate = Integer.parseInt(userInput);  // update
         });
         menu.add(item);
@@ -412,7 +445,8 @@ public class BmsGui extends ApplicationFrame implements Runnable, StartAndStop {
         );
 
         JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));  // add components vertically with horizontal gap, vertical gap
+        panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));  // add
+        // components vertically with horizontal gap, vertical gap
         panel.add(minMaxTemperaturePanel);  // add sub-panels
         panel.add(minMaxVoltagePanel);
 
@@ -424,7 +458,8 @@ public class BmsGui extends ApplicationFrame implements Runnable, StartAndStop {
                 JOptionPane.PLAIN_MESSAGE
         );
 
-        if (!(userInput == JOptionPane.CANCEL_OPTION || userInput < 0)) {  // user has not clicked "Cancel" button nor exited panel
+        if (!(userInput == JOptionPane.CANCEL_OPTION || userInput < 0)) {  //
+            // user has not clicked "Cancel" button nor exited panel
             dataFrame.setTemperatureBounds(
                     minMaxTemperaturePanel.getMin(),
                     minMaxTemperaturePanel.getMax()
@@ -443,8 +478,11 @@ public class BmsGui extends ApplicationFrame implements Runnable, StartAndStop {
     private void showAboutDialogOrFail() {
         String content = "";
         try {
-            InputStream inputStream = BmsGui.class.getResourceAsStream("/res/strings/about.html");
-            content = readAllFromStream(new BufferedReader(new InputStreamReader(inputStream)));  // read content of dialog from html
+            InputStream inputStream = BmsGui.class.getResourceAsStream
+                    ("/res/strings/about.html");
+            content = readAllFromStream(new BufferedReader(new
+                    InputStreamReader(inputStream)));  // read content of
+            // dialog from html
         } catch (Exception e) {
             System.err.println(e.toString());
         }
@@ -458,9 +496,12 @@ public class BmsGui extends ApplicationFrame implements Runnable, StartAndStop {
      */
     private void showHelpDialogOrFail() {
         String content = "";
-        InputStream inputStream = BmsGui.class.getResourceAsStream("/res/strings/help.html");
+        InputStream inputStream = BmsGui.class.getResourceAsStream
+                ("/res/strings/help.html");
         try {
-            content = readAllFromStream(new BufferedReader(new InputStreamReader(inputStream)));  // read content of dialog from html
+            content = readAllFromStream(new BufferedReader(new
+                    InputStreamReader(inputStream)));  // read content of
+            // dialog from html
         } catch (Exception e) {
             System.err.println(e.toString());
         }

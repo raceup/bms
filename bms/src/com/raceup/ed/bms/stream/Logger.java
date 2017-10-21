@@ -32,8 +32,11 @@ import java.nio.file.StandardOpenOption;
  * Log bms data to local file
  */
 public class Logger {
-    private static final String logFolderPath = Paths.get(Bms.appName, "log", Long.toString(System.currentTimeMillis())).toString();  // name of folder that stores logs
-    private static final String[] nameOfLogFiles = new String[]{"status.csv", "voltage.csv", "temperature.csv"};
+    private static final String logFolderPath = Paths.get(Bms.appName,
+            "log", Long.toString(System.currentTimeMillis())).toString();
+    // name of folder that stores logs
+    private static final String[] nameOfLogFiles = new String[]{"status" +
+            ".csv", "voltage.csv", "temperature.csv"};
     private static final File[] logFiles = new File[]{null, null, null};
 
     /**
@@ -61,8 +64,10 @@ public class Logger {
      * @return log string of data
      */
     private static String getBmsDataLogString(BmsData data) {
-        return "\"" + Long.toString(System.currentTimeMillis()) + "\"" + ","  // time
-                + "\"" + Integer.toString(data.getSegment()) + "\"" + "," // segment
+        return "\"" + Long.toString(System.currentTimeMillis()) + "\"" + ","
+                // time
+                + "\"" + Integer.toString(data.getSegment()) + "\"" + "," //
+                // segment
                 + "\"" + Integer.toString(data.getCell()) + "\"";
     }
 
@@ -75,7 +80,8 @@ public class Logger {
         try {
             if (data.isStatusType()) {  // if it's a log, update log frame
                 logBmsLog(new BmsLog(data));
-            } else if (data.isValueType()) {  // if it's a value update data and chart frames
+            } else if (data.isValueType()) {  // if it's a value update data
+                // and chart frames
                 logBmsValue(new BmsValue(data));
             }
         } catch (Exception e) {
@@ -91,11 +97,14 @@ public class Logger {
      */
     private void logBmsValue(BmsValue data) throws IOException {
         String out = getBmsDataLogString(data);
-        out += ",\"" + Double.toString(data.getValue()) + "\"" + "\n";  // value
+        out += ",\"" + Double.toString(data.getValue()) + "\"" + "\n";  //
+        // value
         if (data.isVoltage()) {
-            Files.write(Paths.get(logFiles[1].toString()), out.getBytes(), StandardOpenOption.APPEND);
+            Files.write(Paths.get(logFiles[1].toString()), out.getBytes(),
+                    StandardOpenOption.APPEND);
         } else if (data.isTemperature()) {
-            Files.write(Paths.get(logFiles[2].toString()), out.getBytes(), StandardOpenOption.APPEND);
+            Files.write(Paths.get(logFiles[2].toString()), out.getBytes(),
+                    StandardOpenOption.APPEND);
         }
     }
 
@@ -110,7 +119,8 @@ public class Logger {
         out += ",\"" + data.getTypeOfLog() + "\"";  // type value
         out += ",\"" + data.getValue() + "\"" + "\n";  //  value
 
-        Files.write(Paths.get(logFiles[0].toString()), out.getBytes(), StandardOpenOption.APPEND);
+        Files.write(Paths.get(logFiles[0].toString()), out.getBytes(),
+                StandardOpenOption.APPEND);
     }
 
     /*
@@ -125,9 +135,15 @@ public class Logger {
                 Streams.emptyFileOrFail(logFile);
             }
 
-            Files.write(Paths.get(logFiles[0].toString()), "\"log time (ms)\",\"segment\",\"cell\",\"type\",\"value\"\n".getBytes(), StandardOpenOption.APPEND);  // status
-            Files.write(Paths.get(logFiles[1].toString()), "\"log time (ms)\",\"segment\",\"cell\",\"value\"\n".getBytes(), StandardOpenOption.APPEND);  // voltage
-            Files.write(Paths.get(logFiles[2].toString()), "\"log time (ms)\",\"segment\",\"cell\",\"value\"\n".getBytes(), StandardOpenOption.APPEND);  // temperature
+            Files.write(Paths.get(logFiles[0].toString()), ("\"log time (ms)" +
+                    "\",\"segment\",\"cell\",\"type\",\"value\"\n").getBytes
+                    (), StandardOpenOption.APPEND);  // status
+            Files.write(Paths.get(logFiles[1].toString()), ("\"log time (ms)" +
+                            "\",\"segment\",\"cell\",\"value\"\n").getBytes(),
+                    StandardOpenOption.APPEND);  // voltage
+            Files.write(Paths.get(logFiles[2].toString()), ("\"log time (ms)" +
+                            "\",\"segment\",\"cell\",\"value\"\n").getBytes(),
+                    StandardOpenOption.APPEND);  // temperature
         } catch (Exception e) {
             System.err.println(e.toString());
         }

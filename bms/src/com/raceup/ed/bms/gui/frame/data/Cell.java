@@ -26,13 +26,16 @@ import java.text.DecimalFormat;
  * GUI frame that contains battery cell info
  */
 class Cell extends JPanel {
-    private static final DecimalFormat SHORT_DEC_FORMAT = new DecimalFormat("0000.00");  // decimal places
+    private static final DecimalFormat SHORT_DEC_FORMAT = new DecimalFormat
+            ("0000.00");  // decimal places
     private static final Color VALUE_TOO_HIGH_COLOR = Color.RED;
     private static final Color VALUE_NORMAL_COLOR = Color.GREEN;
     private static final Color VALUE_TOO_LOW_COLOR = Color.CYAN;
-    private static final double[] temperatureBounds = new double[]{-100, 60};  // too low, too high values
+    private static final double[] temperatureBounds = new double[]{-100,
+            60};  // too low, too high values
     private static final double[] voltageBounds = new double[]{4000.0, 4200.0};
-    private final JLabel temperatureLabel = new JLabel("0000.00");  // labels
+    private final JLabel temperatureLabel = new JLabel("0000.00");
+    // labels
     private final JLabel voltageLabel = new JLabel("0000.00");
     private double temperature;  // remember last value set
     private double voltage;
@@ -87,8 +90,10 @@ class Cell extends JPanel {
     /**
      * Sets temperature bounds
      *
-     * @param min minimum value; below this value background will color VALUE_TOO_LOW_COLOR
-     * @param max maximum value; over this value background will color VALUE_TOO_HIGH_COLOR
+     * @param min minimum value; below this value background will color
+     *            VALUE_TOO_LOW_COLOR
+     * @param max maximum value; over this value background will color
+     *            VALUE_TOO_HIGH_COLOR
      */
     void setTemperatureBounds(double min, double max) {
         temperatureBounds[0] = min;
@@ -100,8 +105,10 @@ class Cell extends JPanel {
     /**
      * Sets temperature bounds
      *
-     * @param min minimum value; below this value background will color VALUE_TOO_LOW_COLOR
-     * @param max maximum value; over this value background will color VALUE_TOO_HIGH_COLOR
+     * @param min minimum value; below this value background will color
+     *            VALUE_TOO_LOW_COLOR
+     * @param max maximum value; over this value background will color
+     *            VALUE_TOO_HIGH_COLOR
      */
     void setVoltageBounds(double min, double max) {
         voltageBounds[0] = min;
@@ -138,7 +145,8 @@ class Cell extends JPanel {
      * @param title title of dialog
      */
     void showDialog(String title) {
-        ChartFrame dialog = new ChartFrame(title, new String[]{"Voltage (mV)", "Temperature (K)"});
+        ChartFrame dialog = new ChartFrame(title, new String[]{"Voltage (mV)" +
+                "", "Temperature (K)"});
         dialog.setLocationRelativeTo(null);  // center in screen
 
         Timer updater = new Timer(10, e -> {

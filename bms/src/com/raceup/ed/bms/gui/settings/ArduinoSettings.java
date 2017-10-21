@@ -23,12 +23,15 @@ import java.awt.*;
  * Panel to set arduino options
  */
 public class ArduinoSettings extends JPanel {
-    public static final String[] SERIAL_BAUD_RATE = new String[]{"300", "600", "1200", "2400", "4800", "9600", "14400", "19200", "28800", "31250", "38400", "57600", "115200"};
+    public static final String[] SERIAL_BAUD_RATE = new String[]{"300",
+            "600", "1200", "2400", "4800", "9600", "14400", "19200",
+            "28800", "31250", "38400", "57600", "115200"};
     private static int BAUD_RATE = 115200;  // setup bms
 
     ArduinoSettings() {
         super();
-        setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));  // add items vertically
+        setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));  // add items
+        // vertically
 
         add(createSerialPanel(), BorderLayout.NORTH);
     }
@@ -50,9 +53,11 @@ public class ArduinoSettings extends JPanel {
     private JPanel createSerialPanel() {
         JPanel panel = new JPanel();
         JComboBox<String> dataRateComboBox = new JComboBox<>(SERIAL_BAUD_RATE);
-        dataRateComboBox.setSelectedIndex(SERIAL_BAUD_RATE.length - 1);  // set fastest speed available
+        dataRateComboBox.setSelectedIndex(SERIAL_BAUD_RATE.length - 1);  //
+        // set fastest speed available
         dataRateComboBox.addActionListener(e -> {
-            String dataRateChosen = (String) dataRateComboBox.getSelectedItem();
+            String dataRateChosen = (String) dataRateComboBox
+                    .getSelectedItem();
             BAUD_RATE = Integer.parseInt(dataRateChosen);
         });  // update baud rate on chosen item
 

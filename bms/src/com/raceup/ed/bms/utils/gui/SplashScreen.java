@@ -25,7 +25,8 @@ import java.awt.image.BufferedImage;
  * Simple splash screen of app
  */
 class SplashScreen extends JFrame implements Runnable {
-    private static final int statusBarHeight = 20;  // height of statusbar in pixel
+    private static final int statusBarHeight = 20;  // height of statusbar
+    // in pixel
     private volatile boolean stopped = false;
     private JLabel statusBar;
 
@@ -38,7 +39,8 @@ class SplashScreen extends JFrame implements Runnable {
         super();
         setUndecorated(true);  // remove window borders
         setupGui(backgroundImage);
-        setSize(new Dimension(backgroundImage.getWidth(), backgroundImage.getHeight()));
+        setSize(new Dimension(backgroundImage.getWidth(), backgroundImage
+                .getHeight()));
         setLocationRelativeTo(null);  // center in screen
     }
 
@@ -81,7 +83,8 @@ class SplashScreen extends JFrame implements Runnable {
 
         JPanel statusPanel = new JPanel();  // where status bar will be
         statusPanel.setBorder(new BevelBorder(BevelBorder.LOWERED));
-        statusPanel.setPreferredSize(new Dimension(getWidth(), statusBarHeight));  // setup statusbar
+        statusPanel.setPreferredSize(new Dimension(getWidth(),
+                statusBarHeight));  // setup statusbar
         statusPanel.setLayout(new BoxLayout(statusPanel, BoxLayout.X_AXIS));
 
         statusBar = new JLabel("");

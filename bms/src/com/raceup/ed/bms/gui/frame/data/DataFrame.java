@@ -47,18 +47,22 @@ public class DataFrame extends JPanel {
      */
     public void updateCellValue(BmsValue data) {
         if (data.isTemperature()) {
-            int[] cellToUpdate = new int[]{data.getCell() / 3 * 3, data.getCell() / 3 * 3 + 1, data.getCell() / 3 * 3 + 2};
+            int[] cellToUpdate = new int[]{data.getCell() / 3 * 3, data
+                    .getCell() / 3 * 3 + 1, data.getCell() / 3 * 3 + 2};
             for (int cell : cellToUpdate) {
-                if (cell < segments[data.getSegment()].cells.length) {  // update only cells that exist
+                if (cell < segments[data.getSegment()].cells.length) {  //
+                    // update only cells that exist
                     try {
-                        segments[data.getSegment()].setTemperatureOfCell(cell, data.getValue());
+                        segments[data.getSegment()].setTemperatureOfCell
+                                (cell, data.getValue());
                     } catch (Exception e) {
                         System.err.println(e.toString());
                     }
                 }
             }
         } else if (data.isVoltage()) {
-            segments[data.getSegment()].setVoltageOfCell(data.getCell(), data.getValue());
+            segments[data.getSegment()].setVoltageOfCell(data.getCell(),
+                    data.getValue());
         }
     }
 
@@ -69,21 +73,27 @@ public class DataFrame extends JPanel {
     /**
      * Sets temperature bounds
      *
-     * @param min minimum value; below this value cells will color VALUE_TOO_LOW_COLOR
-     * @param max maximum value; over this value cells will color VALUE_TOO_HIGH_COLOR
+     * @param min minimum value; below this value cells will color
+     *            VALUE_TOO_LOW_COLOR
+     * @param max maximum value; over this value cells will color
+     *            VALUE_TOO_HIGH_COLOR
      */
     public void setTemperatureBounds(double min, double max) {
-        segments[0].cells[0].setTemperatureBounds(min, max);  // set min, max in one cell (min, max are shared between classes)
+        segments[0].cells[0].setTemperatureBounds(min, max);  // set min,
+        // max in one cell (min, max are shared between classes)
     }
 
     /**
      * Sets temperature bounds
      *
-     * @param min minimum value; below this value cells will color VALUE_TOO_LOW_COLOR
-     * @param max maximum value; over this value cells will color VALUE_TOO_HIGH_COLOR
+     * @param min minimum value; below this value cells will color
+     *            VALUE_TOO_LOW_COLOR
+     * @param max maximum value; over this value cells will color
+     *            VALUE_TOO_HIGH_COLOR
      */
     public void setVoltageBounds(double min, double max) {
-        segments[0].cells[0].setVoltageBounds(min, max);  // set min, max in one cell (min, max are shared between classes)
+        segments[0].cells[0].setVoltageBounds(min, max);  // set min, max in
+        // one cell (min, max are shared between classes)
     }
 
     /**
@@ -114,13 +124,17 @@ public class DataFrame extends JPanel {
      * @param numberOfCellsPerSegment list of number of cells per segment
      */
     private void setup(int[] numberOfCellsPerSegment) {
-        setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));  // add components vertically
+        setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));  // add
+        // components vertically
         segments = new Segment[numberOfCellsPerSegment.length];
-        for (int i = 0; i < numberOfCellsPerSegment.length; i++) {  // open all segments
+        for (int i = 0; i < numberOfCellsPerSegment.length; i++) {  // open
+            // all segments
             segments[i] = new Segment(numberOfCellsPerSegment[i]);
 
-            add(new JLabel("Segment " + Integer.toString(i + 1)));  // label with name of segment
-            add(segments[i], BorderLayout.AFTER_LAST_LINE);  // add segments in panel
+            add(new JLabel("Segment " + Integer.toString(i + 1)));  // label
+            // with name of segment
+            add(segments[i], BorderLayout.AFTER_LAST_LINE);  // add segments
+            // in panel
             add(Box.createRigidArea(new Dimension(0, 10)));  // add spacing
         }
 
@@ -138,13 +152,22 @@ public class DataFrame extends JPanel {
                 segments[s].cells[c].addMouseListener(new MouseAdapter() {
                     @Override
                     public void mouseClicked(MouseEvent mouseEvent) {
-                        if (SwingUtilities.isLeftMouseButton(mouseEvent)) {  // left button
-                            segments[segmentNumber].cells[cellNumber].showDialog(
-                                    "Cell " + Integer.toString(cellNumber + 1) + " of segment " + Integer.toString(segmentNumber + 1)
+                        if (SwingUtilities.isLeftMouseButton(mouseEvent)) {
+                            // left button
+                            segments[segmentNumber].cells[cellNumber]
+                                    .showDialog(
+                                            "Cell " + Integer.toString
+                                                    (cellNumber +
+                                                    1) + " of segment " +
+                                                    Integer
+                                                    .toString(segmentNumber
+                                                            + 1)
                             );
-                        } else if (SwingUtilities.isRightMouseButton(mouseEvent)) {  // right button
+                        } else if (SwingUtilities.isRightMouseButton
+                                (mouseEvent)) {  // right button
                             segments[segmentNumber].showDialog(
-                                    "segment " + Integer.toString(segmentNumber + 1)
+                                    "segment " + Integer.toString
+                                            (segmentNumber + 1)
                             );
                         }
                     }

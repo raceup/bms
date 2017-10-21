@@ -45,9 +45,11 @@ class Main {
     private static void setAppUiOrFail() {
         try {
             Toolkit xToolkit = Toolkit.getDefaultToolkit();
-            java.lang.reflect.Field awtAppClassNameField = xToolkit.getClass().getDeclaredField("awtAppClassName");
+            java.lang.reflect.Field awtAppClassNameField = xToolkit.getClass
+                    ().getDeclaredField("awtAppClassName");
             awtAppClassNameField.setAccessible(true);
-            awtAppClassNameField.set(xToolkit, Bms.appName + " " + Bms.appVersion);
+            awtAppClassNameField.set(xToolkit, Bms.appName + " " + Bms
+                    .appVersion);
         } catch (Exception e) {
             System.err.println(e.toString());
         }
@@ -60,16 +62,23 @@ class Main {
      */
     private static BmsGui getGuiOrNull() {
         try {
-            Bms bms = GuiSettings.buildBms();  // get settings for bms and create new one
+            Bms bms = GuiSettings.buildBms();  // get settings for bms and
+            // create new one
             return new BmsGui(bms);  // create app
         } catch (Throwable e) {
             System.out.print(e.toString());
-            String errorMessage = "Sorry the app encountered an error when starting. More details in the following lines.\n\n";
+            String errorMessage = "Sorry the app encountered an error when " +
+                    "starting. More details in the following lines.\n\n";
             errorMessage += e.toString() + "\n\n";
 
-            if (e.toString().toLowerCase().contains("rxtx")) {  // cannot load arduino serial library
-                errorMessage += "It seems that we cannot load the Arduino serial library RXTX. It is mandatory to install it in order to run the app.\n";
-                errorMessage += "You can find more information on how to install in the following web page: http://rxtx.qbang.org/wiki/index.php/Download";
+            if (e.toString().toLowerCase().contains("rxtx")) {  // cannot
+                // load arduino serial library
+                errorMessage += "It seems that we cannot load the Arduino " +
+                        "serial library RXTX. It is mandatory to install it " +
+                        "in order to run the app.\n";
+                errorMessage += "You can find more information on how to " +
+                        "install in the following web page: http://rxtx" +
+                        ".qbang.org/wiki/index.php/Download";
             }
 
             JOptionPane.showMessageDialog(  // alert dialog with exception
@@ -96,7 +105,8 @@ class Main {
         try {
             bmsGui.open();  // open in screen
         } catch (Throwable e) {
-            String errorMessage = "Sorry the app encountered an error when opening. More details in the following lines.\n\n";
+            String errorMessage = "Sorry the app encountered an error when " +
+                    "opening. More details in the following lines.\n\n";
             errorMessage += e.toString() + "\n\n";
             JOptionPane.showMessageDialog(  // alert dialog with exception
                     null,

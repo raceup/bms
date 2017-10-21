@@ -33,8 +33,11 @@ public class JPanelsUtils {
     public static void addTitleBorderOnPanel(JPanel panel, String title) {
         panel.setBorder(
                 new CompoundBorder(
-                        BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.black), title),  // title border
-                        BorderFactory.createEmptyBorder(10, 10, 10, 10)  // empty border
+                        BorderFactory.createTitledBorder(BorderFactory
+                                .createLineBorder(Color.black), title),  //
+                        // title border
+                        BorderFactory.createEmptyBorder(10, 10, 10, 10)  //
+                        // empty border
                 )
         );
     }
@@ -47,7 +50,9 @@ public class JPanelsUtils {
      */
     public static void addTitleEmptyBorderOnPanel(JPanel panel, String title) {
         panel.setBorder(
-                BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10), title)  // title border
+                BorderFactory.createTitledBorder(BorderFactory
+                        .createEmptyBorder(10, 10, 10, 10), title)  // title
+                // border
         );
     }
 }

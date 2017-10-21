@@ -33,7 +33,8 @@ public class Streams {
      * @return content (in string format)
      * @throws IOException when it cannot read stream
      */
-    public static String readAllFromStream(final BufferedReader reader) throws IOException {
+    public static String readAllFromStream(final BufferedReader reader)
+            throws IOException {
         String content = "";
 
         boolean thereIsAnotherLine = true;

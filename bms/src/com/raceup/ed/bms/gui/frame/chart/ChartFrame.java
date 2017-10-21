@@ -32,7 +32,8 @@ import javax.swing.*;
  * Frame containing chart with data from BMS
  */
 public class ChartFrame extends JFrame {
-    private static final int CHART_RANGE_SECONDS = 60 * 1000;  // chart range in seconds
+    private static final int CHART_RANGE_SECONDS = 60 * 1000;  // chart
+    // range in seconds
     private TimeSeries[] series;  // list of time series of chart
 
     /**
@@ -43,7 +44,8 @@ public class ChartFrame extends JFrame {
      */
     public ChartFrame(final String title, final String[] titleOfSeries) {
         super(title);  // new frame with title
-        getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.PAGE_AXIS));
+        getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout
+                .PAGE_AXIS));
 
         TimeSeriesCollection dataset = createChartDataset(titleOfSeries);
         ChartPanel chartPanel = new ChartPanel(createChart(dataset));
@@ -74,11 +76,15 @@ public class ChartFrame extends JFrame {
      * @return new dataset with given series
      */
     private TimeSeriesCollection createChartDataset(String[] titleOfSeries) {
-        series = new TimeSeries[titleOfSeries.length];  // create list of time series
-        final TimeSeriesCollection dataset = new TimeSeriesCollection();  // create chart dataset
+        series = new TimeSeries[titleOfSeries.length];  // create list of
+        // time series
+        final TimeSeriesCollection dataset = new TimeSeriesCollection();  //
+        // create chart dataset
 
-        for (int i = 0; i < titleOfSeries.length; i++) {  // loop through series
-            series[i] = new TimeSeries(titleOfSeries[i], Millisecond.class);  // setup series
+        for (int i = 0; i < titleOfSeries.length; i++) {  // loop through
+            // series
+            series[i] = new TimeSeries(titleOfSeries[i], Millisecond.class);
+            // setup series
             dataset.addSeries(series[i]);
         }
         return dataset;
@@ -102,7 +108,8 @@ public class ChartFrame extends JFrame {
         );
 
         final XYPlot plot = chart.getXYPlot();  // configure chart
-        plot.getDomainAxis().setFixedAutoRange(CHART_RANGE_SECONDS);  // range on time axis
+        plot.getDomainAxis().setFixedAutoRange(CHART_RANGE_SECONDS);  //
+        // range on time axis
         plot.getRangeAxis().setAutoRange(true);  // range on domain axis
         return chart;
     }

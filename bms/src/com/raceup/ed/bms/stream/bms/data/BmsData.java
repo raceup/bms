@@ -46,7 +46,8 @@ public class BmsData {
                 "{\n" +
                 "\t\"type\": \"" + this.type + "\",\n" +
                 "\t\"cell\": \"" + Integer.toString(this.cell) + "\",\n" +
-                "\t\"segment\": \"" + Integer.toString(this.segment) + "\",\n" +
+                "\t\"segment\": \"" + Integer.toString(this.segment) + "\"," +
+                "\n" +
                 "\t\"value\": \"" + this.value + "\"\n" +
                 "}";
     }

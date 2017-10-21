@@ -23,15 +23,18 @@ import java.awt.*;
  * Panel with file chooser to log file there
  */
 public class LoggerSettings extends JPanel {
-    private String pathChosen = System.getProperty("user.dir");  // default is the current working directory
-    private JLabel pathChosenLabel = new JLabel(pathChosen);  // label with current path choice
+    private String pathChosen = System.getProperty("user.dir");  // default
+    // is the current working directory
+    private JLabel pathChosenLabel = new JLabel(pathChosen);  // label with
+    // current path choice
 
     /**
      * New logger settings with file chooser
      */
     LoggerSettings() {
         super();
-        setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));  // add items vertically
+        setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));  // add items
+        // vertically
 
         setupGui();
     }
@@ -67,8 +70,10 @@ public class LoggerSettings extends JPanel {
         chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         chooser.setAcceptAllFileFilterUsed(false);
 
-        if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {  // user has decided
-            pathChosen = chooser.getSelectedFile().toString();  // store user decision
+        if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+            // user has decided
+            pathChosen = chooser.getSelectedFile().toString();  // store
+            // user decision
             pathChosenLabel.setText(pathChosen);
         }
     }
