@@ -2,7 +2,7 @@
 <project name="bms-client" default="all">
   
   
-  <property file="bms-client.properties"/>
+  <property file="build.properties"/>
   <!-- Uncomment the following property if no tests compilation is needed -->
   <!-- 
   <property name="skip.tests" value="true"/>
@@ -52,39 +52,6 @@
     <exclude name="**/?*.aj"/>
   </patternset>
   
-  <!-- JDK definitions -->
-  
-  <property name="jdk.bin.1.8" value="${jdk.home.1.8}/bin"/>
-  <path id="jdk.classpath.1.8">
-    <fileset dir="${jdk.home.1.8}">
-      <include name="jre/lib/charsets.jar"/>
-      <include name="jre/lib/deploy.jar"/>
-      <include name="jre/lib/ext/cldrdata.jar"/>
-      <include name="jre/lib/ext/dnsns.jar"/>
-      <include name="jre/lib/ext/jaccess.jar"/>
-      <include name="jre/lib/ext/jfxrt.jar"/>
-      <include name="jre/lib/ext/localedata.jar"/>
-      <include name="jre/lib/ext/nashorn.jar"/>
-      <include name="jre/lib/ext/sunec.jar"/>
-      <include name="jre/lib/ext/sunjce_provider.jar"/>
-      <include name="jre/lib/ext/sunpkcs11.jar"/>
-      <include name="jre/lib/ext/zipfs.jar"/>
-      <include name="jre/lib/javaws.jar"/>
-      <include name="jre/lib/jce.jar"/>
-      <include name="jre/lib/jfr.jar"/>
-      <include name="jre/lib/jfxswt.jar"/>
-      <include name="jre/lib/jsse.jar"/>
-      <include name="jre/lib/management-agent.jar"/>
-      <include name="jre/lib/plugin.jar"/>
-      <include name="jre/lib/resources.jar"/>
-      <include name="jre/lib/rt.jar"/>
-    </fileset>
-  </path>
-  
-  <property name="project.jdk.home" value="${jdk.home.1.8}"/>
-  <property name="project.jdk.bin" value="${jdk.bin.1.8}"/>
-  <property name="project.jdk.classpath" value="jdk.classpath.1.8"/>
-  
   
   <!-- Project Libraries -->
   
@@ -104,18 +71,6 @@
     <pathelement location="${basedir}/bms/lib/jfreechart-1.0.19.jar"/>
     <pathelement location="${basedir}/bms/lib/json-20140107.jar"/>
   </path>
-  <!-- Register Custom Compiler Taskdefs -->
-  <property name="javac2.home" value="${idea.home}/lib"/>
-  <path id="javac2.classpath">
-    <pathelement location="${javac2.home}/javac2.jar"/>
-    <pathelement location="${javac2.home}/jdom.jar"/>
-    <pathelement location="${javac2.home}/asm-all.jar"/>
-    <pathelement location="${javac2.home}/jgoodies-forms.jar"/>
-  </path>
-  <target name="register.custom.compilers">
-    <taskdef name="javac2" classname="com.intellij.ant.Javac2" classpathref="javac2.classpath"/>
-    <taskdef name="instrumentIdeaExtensions" classname="com.intellij.ant.InstrumentIdeaExtensions" classpathref="javac2.classpath"/>
-  </target>
   
   <!-- Modules -->
   
@@ -125,9 +80,6 @@
   <dirname property="module.bms.basedir" file="${ant.file}"/>
   
   
-  <property name="module.jdk.home.bms" value="${project.jdk.home}"/>
-  <property name="module.jdk.bin.bms" value="${project.jdk.bin}"/>
-  <property name="module.jdk.classpath.bms" value="${project.jdk.classpath}"/>
   
   <property name="compiler.args.bms" value="-encoding UTF-8 -source 1.8 -target 1.8 ${compiler.args}"/>
   
@@ -139,7 +91,6 @@
   </path>
   
   <path id="bms.module.production.classpath">
-    <path refid="${module.jdk.classpath.bms}"/>
     <path refid="library.jcommon-1.0.23.classpath"/>
     <path refid="library.ardulink-core-base-2.0.1.classpath"/>
     <path refid="library.ardulink-legacy-2.0.1.classpath"/>
@@ -153,7 +104,6 @@
   </path>
   
   <path id="bms.module.classpath">
-    <path refid="${module.jdk.classpath.bms}"/>
     <pathelement location="${bms.output.dir}"/>
     <path refid="library.jcommon-1.0.23.classpath"/>
     <path refid="library.ardulink-core-base-2.0.1.classpath"/>
@@ -186,15 +136,15 @@
   
   <target name="compile.module.bms" depends="compile.module.bms.production,compile.module.bms.tests" description="Compile module bms"/>
   
-  <target name="compile.module.bms.production" depends="register.custom.compilers" description="Compile module bms; production classes">
+  <target name="compile.module.bms.production" description="Compile module bms; production classes">
     <mkdir dir="${bms.output.dir}"/>
-    <javac2 destdir="${bms.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.bms}/javac">
+    <javac destdir="${bms.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
       <compilerarg line="${compiler.args.bms}"/>
       <bootclasspath refid="bms.module.bootclasspath"/>
       <classpath refid="bms.module.production.classpath"/>
       <src refid="bms.module.sourcepath"/>
       <patternset refid="excluded.from.compilation.bms"/>
-    </javac2>
+    </javac>
     
     <copy todir="${bms.output.dir}">
       <fileset dir="${module.bms.basedir}/bms/src">
@@ -204,7 +154,7 @@
     </copy>
   </target>
   
-  <target name="compile.module.bms.tests" depends="register.custom.compilers,compile.module.bms.production" description="compile module bms; test classes" unless="skip.tests"/>
+  <target name="compile.module.bms.tests" depends="compile.module.bms.production" description="compile module bms; test classes" unless="skip.tests"/>
   
   <target name="clean.module.bms" description="cleanup module">
     <delete dir="${bms.output.dir}"/>

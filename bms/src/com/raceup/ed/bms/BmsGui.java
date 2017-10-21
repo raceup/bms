@@ -42,10 +42,14 @@ import static com.raceup.ed.bms.utils.Streams.readAllFromStream;
  * - text area with errors (i.e ErrorsAreaFrame)
  */
 public class BmsGui extends ApplicationFrame implements Runnable, StartAndStop {
-    static final Image appIcon = Toolkit.getDefaultToolkit().getImage("com.raceup.ed.bms.BmsGui".getClass().getResource("/res/images/icon.png"));
+    static final Image appIcon = Toolkit.getDefaultToolkit().getImage(
+            "com.raceup.ed.bms.BmsGui".getClass().getResource("/res/images/icon.png")
+    );
     private static final String TAG = "BmsGui";
     private static final Dimension SCREEN = Toolkit.getDefaultToolkit().getScreenSize();
-    private static final Dimension QUARTER_SCREEN = new Dimension((int) (SCREEN.getWidth() * 0.5), (int) (SCREEN.getHeight() * 0.5));
+    private static final Dimension QUARTER_SCREEN = new Dimension(
+            (int) (SCREEN.getWidth() * 0.5), (int) (SCREEN.getHeight() * 0.5)
+    );
     private static int msGuiIntervalUpdate = 10;  // GUI interval update
     private final Bms bms;  // bms manager
     private final JButton startButton = new JButton("Start");  // start and stop buttons
