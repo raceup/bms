@@ -66,8 +66,8 @@ class Segment extends JPanel {
 
         Timer updater = new Timer(10, e -> {
             for (int c = 0; c < cells.length; c++) {
-                voltagesChart.updateSeriesOrFail(c, getVoltageOfCell(c));
-                temperaturesChart.updateSeriesOrFail(c, getTemperatureOfCell
+                voltagesChart.updateOrFail(c, getVoltageOfCell(c));
+                temperaturesChart.updateOrFail(c, getTemperatureOfCell
                         (c));
             }
         });  // timer to update dialog values

@@ -44,18 +44,23 @@ import static com.raceup.ed.bms.utils.Streams.readAllFromStream;
  */
 public class BmsGui extends ApplicationFrame implements Runnable,
         StartAndStop {
+    private static final String APP_NAME_SETTINGS = "com.apple.mrj" +
+            ".application.apple.menu.about.name";
     private static final String THIS_PACKAGE = "com.raceup.ed.bms.BmsGui";
     private static final String ICON_PATH = "/res/images/icon.png";
     private static final Image appIcon = Toolkit.getDefaultToolkit().getImage(
             THIS_PACKAGE.getClass().getResource(ICON_PATH)
     );
     private static final String TAG = "BmsGui";
-    private static final Dimension SCREEN = Toolkit.getDefaultToolkit()
-            .getScreenSize();
+    private static final Dimension SCREEN =
+            Toolkit.getDefaultToolkit().getScreenSize();
+    private static final Dimension MAX_DIMENSION = new Dimension(
+            (int) (SCREEN.getWidth() * 0.8), (int) (SCREEN.getHeight() * 0.8)
+    );
     private static final Dimension QUARTER_SCREEN = new Dimension(
             (int) (SCREEN.getWidth() * 0.5), (int) (SCREEN.getHeight() * 0.5)
     );
-    private static int msGuiIntervalUpdate = 10;  // GUI interval update
+    private int msGuiIntervalUpdate = 100;  // GUI interval update
     private final Bms bms;  // bms manager
     private final JButton startButton = new JButton("Start");  // start
     // stop buttons
@@ -78,8 +83,7 @@ public class BmsGui extends ApplicationFrame implements Runnable,
     BmsGui(Bms bms) {
         super("Bms manager");  // set title
         setIconImage(appIcon);  // set icon
-        System.setProperty("com.apple.mrj.application.apple.menu.about.name",
-                "AppName");  // set app name
+        System.setProperty(APP_NAME_SETTINGS, "Bms Manager");  // set app name
 
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);  // destroy
         // app when closed
@@ -92,23 +96,14 @@ public class BmsGui extends ApplicationFrame implements Runnable,
      * Start frontend GUI and backend engines
      */
     void open() {
-        dataFrame.setLocation(0, 0);  // top left corner
         dataFrame.setVisible(true);
-
         chartFrame.pack();
-        chartFrame.setLocation(dataFrame.getX(), dataFrame.getY() + dataFrame
-                .getHeight());  // under data frame
         chartFrame.setVisible(true);
-
-        logFrame.setSize(new Dimension((int) (QUARTER_SCREEN.getWidth() *
-                0.5), (int) (QUARTER_SCREEN.getHeight() * 0.5)));
-        logFrame.setLocation(chartFrame.getX() + chartFrame.getWidth(),
-                chartFrame.getY());  // right of chart frame
         logFrame.setVisible(true);
 
         pack();
-        setLocation((int) SCREEN.getWidth() / 2, (int) SCREEN.getHeight() /
-                2);  // right top corner
+        setLocation(0, 0);  // top left corner
+        setMinimumSize(MAX_DIMENSION);
         setVisible(true);
     }
 
@@ -174,13 +169,12 @@ public class BmsGui extends ApplicationFrame implements Runnable,
     private void setup() {
         int[] numberOfCellsPerSegment = bms.batteryPack
                 .getNumberOfCellsPerSegment();
-
-        setupFrame();  // setup frame manager
         chartFrame = new ChartFrame("Average voltage and temperature of " +
                 "battery pack over time", new String[]{"Voltage (mV)"});  //
         // setup gui
         dataFrame = new DataFrame(numberOfCellsPerSegment);
         logFrame = new LogFrame();
+        setupFrame();  // setup frame manager
     }
 
     /**
@@ -189,12 +183,17 @@ public class BmsGui extends ApplicationFrame implements Runnable,
     private void setupFrame() {
         getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout
                 .PAGE_AXIS));  // add components vertically
-        getRootPane().setBorder(BorderFactory.createEmptyBorder(10, 10, 10,
-                10));  // border
+        getRootPane().setBorder(
+                BorderFactory.createEmptyBorder(
+                        10, 10, 10, 10
+                )
+        );  // border
 
-        setJMenuBar(createMenuBar());  // set menubar
+        setJMenuBar(createMenuBar());  // set menu-bar
         add(createStartStopPanel());  // add panels
         add(createBalanceCellsPanel());
+        add(dataFrame);
+        add(logFrame);
     }
 
     /**
@@ -276,7 +275,7 @@ public class BmsGui extends ApplicationFrame implements Runnable,
      */
     private void updateChartFrameOrFail() {
         try {
-            chartFrame.updateSeriesOrFail(0, bms.batteryPack
+            chartFrame.updateOrFail(0, bms.batteryPack
                     .getSumOfAllVoltages());  // update voltage
         } catch (Exception e) {
             System.err.println(e.toString());

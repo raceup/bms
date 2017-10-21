@@ -150,8 +150,8 @@ class Cell extends JPanel {
         dialog.setLocationRelativeTo(null);  // center in screen
 
         Timer updater = new Timer(10, e -> {
-            dialog.updateSeriesOrFail(0, getVoltage());
-            dialog.updateSeriesOrFail(1, getTemperature());
+            dialog.updateOrFail(0, getVoltage());
+            dialog.updateOrFail(1, getTemperature());
         });  // timer to update dialog values
         updater.start();
     }

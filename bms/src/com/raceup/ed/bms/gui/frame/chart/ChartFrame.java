@@ -17,24 +17,13 @@
 
 package com.raceup.ed.bms.gui.frame.chart;
 
-import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartPanel;
-import org.jfree.chart.JFreeChart;
-import org.jfree.chart.plot.XYPlot;
-import org.jfree.data.time.Millisecond;
-import org.jfree.data.time.TimeSeries;
-import org.jfree.data.time.TimeSeriesCollection;
-import org.jfree.data.xy.XYDataset;
-
 import javax.swing.*;
 
 /**
  * Frame containing chart with data from BMS
  */
 public class ChartFrame extends JFrame {
-    private static final int CHART_RANGE_SECONDS = 60 * 1000;  // chart
-    // range in seconds
-    private TimeSeries[] series;  // list of time series of chart
+    private ChartPanel chartPanel;
 
     /**
      * Create new frame with chart with title
@@ -44,73 +33,33 @@ public class ChartFrame extends JFrame {
      */
     public ChartFrame(final String title, final String[] titleOfSeries) {
         super(title);  // new frame with title
-        getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout
-                .PAGE_AXIS));
+        chartPanel = new ChartPanel(
+                titleOfSeries
+        );
 
-        TimeSeriesCollection dataset = createChartDataset(titleOfSeries);
-        ChartPanel chartPanel = new ChartPanel(createChart(dataset));
-        add(chartPanel);  // add chart in chartPanel
-
-        pack();
-        setVisible(true);
+        setupLayout();
     }
 
     /**
      * Adds new value and plot it
      *
      * @param timeSeries time series to update
-     * @param var        new value to plot and add in dataset
+     * @param var        new value to plot and add in data-set
      */
-    public void updateSeriesOrFail(int timeSeries, double var) {
-        try {
-            series[timeSeries].addOrUpdate(new Millisecond(), var);
-        } catch (Exception e) {
-            System.err.println(e.toString());
-        }
+    public void updateOrFail(int timeSeries, double var) {
+        chartPanel.updateSeriesOrFail(timeSeries, var);
     }
 
     /**
-     * Setup chart with series
-     *
-     * @param titleOfSeries list of title of series to add to chart
-     * @return new dataset with given series
+     * Setups layout
      */
-    private TimeSeriesCollection createChartDataset(String[] titleOfSeries) {
-        series = new TimeSeries[titleOfSeries.length];  // create list of
-        // time series
-        final TimeSeriesCollection dataset = new TimeSeriesCollection();  //
-        // create chart dataset
-
-        for (int i = 0; i < titleOfSeries.length; i++) {  // loop through
-            // series
-            series[i] = new TimeSeries(titleOfSeries[i]);
-            // setup series
-            dataset.addSeries(series[i]);
-        }
-        return dataset;
-    }
-
-    /**
-     * Create chart and add dataset to it.
-     *
-     * @param dataset dataset of chart
-     * @return chart chart with title and dataset
-     */
-    private JFreeChart createChart(final XYDataset dataset) {
-        final JFreeChart chart = ChartFactory.createTimeSeriesChart(
-                "",
-                "Time (seconds)",
-                "Values",
-                dataset,
-                true,  // legend
-                false,  // tooltips
-                false  // urls
+    private void setupLayout() {
+        getContentPane().setLayout(
+                new BoxLayout(getContentPane(), BoxLayout.PAGE_AXIS)
         );
 
-        final XYPlot plot = chart.getXYPlot();  // configure chart
-        plot.getDomainAxis().setFixedAutoRange(CHART_RANGE_SECONDS);  //
-        // range on time axis
-        plot.getRangeAxis().setAutoRange(true);  // range on domain axis
-        return chart;
+        add(chartPanel);  // add chart in chartPanel
+        pack();
+        setVisible(true);
     }
 }
