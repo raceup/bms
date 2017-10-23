@@ -169,6 +169,9 @@ public class BmsGui extends ApplicationFrame implements Runnable,
         int[] numberOfCellsPerSegment = bms.batteryPack
                 .getNumberOfCellsPerSegment();
         chartPanel = new ChartPanel(new String[]{"Voltage (mV)"});
+        chartPanel.setMaximumSize(
+                new Dimension(1000, 800)
+        );  // aliasing blurring
         dataPanel = new DataFrame(numberOfCellsPerSegment);
         logPanel = new LogFrame();
         setupLayout();  // setup frame manager
@@ -179,7 +182,7 @@ public class BmsGui extends ApplicationFrame implements Runnable,
      */
     private void setupLayout() {
         getContentPane().setLayout(
-                new BoxLayout(getContentPane(), BoxLayout.LINE_AXIS)
+                new BoxLayout(getContentPane(), BoxLayout.PAGE_AXIS)
         );  // add components horizontally
         getRootPane().setBorder(
                 BorderFactory.createEmptyBorder(
@@ -188,20 +191,21 @@ public class BmsGui extends ApplicationFrame implements Runnable,
         );  // border
 
         // data and chart
-        JSplitPane leftPane = new JSplitPane(
-                JSplitPane.VERTICAL_SPLIT,
-                chartPanel,
-                dataPanel
-        );
-        add(leftPane);
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.LINE_AXIS));
+        panel.setAlignmentX(JScrollPane.RIGHT_ALIGNMENT);
+        panel.setBorder(
+                BorderFactory.createEmptyBorder(
+                        10, 10, 10, 10
+                )
+        );  // border
 
-        JSplitPane rightPane = new JSplitPane(
-                JSplitPane.VERTICAL_SPLIT,
-                createStartStopPanel(),
-                createBalanceCellsPanel()
-        );
-        add(rightPane);
+        panel.add(chartPanel);
+        panel.add(Box.createRigidArea(new Dimension(10, 0)));
+        panel.add(createStartStopPanel());
 
+        add(panel);
+        add(dataPanel);
         setJMenuBar(createMenuBar());  // set menu-bar
     }
 
@@ -212,28 +216,24 @@ public class BmsGui extends ApplicationFrame implements Runnable,
      */
     private JPanel createStartStopPanel() {
         JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
         JPanelsUtils.addTitleBorderOnPanel(panel, "Run monitor");
 
         startButton.addActionListener(e -> start());  // add action listeners
         pauseButton.addActionListener(e -> pause());
         stopButton.addActionListener(e -> stop());
+        balanceButton.addActionListener(e -> sendBalanceCellsAction());
 
         panel.add(startButton);  // add to panel
+        panel.add(Box.createRigidArea(new Dimension(0, 10)));
         panel.add(pauseButton);
+        panel.add(Box.createRigidArea(new Dimension(0, 10)));
         panel.add(stopButton);
-        return panel;
-    }
+        panel.add(Box.createRigidArea(new Dimension(0, 10)));
+        panel.add(balanceButton);
+        panel.add(Box.createRigidArea(new Dimension(0, 10)));
 
-    /**
-     * Create panel that balances cells
-     *
-     * @return panel with buttons to balance cells
-     */
-    private JPanel createBalanceCellsPanel() {
-        JPanel panel = new JPanel();
-        balanceButton.addActionListener(e -> sendBalanceCellsAction());  //
-        // add action listeners
-        panel.add(balanceButton);  // add to panel
+        panel.setMaximumSize(new Dimension(200, 800));
         return panel;
     }
 
