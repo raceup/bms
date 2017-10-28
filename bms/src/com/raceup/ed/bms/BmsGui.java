@@ -57,9 +57,6 @@ public class BmsGui extends ApplicationFrame implements Runnable,
     private static final Dimension MAX_DIMENSION = new Dimension(
             (int) (SCREEN.getWidth() * 0.8), (int) (SCREEN.getHeight() * 0.8)
     );
-    private static final Dimension QUARTER_SCREEN = new Dimension(
-            (int) (SCREEN.getWidth() * 0.4), (int) (SCREEN.getHeight() * 0.4)
-    );
     private int msGuiIntervalUpdate = 100;  // GUI interval update
     private final Bms bms;  // bms manager
     private final JButton startButton = new JButton("Start");  // start
