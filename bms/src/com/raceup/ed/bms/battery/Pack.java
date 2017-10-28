@@ -20,15 +20,10 @@ package com.raceup.ed.bms.battery;
  * Battery pack containing segments of battery cells
  */
 public class Pack implements BmsControllable {
-    private final Segment[] segments;  // list of segments in battery pack
+    private Segment[] segments;  // list of segments in battery pack
 
-    public Pack(int[] numberOfCellsPerSegment) {
-        final int numberOfSegments = numberOfCellsPerSegment.length;
-        this.segments = new Segment[numberOfSegments];  // create list of
-        // segments
-        for (int i = 0; i < numberOfSegments; i++) {  // open segments
-            segments[i] = new Segment(numberOfCellsPerSegment[i]);
-        }
+    public Pack(int[] numberOfCellsPerSegment, int numberOfCellsPerBms) {
+        segments = createSegments(numberOfCellsPerSegment);
     }
 
     /**
@@ -104,5 +99,21 @@ public class Pack implements BmsControllable {
     public void setVoltageOfCell(int segment, int cellPosition, double
             voltage) {
         segments[segment].setVoltageOfCell(cellPosition, voltage);
+    }
+
+    /**
+     * Creates list of segments for pack
+     *
+     * @param numberOfCellsPerSegment # cell in each segment
+     * @return list of segments
+     */
+    public static Segment[] createSegments(
+            int[] numberOfCellsPerSegment) {
+        final int numberOfSegments = numberOfCellsPerSegment.length;
+        Segment[] segments = new Segment[numberOfSegments];
+        for (int i = 0; i < numberOfSegments; i++) {  // open segments
+            segments[i] = new Segment(numberOfCellsPerSegment[i]);
+        }
+        return segments;
     }
 }

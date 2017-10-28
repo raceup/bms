@@ -21,6 +21,24 @@ package com.raceup.ed.bms.battery;
  */
 class Segment implements BmsControllable {
     private final Cell[] cells;  // list of cell in segment
+    private static final int numberOfCellsPerBms = 6;  // # cells controlled
+    // by 1
+    private final BmsDevice[] bmsDevices;  // list of bms devices
+    // bms
+
+    /**
+     * Create segment with selected number of cells
+     *
+     * @param numberOfCells number of cells in segment
+     */
+    Segment(int numberOfCells, int numberOfCellsPerBms) {
+        cells = new Cell[numberOfCells];  // create list of cells
+        for (int i = 0; i < numberOfCells; i++) {
+            cells[i] = new Cell();
+        }
+
+        bmsDevices = createBmsDevices(numberOfCells, numberOfCellsPerBms);
+    }
 
     /**
      * Create segment with selected number of cells
@@ -28,10 +46,7 @@ class Segment implements BmsControllable {
      * @param numberOfCells number of cells in segment
      */
     Segment(int numberOfCells) {
-        this.cells = new Cell[numberOfCells];  // create list of cells
-        for (int i = 0; i < numberOfCells; i++) {
-            cells[i] = new Cell();
-        }
+        this(numberOfCells, numberOfCellsPerBms);
     }
 
     /**
@@ -100,5 +115,24 @@ class Segment implements BmsControllable {
      */
     public void setVoltageOfCell(int cellPosition, double voltage) {
         cells[cellPosition].setVoltage(voltage);
+    }
+
+    /**
+     * Creates list of bms devices for segment
+     *
+     * @param numberOfCells       # cell in segment to be controlled by bms
+     *                            devices
+     * @param numberOfCellsPerBms # cells controlled by each bms device
+     * @return list of bms devices for segment
+     */
+    public static BmsDevice[] createBmsDevices(int numberOfCells, int
+            numberOfCellsPerBms) {
+        int numberOfBmsDevices = (int) Math.ceil(numberOfCells /
+                numberOfCellsPerBms);
+        BmsDevice[] bmsDevices = new BmsDevice[numberOfBmsDevices];
+        for (BmsDevice bmsDevice : bmsDevices) {
+            bmsDevice = new BmsDevice();
+        }
+        return bmsDevices;
     }
 }
