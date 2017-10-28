@@ -23,8 +23,13 @@ public class Pack implements BmsControllable {
     private Segment[] segments;  // list of segments in battery pack
 
     public Pack(int[] numberOfCellsPerSegment, int numberOfCellsPerBms) {
-        segments = createSegments(numberOfCellsPerSegment);
+        segments = createSegments(numberOfCellsPerSegment,
+                numberOfCellsPerBms);
     }
+
+    /*
+     * General info
+     */
 
     /**
      * Number of segments in battery pack
@@ -50,6 +55,10 @@ public class Pack implements BmsControllable {
         }
         return numberOfCellsPerSegment;
     }
+
+    /*
+     * Temperatures
+     */
 
     /**
      * Retrieve average temperature value of pack
@@ -77,16 +86,54 @@ public class Pack implements BmsControllable {
     }
 
     /**
-     * Retrieve average voltage value of pack
+     * Creates list of segments for pack
      *
-     * @return average voltage
+     * @param numberOfCellsPerSegment # cell in each segment
+     * @param numberOfCellsPerBms # cells controlled by each bms
+     * @return list of segments
      */
-    public double getVoltage() {
-        double sum = 0.0;
-        for (Segment segment : segments) {
-            sum += segment.getSumOfAllVoltages();
+    public static Segment[] createSegments(
+            int[] numberOfCellsPerSegment, int numberOfCellsPerBms) {
+        final int numberOfSegments = numberOfCellsPerSegment.length;
+        Segment[] segments = new Segment[numberOfSegments];
+        for (int i = 0; i < numberOfSegments; i++) {  // open segments
+            segments[i] = new Segment(numberOfCellsPerSegment[i], numberOfCellsPerBms);
         }
-        return sum;
+        return segments;
+    }
+
+    /*
+     * Voltages
+     */
+
+    /**
+     * Finds number of segment of bms device
+     *
+     * @param bmsDevice # of bms device
+     * @param segments  list of segments to look into
+     * @return index of segment with bms device
+     */
+    public static BmsDevicePosition getPositionOfBmsDevice(int bmsDevice,
+                                                           Segment[]
+            segments) {
+        if (bmsDevice < 0) {
+            throw new IllegalArgumentException("Cannot find bms device #" +
+                    Integer.toString(bmsDevice));
+        }
+
+        int bmsDevicesCounter = 0;
+        for (int i = 0; i < segments.length; ++i) {
+            int bmsDevicesInSegment = segments[i].getNumberOfBmsDevices();
+            if (bmsDevice < bmsDevicesCounter + bmsDevicesInSegment) {
+                int positionRelativeToSegment = bmsDevice - bmsDevicesCounter;
+                return new BmsDevicePosition(positionRelativeToSegment, i);
+            }
+
+            bmsDevicesCounter += bmsDevicesInSegment;  // update counter
+        }
+
+        throw new IllegalArgumentException("Cannot find bms device #" +
+                Integer.toString(bmsDevice));
     }
 
     /**
@@ -102,18 +149,46 @@ public class Pack implements BmsControllable {
     }
 
     /**
-     * Creates list of segments for pack
+     * Retrieves temperature of bms device
      *
-     * @param numberOfCellsPerSegment # cell in each segment
-     * @return list of segments
+     * @param bmsDevice # of bms device
+     * @return temperature of bms device
      */
-    public static Segment[] createSegments(
-            int[] numberOfCellsPerSegment) {
-        final int numberOfSegments = numberOfCellsPerSegment.length;
-        Segment[] segments = new Segment[numberOfSegments];
-        for (int i = 0; i < numberOfSegments; i++) {  // open segments
-            segments[i] = new Segment(numberOfCellsPerSegment[i]);
-        }
-        return segments;
+    public double getTemperatureOfBms(int bmsDevice) {
+        BmsDevicePosition position =
+                getPositionOfBmsDevice(bmsDevice, segments);
+        return segments[position.segment].getTemperatureOfBms(position
+                .positionInSegment);
     }
+
+    /*
+     * Statics
+     */
+
+    /**
+     * Retrieve average voltage value of pack
+     *
+     * @return average voltage
+     */
+    public double getVoltage() {
+        double sum = 0.0;
+        for (Segment segment : segments) {
+            sum += segment.getVoltage();
+        }
+        return sum;
+    }
+
+    /**
+     * Retrieves voltage of bms device
+     *
+     * @param bmsDevice # of bms device
+     * @return voltage of bms device
+     */
+    public double getVoltageOfBms(int bmsDevice) {
+        BmsDevicePosition position =
+                getPositionOfBmsDevice(bmsDevice, segments);
+        return segments[position.segment].getVoltageOfBms(position
+                .positionInSegment);
+    }
+
 }

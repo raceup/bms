@@ -21,15 +21,15 @@ package com.raceup.ed.bms.battery;
  */
 class Segment implements BmsControllable {
     private final Cell[] cells;  // list of cell in segment
-    private static final int numberOfCellsPerBms = 6;  // # cells controlled
-    // by 1
-    private final BmsDevice[] bmsDevices;  // list of bms devices
+    private static final int numberOfCellsPerBms = 6;
+    private final BmsDevice[] bmsDevices;
     // bms
 
     /**
      * Create segment with selected number of cells
      *
      * @param numberOfCells number of cells in segment
+     * @param numberOfCellsPerBms number of cells controlled by 1 bms device
      */
     Segment(int numberOfCells, int numberOfCellsPerBms) {
         cells = new Cell[numberOfCells];  // create list of cells
@@ -49,6 +49,10 @@ class Segment implements BmsControllable {
         this(numberOfCells, numberOfCellsPerBms);
     }
 
+    /*
+     * General info
+     */
+
     /**
      * Find number of cells in segment
      *
@@ -57,6 +61,19 @@ class Segment implements BmsControllable {
     public int getNumberOfCells() {
         return cells.length;
     }
+
+    /**
+     * Find number of bms devices in segment
+     *
+     * @return number of bms devices in segment
+     */
+    public int getNumberOfBmsDevices() {
+        return bmsDevices.length;
+    }
+
+    /*
+     * Temperatures
+     */
 
     /**
      * Retrieve average temperature value of segment
@@ -82,24 +99,25 @@ class Segment implements BmsControllable {
     }
 
     /**
+     * Retrieves temperature of bms device
+     *
+     * @param bmsDevice # of bms device
+     * @return temperature of bms device
+     */
+    public double getTemperatureOfBms(int bmsDevice) {
+        return bmsDevices[bmsDevice].getTemperature();
+    }
+
+    /*
+     * Voltages
+     */
+
+    /**
      * Retrieve average voltage value of segment
      *
      * @return average voltage of segment
      */
     public double getVoltage() {
-        double sum = 0.0;
-        for (Cell cell : cells) {
-            sum += cell.getVoltage();
-        }
-        return sum / cells.length;
-    }
-
-    /**
-     * Sum all cells voltage in pack
-     *
-     * @return all cells voltage in pack
-     */
-    public double getSumOfAllVoltages() {
         double sum = 0.0;
         for (Cell cell : cells) {
             sum += cell.getVoltage();
@@ -116,6 +134,20 @@ class Segment implements BmsControllable {
     public void setVoltageOfCell(int cellPosition, double voltage) {
         cells[cellPosition].setVoltage(voltage);
     }
+
+    /**
+     * Retrieves voltage of bms device
+     *
+     * @param bmsDevice # of bms device
+     * @return temperature of bms device
+     */
+    public double getVoltageOfBms(int bmsDevice) {
+        return bmsDevices[bmsDevice].getVoltage();
+    }
+
+    /*
+     * Statics
+     */
 
     /**
      * Creates list of bms devices for segment
