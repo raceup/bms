@@ -19,7 +19,7 @@ package com.raceup.ed.bms.battery;
 /**
  * Battery segment containing battery cells
  */
-class Segment {
+class Segment implements BmsControllable {
     private final Cell[] cells;  // list of cell in segment
 
     /**
@@ -44,40 +44,16 @@ class Segment {
     }
 
     /**
-     * Retrieve temperature value of given cell
-     *
-     * @param cellPosition cell position in segment (numbers show from 0)
-     * @return temperature of cell
-     */
-    public double getTemperatureOfCellOrFail(int cellPosition) {
-        return cells[cellPosition].getTemperature();
-    }
-
-    /**
      * Retrieve average temperature value of segment
      *
      * @return average temperature of segment
      */
-    public double getAverageTemperature() {
+    public double getTemperature() {
         double sum = 0.0;
         for (Cell cell : cells) {
             sum += cell.getTemperature();
         }
         return sum / cells.length;
-    }
-
-    /**
-     * Retrieve temperature of all cells in segment
-     *
-     * @return list of temperature of all cells
-     */
-    public double[] getTemperatures() {
-        int numberOfCells = cells.length;
-        double[] temperatures = new double[numberOfCells];
-        for (int i = 0; i < numberOfCells; i++) {  // loop through cells
-            temperatures[i] = getTemperatureOfCellOrFail(i);
-        }
-        return temperatures;
     }
 
     /**
@@ -91,21 +67,11 @@ class Segment {
     }
 
     /**
-     * Retrieve voltage value of given cell
-     *
-     * @param cellPosition cell position in segment (numbers show from 0)
-     * @return voltage of cell
-     */
-    public double getVoltageOfCell(int cellPosition) {
-        return cells[cellPosition].getVoltage();
-    }
-
-    /**
      * Retrieve average voltage value of segment
      *
      * @return average voltage of segment
      */
-    public double getAverageVoltage() {
+    public double getVoltage() {
         double sum = 0.0;
         for (Cell cell : cells) {
             sum += cell.getVoltage();
@@ -124,20 +90,6 @@ class Segment {
             sum += cell.getVoltage();
         }
         return sum;
-    }
-
-    /**
-     * Retrieve voltage of all cells in segment
-     *
-     * @return list of voltage of all cells
-     */
-    public double[] getVoltages() {
-        int numberOfCells = cells.length;
-        double[] voltages = new double[numberOfCells];
-        for (int i = 0; i < numberOfCells; i++) {  // loop through cells
-            voltages[i] = getVoltageOfCell(i);
-        }
-        return voltages;
     }
 
     /**

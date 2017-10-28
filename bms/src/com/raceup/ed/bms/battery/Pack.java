@@ -19,7 +19,7 @@ package com.raceup.ed.bms.battery;
 /**
  * Battery pack containing segments of battery cells
  */
-public class Pack {
+public class Pack implements BmsControllable {
     private final Segment[] segments;  // list of segments in battery pack
 
     public Pack(int[] numberOfCellsPerSegment) {
@@ -57,47 +57,16 @@ public class Pack {
     }
 
     /**
-     * Retrieve temperature value of given cell
-     *
-     * @param segment      segment number
-     * @param cellPosition cell position in segment (numbers open from 0)
-     * @return temperature of cell
-     */
-    public double getTemperatureOfCell(int segment, int cellPosition) {
-        return segments[segment].getTemperatureOfCellOrFail(cellPosition);
-    }
-
-    /**
-     * Retrieve average temperature value of segment
-     *
-     * @param segment segment number
-     * @return average temperature of segment
-     */
-    public double getAverageTemperatureOfSegment(int segment) {
-        return segments[segment].getAverageTemperature();
-    }
-
-    /**
      * Retrieve average temperature value of pack
      *
      * @return average temperature
      */
-    public double getAverageTemperature() {
+    public double getTemperature() {
         double sum = 0.0;
         for (Segment segment : segments) {
-            sum += segment.getAverageTemperature();
+            sum += segment.getTemperature();
         }
-        return sum / segments.length;
-    }
-
-    /**
-     * Retrieve temperature of all cells in segment
-     *
-     * @param segment segment number
-     * @return list of temperature of all cells
-     */
-    public double[] getTemperatureInSegment(int segment) {
-        return segments[segment].getTemperatures();
+        return sum;
     }
 
     /**
@@ -113,60 +82,16 @@ public class Pack {
     }
 
     /**
-     * Retrieve voltage value of given cell
+     * Retrieve average voltage value of pack
      *
-     * @param segment      segment number
-     * @param cellPosition cell position in segment (numbers open from 0)
-     * @return voltage of cell
+     * @return average voltage
      */
-    public double getVoltageOfCell(int segment, int cellPosition) {
-        return segments[segment].getVoltageOfCell(cellPosition);
-    }
-
-    /**
-     * Retrieve average voltage value of segment
-     *
-     * @param segment segment number
-     * @return average voltage of segment
-     */
-    public double getAverageVoltageOfSegment(int segment) {
-        return segments[segment].getAverageVoltage();
-    }
-
-    /**
-     * Sum all cell voltage in all segments and return sum
-     *
-     * @return sum of all cell voltage in all segments
-     */
-    public double getSumOfAllVoltages() {
+    public double getVoltage() {
         double sum = 0.0;
         for (Segment segment : segments) {
             sum += segment.getSumOfAllVoltages();
         }
         return sum;
-    }
-
-    /**
-     * Retrieve average voltage value of pack
-     *
-     * @return average voltage
-     */
-    public double getAverageVoltage() {
-        double sum = 0.0;
-        for (Segment segment : segments) {
-            sum += segment.getAverageVoltage();
-        }
-        return sum / segments.length;
-    }
-
-    /**
-     * Retrieve voltage of all cells in segment
-     *
-     * @param segment segment number
-     * @return list of voltage of all cells
-     */
-    public double[] getVoltagesInSegment(int segment) {
-        return segments[segment].getVoltages();
     }
 
     /**

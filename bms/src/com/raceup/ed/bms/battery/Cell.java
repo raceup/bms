@@ -47,7 +47,7 @@ class Cell {
     }
 
     /**
-     * Retrieve voltage value
+     * Retrieves voltage value
      *
      * @return voltage of cell
      */
@@ -56,7 +56,7 @@ class Cell {
     }
 
     /**
-     * Update voltage of cell
+     * Updates voltage of cell
      *
      * @param voltage new voltage reading
      */

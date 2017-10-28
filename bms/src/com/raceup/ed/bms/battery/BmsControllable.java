@@ -1,5 +1,9 @@
 package com.raceup.ed.bms.battery;
 
+/**
+ * Something that is controlled by a BMS device or that has voltage and
+ * temperatures features
+ */
 public interface BmsControllable {
     /**
      * Retrieve temperature value
@@ -9,23 +13,9 @@ public interface BmsControllable {
     double getTemperature();
 
     /**
-     * Update temperature of cell
-     *
-     * @param temperature new temperature reading
-     */
-    void setTemperature(double temperature);
-
-    /**
      * Retrieve voltage value
      *
      * @return voltage of cell
      */
     double getVoltage();
-
-    /**
-     * Update voltage of cell
-     *
-     * @param voltage new voltage reading
-     */
-    void setVoltage(double voltage);
 }

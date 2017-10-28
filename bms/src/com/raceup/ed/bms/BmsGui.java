@@ -282,7 +282,7 @@ public class BmsGui extends ApplicationFrame implements Runnable,
     private void updateChartFrameOrFail() {
         try {
             chartPanel.updateSeriesOrFail(0, bms.batteryPack
-                    .getSumOfAllVoltages());  // update voltage
+                    .getVoltage());  // update voltage
         } catch (Exception e) {
             System.err.println(e.toString());
         }
