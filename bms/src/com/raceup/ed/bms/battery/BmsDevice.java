@@ -24,7 +24,7 @@ public class BmsDevice extends Cell {
 
     @Override
     public synchronized double getTemperature() {
-        return (temperature1 + temperature2) / 2.0;
+        return (temperature1 + temperature2) / 2.0;  // average
     }
 
     /**
