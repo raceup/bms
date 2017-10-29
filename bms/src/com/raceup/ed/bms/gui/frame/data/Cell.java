@@ -31,14 +31,15 @@ class Cell extends JPanel {
     private static final Color VALUE_TOO_HIGH_COLOR = Color.RED;
     private static final Color VALUE_NORMAL_COLOR = Color.GREEN;
     private static final Color VALUE_TOO_LOW_COLOR = Color.CYAN;
-    private static final double[] temperatureBounds = new double[]{-100,
+    protected static final double[] temperatureBounds = new double[]{-100,
             60};  // too low, too high values
-    private static final double[] voltageBounds = new double[]{4000.0, 4200.0};
-    private final JLabel temperatureLabel = new JLabel("0000.00");
+    protected static final double[] voltageBounds = new double[]{4000.0,
+            4200.0};
+    protected final JLabel temperatureLabel = new JLabel("0000.00");
     // labels
-    private final JLabel voltageLabel = new JLabel("0000.00");
-    private double temperature;  // remember last value set
-    private double voltage;
+    protected final JLabel voltageLabel = new JLabel("0000.00");
+    protected double temperature;  // remember last value set
+    protected double voltage;
 
     Cell() {
         setLayout(new GridLayout(2, 1));  // rows, columns
@@ -180,7 +181,7 @@ class Cell extends JPanel {
      * @param bounds min, max of value allowed
      * @param value  new value
      */
-    private void update(JLabel label, double[] bounds, double value) {
+    protected void update(JLabel label, double[] bounds, double value) {
         label.setText(SHORT_DEC_FORMAT.format(value));
         updateBackground(value, bounds);
     }

@@ -99,8 +99,31 @@ public class Pack implements BmsControllable {
         return numberOfCellsPerSegment;
     }
 
+    /**
+     * Number of segments in battery pack
+     *
+     * @return length of list of segments
+     */
+    public int getNumberOfSegments() {
+        return segments.length;
+    }
+
+    /**
+     * Find number of bms devices in pack
+     *
+     * @return number of bms devices in pack
+     */
+    public int getNumberOfBmsDevices() {
+        int bmsDevicesCounter = 0;
+        for (Segment s : segments) {
+            int bmsDevicesInSegment = s.getNumberOfBmsDevices();
+            bmsDevicesCounter += bmsDevicesInSegment;  // update counter
+        }
+        return bmsDevicesCounter;
+    }
+
     /*
-     * Temperatures
+     * Temperatures and voltages
      */
 
     /**
@@ -143,33 +166,6 @@ public class Pack implements BmsControllable {
         return positions;
     }
 
-    /*
-     * Voltages
-     */
-
-    /**
-     * Number of segments in battery pack
-     *
-     * @return length of list of segments
-     */
-    public int getNumberOfSegments() {
-        return segments.length;
-    }
-
-    /**
-     * Find number of bms devices in pack
-     *
-     * @return number of bms devices in pack
-     */
-    public int getNumberOfBmsDevices() {
-        int bmsDevicesCounter = 0;
-        for (Segment s : segments) {
-            int bmsDevicesInSegment = s.getNumberOfBmsDevices();
-            bmsDevicesCounter += bmsDevicesInSegment;  // update counter
-        }
-        return bmsDevicesCounter;
-    }
-
     /**
      * Update voltage of cell of given cell
      *
@@ -181,11 +177,6 @@ public class Pack implements BmsControllable {
             voltage) {
         segments[segment].setVoltageOfCell(cellPosition, voltage);
     }
-
-    /*
-     * Statics
-     */
-
     /**
      * Retrieves temperature of bms device
      *
