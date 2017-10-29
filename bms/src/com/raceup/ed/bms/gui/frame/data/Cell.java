@@ -136,10 +136,6 @@ class Cell extends JPanel {
         return voltageBounds;
     }
 
-    /*
-     * dialog to show more info
-     */
-
     /**
      * Show dialog with more info about cell
      *
