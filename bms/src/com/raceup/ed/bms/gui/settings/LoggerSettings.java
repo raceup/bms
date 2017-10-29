@@ -23,7 +23,7 @@ import java.awt.*;
  * Panel with file chooser to log file there
  */
 public class LoggerSettings extends JPanel {
-    private String pathChosen = System.getProperty("user.dir");  // default
+    private String pathChosen = System.getProperty("user.home");  // default
     // is the current working directory
     private JLabel pathChosenLabel = new JLabel(pathChosen);  // label with
     // current path choice
@@ -56,7 +56,7 @@ public class LoggerSettings extends JPanel {
         browseFileButton.addActionListener(e -> chooseFile());
         add(browseFileButton);
 
-        pathChosenLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        pathChosenLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
         add(pathChosenLabel);
     }
 

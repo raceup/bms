@@ -17,7 +17,6 @@
 package com.raceup.ed.bms;
 
 import com.raceup.ed.bms.gui.settings.GuiSettings;
-import com.raceup.ed.bms.utils.Os;
 
 import javax.swing.*;
 import java.awt.*;
@@ -38,7 +37,7 @@ class Main {
      */
     public static void main(String[] args) {
         setAppUiOrFail();
-        Os.setNativeLookAndFeelOrFail();  // set native look and feel in UIs
+        // Os.setNativeLookAndFeelOrFail();  // set native look and feel in UIs
         BmsGui bmsGui = getGuiOrNull();  // create app
         startAppOrExit(bmsGui);  // start app
     }

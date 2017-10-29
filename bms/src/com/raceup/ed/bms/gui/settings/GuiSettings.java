@@ -36,26 +36,41 @@ public class GuiSettings {
      * @return custom bms
      */
     public static Bms buildBms() {
-        JPanel mainPanel = new JPanel();
-        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.PAGE_AXIS));
+        JPanel canvas = new JPanel();
+        canvas.setLayout(new BoxLayout(canvas, BoxLayout.PAGE_AXIS));
         // add items vertically
 
-        ArduinoSettings arduinoSettings = new ArduinoSettings();  // create
-        // panels
-        BatterySettings batterySettings = new BatterySettings();
+        ArduinoSettings arduinoSettings = new ArduinoSettings();
         LoggerSettings loggerSettings = new LoggerSettings();
+        BatterySettings batterySettings = new BatterySettings();
 
-        mainPanel.add(createSettingsPanel(arduinoSettings, "Arduino serial " +
-                "data rate"));  // setup layout
-        mainPanel.add(createSettingsPanel(loggerSettings, "Folder to store " +
+        canvas.add(createSettingsPanel(arduinoSettings, "Arduino serial " +
+                "data rate"));
+        canvas.add(createSettingsPanel(loggerSettings, "Folder to store " +
                 "logs"));
-        mainPanel.add(createSettingsPanel(new JScrollPane(batterySettings),
+        canvas.add(createSettingsPanel(new JScrollPane(batterySettings),
                 "Battery pack model"));
 
+        return createBms(canvas, arduinoSettings, loggerSettings,
+                batterySettings);
+    }
+
+    /**
+     * Creates new bms model with settings from GUI panels
+     *
+     * @param mainPanel       canvas to show dialog
+     * @param arduinoSettings panel for arduino related settings
+     * @param loggerSettings  panel for logging related settings
+     * @param batterySettings panel for battery related settings
+     * @return bms model with settings from GUI panels
+     */
+    private static Bms createBms(JPanel mainPanel, ArduinoSettings
+            arduinoSettings, LoggerSettings loggerSettings, BatterySettings
+                                         batterySettings) {
         int userInput = JOptionPane.showConfirmDialog(
                 null,
                 mainPanel,
-                "Settings to create new Bms monitor",  // question for the user
+                "Create new Bms monitor",  // question for the user
                 JOptionPane.CANCEL_OPTION
         );
 
@@ -84,12 +99,14 @@ public class GuiSettings {
                                               String title) {
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.PAGE_AXIS));
+        mainPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        mainPanel.add(Box.createRigidArea(new Dimension(0, 10)));
 
-        mainPanel.add(Box.createRigidArea(new Dimension(0, 10)));  // add
-        // spacing
         mainPanel.add(settingsPanel);  // add settings panel
+        settingsPanel.setMinimumSize(new Dimension(600, 300));
+        settingsPanel.setMaximumSize(new Dimension(600, 300));
         JPanelsUtils.addTitleBorderOnPanel(mainPanel, title);  // add title
-        // and border
+
 
         return mainPanel;
     }
