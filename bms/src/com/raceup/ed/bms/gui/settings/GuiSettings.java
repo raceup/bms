@@ -29,7 +29,7 @@ import java.awt.*;
  * Let users set some settings that cannot be set after creating BmsGui
  */
 public class GuiSettings {
-    private static final String SETTINGS_TITLE = "Create new Bms monitor";
+    private static final String SETTINGS_TITLE = "Create new BmsUtils monitor";
     private static final String ARDUINO_SETTINGS_TITLE = "Arduino serial " +
             "data rate";
     private static final String LOGGER_SETTINGS_TITLE = "Folder to store " +

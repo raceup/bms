@@ -23,7 +23,7 @@ import java.awt.*;
 
 /**
  * Main driver program
- * Run BmsGUI or simple Bms monitor here
+ * Run BmsGUI or simple BmsUtils monitor here
  */
 class Main {
     private static final String APP_NAME_SETTINGS = "awtAppClassName";

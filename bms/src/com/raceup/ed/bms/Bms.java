@@ -22,6 +22,7 @@ import com.raceup.ed.bms.stream.ArduinoSerial;
 import com.raceup.ed.bms.stream.Logger;
 import com.raceup.ed.bms.stream.bms.data.BmsData;
 import com.raceup.ed.bms.stream.bms.data.BmsValue;
+import com.raceup.ed.bms.utils.BmsUtils;
 import org.json.JSONObject;
 
 
@@ -32,7 +33,7 @@ import org.json.JSONObject;
 public class Bms extends ArduinoSerial implements Runnable, StartAndStop {
     public static final String appName = "BmsManager";  // app settings
     static final String appVersion = "2.4";
-    private static final String TAG = "Bms";
+    private static final String TAG = "BmsUtils";
     private static final String ARDUINO_START_LOGGING_MSG = "H";  // send
     // this message to ask Arduino to start logging
     private static final String ARDUINO_BALANCE_MSG = "B";  // send this
@@ -131,82 +132,13 @@ public class Bms extends ArduinoSerial implements Runnable, StartAndStop {
      * @return last value from serial
      */
     BmsData getNewestData() {
-        return new BmsData(new JSONObject(getNewestRawData()));
-    }
-
-    /**
-     * Gets raw data from pre-defined values
-     *
-     * @param type    type of data
-     * @param cell    number of cell broadcasting value
-     * @param segment number of segment broadcasting value
-     * @param value   value of cell of segment
-     * @return raw data from pre-defined values
-     */
-    private static String getRawDataFromValues(String type, String cell, String
-            segment, String value) {
-        BmsData data = new BmsData(type, cell, segment, value);
-        return data.getJsonValue();
-    }
-
-    private static String getRandomData() {
-        String type, value;
-        double randTypeNum = Math.random();
-        double minCell = 0, maxCell = 18;
-        double minSegment = 0, maxSegment = 8;
-        double randCell = minCell + Math.random() * (maxCell - minCell);
-        double randSegment = minSegment + Math.random() * (maxSegment -
-                minCell);
-
-        String cell = Integer.toString((int) randCell);
-        String segment = Integer.toString((int) randSegment);
-
-        double rawValueProb = 0.75;
-
-        if (randTypeNum < rawValueProb) {  // generate random value
-            if (randTypeNum < rawValueProb / 2) {  // value is voltage
-                type = "voltage";
-
-                double minVolt = 3950, maxVolt = 4050;
-                double randVolt = minVolt + Math.random() * (maxVolt -
-                        minVolt);
-                value = Integer.toString((int) randVolt);
-            } else {  // value is temperature
-                type = "temperature";
-
-                double minTemp = 25, maxTemp = 45;
-                double randTemp = minTemp + Math.random() * (maxTemp -
-                        minTemp);
-                value = Double.toString(randTemp);
-            }
-        } else {  // generate random status
-            double randStatusNum = Math.random();
-            if (randStatusNum < 1.0 / 3) {
-                type = "Alert";
-                value = "Possible warning in cell " + cell + ", segment " +
-                        segment;
-            } else if (randStatusNum < 2.0 / 3) {
-                type = "Fault";
-                value = "Fault in cell " + cell + ", segment " + segment;
-            } else {
-                type = "Log";
-                value = "All right down here for as far as I can tell";
-            }
-        }
-
-        return getRawDataFromValues(type, cell, segment, value);
-    }
-
-    /**
-     * Getter of raw data
-     *
-     * @return raw data
-     */
-    private String getNewestRawData() {
         // TODO: debug only String data = serialData;
-        return getRandomData().trim();
+        return new BmsData(
+                new JSONObject(
+                        BmsUtils.getRandomData().trim()
+                )
+        );
     }
-
 
     /*
      * Battery manager

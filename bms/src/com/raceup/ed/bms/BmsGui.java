@@ -78,9 +78,10 @@ public class BmsGui extends ApplicationFrame implements Runnable,
      * @param bms bms manager to monitor
      */
     BmsGui(Bms bms) {
-        super("Bms manager");  // set title
+        super("BmsUtils manager");  // set title
         setIconImage(appIcon);  // set icon
-        System.setProperty(APP_NAME_SETTINGS, "Bms Manager");  // set app name
+        System.setProperty(APP_NAME_SETTINGS, "BmsUtils Manager");  // set
+        // app name
 
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);  // destroy
         // app when closed
@@ -385,7 +386,7 @@ public class BmsGui extends ApplicationFrame implements Runnable,
         });
         menu.add(item);
 
-        item = new JMenuItem("Bms update interval");
+        item = new JMenuItem("BmsUtils update interval");
         item.addActionListener(e -> {
             String userInput = JOptionPane.showInputDialog("Milliseconds " +
                     "between two consecutive bms updates", bms
