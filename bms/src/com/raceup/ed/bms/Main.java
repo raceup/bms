@@ -37,7 +37,6 @@ class Main {
      */
     public static void main(String[] args) {
         setAppUiOrFail();
-        // Os.setNativeLookAndFeelOrFail();  // set native look and feel in UIs
         BmsGui bmsGui = getGuiOrNull();  // create app
         startAppOrExit(bmsGui);  // start app
     }

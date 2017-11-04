@@ -75,7 +75,7 @@ class BatterySettings extends JPanel {
         repaint();
 
         createAndAddCellNumberSpinners();  // spinners
-        createAndAddStatusBar();  // statusbar
+        createAndAddStatusBar();  // status-bar
     }
 
     /**
@@ -89,7 +89,7 @@ class BatterySettings extends JPanel {
             JPanel segmentPanel = new JPanel();  // where to put segment
 
             JLabel segmentName = new JLabel("Segment " + Integer.toString(i
-                    + 1) + " number of cells:");  // label with name of segment
+                    + 1) + " | cells:");  // label with name of segment
             JSpinner cellNumberSpinner = new JSpinner(
                     new SpinnerNumberModel(
                             minNumberOfCellsPerSegment,  // initial value
@@ -124,9 +124,9 @@ class BatterySettings extends JPanel {
         statusBar.setPreferredSize(new Dimension(getWidth(), 3 *
                 statusBarHeight));  // buttons and statusbar
 
-        JButton addNewSegmentButton = new JButton("Add");
+        JButton addNewSegmentButton = new JButton("Add one");
         addNewSegmentButton.addActionListener(e -> addNewSegment());
-        JButton removeLastSegmentButton = new JButton("Remove last");  //
+        JButton removeLastSegmentButton = new JButton("Remove one");  //
         // exit button
         removeLastSegmentButton.addActionListener(e -> removeLastSegment());
 

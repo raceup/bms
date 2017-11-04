@@ -40,15 +40,6 @@ class Segment implements BmsControllable {
         bmsDevices = createBmsDevices(numberOfCells, numberOfCellsPerBms);
     }
 
-    /**
-     * Create segment with selected number of cells
-     *
-     * @param numberOfCells number of cells in segment
-     */
-    Segment(int numberOfCells) {
-        this(numberOfCells, numberOfCellsPerBms);
-    }
-
     /*
      * General info
      */
