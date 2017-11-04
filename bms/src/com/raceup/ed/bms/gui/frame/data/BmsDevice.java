@@ -1,50 +1,82 @@
 package com.raceup.ed.bms.gui.frame.data;
 
+import com.raceup.ed.bms.utils.gui.JPanelsUtils;
+
 import javax.swing.*;
-import java.awt.*;
 
-public class BmsDevice extends Cell {
-    // TODO 2 temperatures -> 2 cells layout
-    // +------------------------+
-    // +-        voltage        -
-    // +------------------------+
-    // +-   temp  -++-   temp   -
-    // +------------------------+
-    // TODO    instead of
-    // +-----------++-----------+
-    // +- voltage -++-  voltage -
-    // +-----------++-----------+
-    // +-   temp  -++-   temp  -+
-    // +-----------++-----------+
-
+public class BmsDevice extends NumAlerter {
+    private static final double[] TEMPERATURE_BOUNDS = new double[]{-100,
+            60};  // too low, too high values
+    private Cell[] cells;
     private final JLabel temperature1Label = new JLabel("0000.00");
     private final JLabel temperature2Label = new JLabel("0000.00");
-    private double temperature1;
-    private double temperature2;
+    private JLabel label = new JLabel("BMS #");
 
-    BmsDevice() {
-        setLayout(new GridLayout(2, 2));  // rows, columns
-        setup();
+    public BmsDevice(int index, int numberOfCells) {
+        setup(index, numberOfCells);
     }
 
     public void setTemperature1(double value) {
-        temperature1 = value;  // update value
-        update(temperature1Label, temperatureBounds, value);
+        update(temperature1Label, TEMPERATURE_BOUNDS, value);
     }
 
     public void setTemperature2(double value) {
-        temperature2 = value;  // update value
-        update(temperature2Label, temperatureBounds, value);
+        update(temperature2Label, TEMPERATURE_BOUNDS, value);
     }
 
-    private void setup() {
+    public void setVoltage(int index, double value) {
+        cells[index].setVoltage(value);
+        update(label, Cell.VOLTAGE_BOUNDS, value);
+    }
+
+    private void setupVoltageLabels(int numberOfCells) {
+        JPanel cellsPanel = new JPanel();
+        cellsPanel.setLayout(new BoxLayout(cellsPanel, BoxLayout.Y_AXIS));
+
+        cells = new Cell[numberOfCells];
+        for (int i = 0; i < numberOfCells; i++) {
+            cells[i] = new Cell(i);
+            cellsPanel.add(cells[i]);
+        }
+
+        JPanelsUtils.addTitleBorderOnPanel(cellsPanel, "Voltages");
+        add(cellsPanel);
+    }
+
+    private void setupTemperatureLabels() {
+        JPanel temperaturePanel = new JPanel();
+        temperaturePanel.setLayout(new BoxLayout(temperaturePanel, BoxLayout
+                .Y_AXIS));
+
         temperature1Label.setHorizontalAlignment(SwingConstants.RIGHT);
         temperature2Label.setHorizontalAlignment(SwingConstants.RIGHT);
-        voltageLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 
-        add(voltageLabel);
-        add(temperature1Label);
-        add(temperature2Label);
+        temperaturePanel.add(temperature1Label);
+        temperaturePanel.add(temperature2Label);
+
+        add(temperaturePanel);
+    }
+
+    private void setupFlagLabels() {
+        JPanel flagPanel = new JPanel();
+        flagPanel.setLayout(new BoxLayout(flagPanel, BoxLayout
+                .Y_AXIS));
+
+        flagPanel.add(new JLabel("1"));
+        flagPanel.add(new JLabel("0"));
+
+        add(flagPanel);
+    }
+
+    private void setup(int index, int numberOfCells) {
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+
+        label = new JLabel("BMS " + Integer.toString(index));
+        add(label);
+
+        setupVoltageLabels(numberOfCells);
+        setupTemperatureLabels();
+        setupFlagLabels();
 
         setVisible(true);  // open
     }

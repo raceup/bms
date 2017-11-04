@@ -19,7 +19,7 @@ package com.raceup.ed.bms.battery;
 /**
  * Battery cell with temperature and voltage readings
  */
-class Cell {
+class Cell implements BmsControllable {
     private double temperature;
     private double voltage;
 

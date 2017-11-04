@@ -6,6 +6,9 @@ All notable changes to this project will be documented in this file.
 ### Refactored
 - settings showing bms settings, not cells
 
+### Added
+- NumAlerter class
+
 ## 2.4 - 2017-09-23
 
 ### Fixed
