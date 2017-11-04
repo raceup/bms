@@ -29,6 +29,12 @@ import java.awt.*;
  * Let users set some settings that cannot be set after creating BmsGui
  */
 public class GuiSettings {
+    private static final String SETTINGS_TITLE = "Create new Bms monitor";
+    private static final String ARDUINO_SETTINGS_TITLE = "Arduino serial " +
+            "data rate";
+    private static final String LOGGER_SETTINGS_TITLE = "Folder to store " +
+            "logs";
+    private static final String BATTERY_SETTINGS_TITLE = "Battery pack model";
 
     /**
      * Create new bms based on settings
@@ -44,12 +50,11 @@ public class GuiSettings {
         LoggerSettings loggerSettings = new LoggerSettings();
         BatterySettings batterySettings = new BatterySettings();
 
-        canvas.add(createSettingsPanel(arduinoSettings, "Arduino serial " +
-                "data rate"));
-        canvas.add(createSettingsPanel(loggerSettings, "Folder to store " +
-                "logs"));
+        canvas.add(createSettingsPanel(arduinoSettings,
+                ARDUINO_SETTINGS_TITLE));
+        canvas.add(createSettingsPanel(loggerSettings, LOGGER_SETTINGS_TITLE));
         canvas.add(createSettingsPanel(new JScrollPane(batterySettings),
-                "Battery pack model"));
+                BATTERY_SETTINGS_TITLE));
 
         return createBms(canvas, arduinoSettings, loggerSettings,
                 batterySettings);
@@ -69,23 +74,25 @@ public class GuiSettings {
                                          batterySettings) {
         int userInput = JOptionPane.showConfirmDialog(
                 null,
-                mainPanel,
-                "Create new Bms monitor",  // question for the user
-                JOptionPane.CANCEL_OPTION
+                mainPanel, SETTINGS_TITLE, // question for the user
+                JOptionPane.OK_CANCEL_OPTION
         );
 
-        if (userInput == JOptionPane.CANCEL_OPTION || userInput < 0) {  //
-            // user has clicked "Cancel" button or exited panel -> exit
-            System.exit(0);
+        boolean userQuit = userInput == JOptionPane.CANCEL_OPTION ||
+                userInput < 0;
+
+        if (userQuit) {
             return null;
-        } else {  // user has decided options and not cancelled operations
-            return new Bms(
-                    arduinoSettings.getBaudRate(),  // baud rate
-                    new Logger(loggerSettings.getPathChosen()),  // log folder
-                    new Pack(batterySettings.getNumberOfCellsPerSegment(), 3)
-                    // new battery pack
-            );
         }
+
+        return new Bms(
+                arduinoSettings.getBaudRate(),  // baud rate
+                new Logger(loggerSettings.getPathChosen()),  // log folder
+                new Pack(
+                        batterySettings.getNumberOfBmsPerSegment(),
+                        3
+                )
+        );
     }
 
     /**
@@ -103,8 +110,6 @@ public class GuiSettings {
         mainPanel.add(Box.createRigidArea(new Dimension(0, 10)));
 
         mainPanel.add(settingsPanel);  // add settings panel
-        settingsPanel.setMinimumSize(new Dimension(600, 300));
-        settingsPanel.setMaximumSize(new Dimension(600, 300));
         JPanelsUtils.addTitleBorderOnPanel(mainPanel, title);  // add title
 
 

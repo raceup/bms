@@ -24,12 +24,13 @@ import java.util.ArrayList;
  * Panel to set battery pack options
  */
 class BatterySettings extends JPanel {
-    private static final int minNumberOfCellsPerSegment = 0;  // min, max of
+    private static final int minNumberOfBmsPerSegment = 1;  // min, max of
     // number of cells in segment
-    private static final int maxNumberOfCellsPerSegment = 100;
-    private static final int statusBarHeight = 20;  // height of statusbar
+    private static final int maxNumberOfBmsPerSegment = 100;
+    private static final int statusBarHeight = 60;  // height of status-bar
+    private static final int borderSpace = 10;
     // in pixel
-    private final ArrayList<Integer> numberOfCellsPerSegment = new
+    private final ArrayList<Integer> numberOfBmsPerSegment = new
             ArrayList<>();  // default number of segments
 
     BatterySettings() {
@@ -45,8 +46,8 @@ class BatterySettings extends JPanel {
      *
      * @return number of cells per segment
      */
-    public int[] getNumberOfCellsPerSegment() {
-        return numberOfCellsPerSegment.stream().mapToInt(i -> i).toArray();
+    public int[] getNumberOfBmsPerSegment() {
+        return numberOfBmsPerSegment.stream().mapToInt(i -> i).toArray();
         // ArrayList > Integer[] > int[]
     }
 
@@ -54,16 +55,15 @@ class BatterySettings extends JPanel {
      * Loads default battery pack
      */
     private void loadDefaultBatteryPack() {
-        numberOfCellsPerSegment.clear();  // start from scratch
-        numberOfCellsPerSegment.add(17);  // first segment...
-        numberOfCellsPerSegment.add(18);
-        numberOfCellsPerSegment.add(18);
-        numberOfCellsPerSegment.add(18);
-        numberOfCellsPerSegment.add(18);
-        numberOfCellsPerSegment.add(18);
-        numberOfCellsPerSegment.add(18);
-        numberOfCellsPerSegment.add(17);  // ...and last segment have 34
-        // single cells
+        numberOfBmsPerSegment.clear();  // start from scratch
+        numberOfBmsPerSegment.add(3);  // first segment...
+        numberOfBmsPerSegment.add(3);
+        numberOfBmsPerSegment.add(3);
+        numberOfBmsPerSegment.add(3);
+        numberOfBmsPerSegment.add(3);
+        numberOfBmsPerSegment.add(3);
+        numberOfBmsPerSegment.add(3);
+        numberOfBmsPerSegment.add(3);  // ...and last segment have 34 cells
     }
 
     /**
@@ -74,37 +74,37 @@ class BatterySettings extends JPanel {
         revalidate();
         repaint();
 
-        createAndAddCellNumberSpinners();  // spinners
-        createAndAddStatusBar();  // status-bar
+        addCellNumberSpinners();  // spinners
+        addStatusBar();  // status-bar
     }
 
     /**
      * Setup spinners of cell numbers of segments
      */
-    private void createAndAddCellNumberSpinners() {
+    private void addCellNumberSpinners() {
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.PAGE_AXIS));
 
-        for (int i = 0; i < numberOfCellsPerSegment.size(); i++) {
+        for (int i = 0; i < numberOfBmsPerSegment.size(); i++) {
             JPanel segmentPanel = new JPanel();  // where to put segment
 
             JLabel segmentName = new JLabel("Segment " + Integer.toString(i
-                    + 1) + " | cells:");  // label with name of segment
+                    + 1) + " | bms:");  // label with name of segment
             JSpinner cellNumberSpinner = new JSpinner(
                     new SpinnerNumberModel(
-                            minNumberOfCellsPerSegment,  // initial value
-                            minNumberOfCellsPerSegment,  // min
-                            maxNumberOfCellsPerSegment, // max
+                            minNumberOfBmsPerSegment,  // initial value
+                            minNumberOfBmsPerSegment,  // min
+                            maxNumberOfBmsPerSegment, // max
                             1  //step
                     )
             );  // possible values of cells
-            cellNumberSpinner.setValue(numberOfCellsPerSegment.get(i));  //
+            cellNumberSpinner.setValue(numberOfBmsPerSegment.get(i));  //
             // set initial value
 
             final int segmentNumber = i;
             cellNumberSpinner.addChangeListener(  // edit segment number of
                     // cells on edit
-                    e -> numberOfCellsPerSegment.set(segmentNumber,
+                    e -> numberOfBmsPerSegment.set(segmentNumber,
                             (Integer) cellNumberSpinner.getValue())
             );
 
@@ -119,9 +119,9 @@ class BatterySettings extends JPanel {
     /**
      * Create statusbar with Add/Remove buttons to edit battery pack
      */
-    private void createAndAddStatusBar() {
+    private void addStatusBar() {
         JPanel statusBar = new JPanel();  // where status bar will be
-        statusBar.setPreferredSize(new Dimension(getWidth(), 3 *
+        statusBar.setPreferredSize(new Dimension(getWidth(),
                 statusBarHeight));  // buttons and statusbar
 
         JButton addNewSegmentButton = new JButton("Add one");
@@ -136,13 +136,19 @@ class BatterySettings extends JPanel {
 
         statusBar.setVisible(true);
         add(statusBar);
+        setBorder(BorderFactory.createEmptyBorder(
+                borderSpace,
+                borderSpace,
+                borderSpace,
+                borderSpace
+        ));
     }
 
     /**
      * Add new segment
      */
     private void addNewSegment() {
-        numberOfCellsPerSegment.add(minNumberOfCellsPerSegment);  // add new
+        numberOfBmsPerSegment.add(minNumberOfBmsPerSegment);  // add new
         // segment with min number of cells
         setupGui();  // update layout
     }
@@ -151,7 +157,7 @@ class BatterySettings extends JPanel {
      * Remove last segment in list
      */
     private void removeLastSegment() {
-        numberOfCellsPerSegment.remove(numberOfCellsPerSegment.size() - 1);
+        numberOfBmsPerSegment.remove(numberOfBmsPerSegment.size() - 1);
         // remove last
         setupGui();  // update layout
     }

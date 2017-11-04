@@ -21,7 +21,6 @@ package com.raceup.ed.bms.battery;
  */
 class Segment implements BmsControllable {
     private final Cell[] cells;  // list of cell in segment
-    private static final int numberOfCellsPerBms = 6;
     private final BmsDevice[] bmsDevices;
     // bms
 
@@ -89,16 +88,6 @@ class Segment implements BmsControllable {
         cells[cellPosition].setTemperature(temperature);
     }
 
-    /**
-     * Retrieves temperature of bms device
-     *
-     * @param bmsDevice # of bms device
-     * @return temperature of bms device
-     */
-    public double getTemperatureOfBms(int bmsDevice) {
-        return bmsDevices[bmsDevice].getTemperature();
-    }
-
     /*
      * Voltages
      */
@@ -124,16 +113,6 @@ class Segment implements BmsControllable {
      */
     public void setVoltageOfCell(int cellPosition, double voltage) {
         cells[cellPosition].setVoltage(voltage);
-    }
-
-    /**
-     * Retrieves voltage of bms device
-     *
-     * @param bmsDevice # of bms device
-     * @return temperature of bms device
-     */
-    public double getVoltageOfBms(int bmsDevice) {
-        return bmsDevices[bmsDevice].getVoltage();
     }
 
     /*

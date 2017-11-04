@@ -73,8 +73,10 @@ class Main {
      */
     private static void startGui(Bms bms) {
         try {
-            BmsGui bmsGui = new BmsGui(bms);
-            startAppOrExit(bmsGui);  // start app
+            if (bms != null) {
+                BmsGui bmsGui = new BmsGui(bms);
+                startAppOrExit(bmsGui);  // start app
+            }
         } catch (Throwable e) {
             System.out.print(e.toString());
             String errorMessage = ERROR_MESSAGE + e.toString() + "\n\n";
