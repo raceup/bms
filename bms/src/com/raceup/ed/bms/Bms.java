@@ -135,11 +135,21 @@ public class Bms extends ArduinoSerial implements Runnable, StartAndStop {
     }
 
     /**
-     * Getter of raw data
+     * Gets raw data from pre-defined values
      *
-     * @return raw data
+     * @param type    type of data
+     * @param cell    number of cell broadcasting value
+     * @param segment number of segment broadcasting value
+     * @param value   value of cell of segment
+     * @return raw data from pre-defined values
      */
-    private String getNewestRawData() {
+    private static String getRawDataFromValues(String type, String cell, String
+            segment, String value) {
+        BmsData data = new BmsData(type, cell, segment, value);
+        return data.getJsonValue();
+    }
+
+    private static String getRandomData() {
         String type, value;
         double randTypeNum = Math.random();
         double minCell = 0, maxCell = 18;
@@ -184,24 +194,17 @@ public class Bms extends ArduinoSerial implements Runnable, StartAndStop {
             }
         }
 
-        String data = getRawDataFromValues(type, cell, segment, value);
-        // TODO: debug only String data = serialData;
-        return data.trim();
+        return getRawDataFromValues(type, cell, segment, value);
     }
 
     /**
-     * Gets raw data from pre-defined values
+     * Getter of raw data
      *
-     * @param type    type of data
-     * @param cell    number of cell broadcasting value
-     * @param segment number of segment broadcasting value
-     * @param value   value of cell of segment
-     * @return raw data from pre-defined values
+     * @return raw data
      */
-    private String getRawDataFromValues(String type, String cell, String
-            segment, String value) {
-        BmsData data = new BmsData(type, cell, segment, value);
-        return data.getJsonValue();
+    private String getNewestRawData() {
+        // TODO: debug only String data = serialData;
+        return getRandomData().trim();
     }
 
 

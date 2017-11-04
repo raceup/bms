@@ -1,6 +1,11 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2.4.1 - 2017-11-04
+
+### Refactored
+- settings showing bms settings, not cells
+
 ## 2.4 - 2017-09-23
 
 ### Fixed

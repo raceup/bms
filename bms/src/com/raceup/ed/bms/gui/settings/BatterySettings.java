@@ -28,7 +28,6 @@ class BatterySettings extends JPanel {
     // number of cells in segment
     private static final int maxNumberOfBmsPerSegment = 100;
     private static final int statusBarHeight = 60;  // height of status-bar
-    private static final int borderSpace = 10;
     private static final int DEFAULT_CELLS_PER_BMS = 6;
     private static final String ADD_NEW_BMS_BUTTON = "Add new BMS";
     private static final String REMOVE_BMS_BUTTON = "Remove last BMS";
