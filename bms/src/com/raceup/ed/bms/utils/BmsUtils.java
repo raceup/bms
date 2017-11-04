@@ -1,5 +1,8 @@
 package com.raceup.ed.bms.utils;
 
+import com.raceup.ed.bms.battery.BmsDevice;
+import com.raceup.ed.bms.battery.BmsDevicePosition;
+import com.raceup.ed.bms.battery.Segment;
 import com.raceup.ed.bms.stream.bms.data.BmsData;
 
 public class BmsUtils {
@@ -69,5 +72,88 @@ public class BmsUtils {
         }
 
         return getRawDataFromValues(type, cell, segment, value);
+    }
+
+    /**
+     * Finds number of segment of bms device
+     *
+     * @param bmsDevice # of bms device
+     * @param segments  list of segments to look into
+     * @return index of segment with bms device
+     */
+    public static BmsDevicePosition getPositionOfBmsDevice(
+            int bmsDevice, Segment[] segments) {
+        if (bmsDevice < 0) {
+            throw new IllegalArgumentException("Cannot find bms device #" +
+                    Integer.toString(bmsDevice));
+        }
+
+        int bmsDevicesCounter = 0;
+        for (int i = 0; i < segments.length; ++i) {
+            int bmsDevicesInSegment = segments[i].getNumberOfBmsDevices();
+            if (bmsDevice < bmsDevicesCounter + bmsDevicesInSegment) {
+                int positionRelativeToSegment = bmsDevice - bmsDevicesCounter;
+                return new BmsDevicePosition(positionRelativeToSegment, i);
+            }
+
+            bmsDevicesCounter += bmsDevicesInSegment;  // update counter
+        }
+
+        throw new IllegalArgumentException("Cannot find bms device #" +
+                Integer.toString(bmsDevice));
+    }
+
+    /**
+     * Finds position of each bms device in segments
+     *
+     * @param totalBmsDevices total number of bms devices
+     * @param segments        segments to look into
+     * @return list of positions (each position is relative to one device)
+     */
+    public static BmsDevicePosition[] generateBmsDevicePositions(
+            int totalBmsDevices, Segment[] segments) {
+        BmsDevicePosition[] positions = new BmsDevicePosition[totalBmsDevices];
+        for (int i = 0; i < totalBmsDevices; i++) {
+            positions[i] = getPositionOfBmsDevice(i, segments);
+        }
+        return positions;
+    }
+
+
+    /**
+     * Creates list of segments for pack
+     *
+     * @param numberOfBmsPerSegment # cell in each segment
+     * @param numberOfCellsPerBms   # cells controlled by each bms
+     * @return list of segments
+     */
+    public static Segment[] createSegments(
+            int[] numberOfBmsPerSegment, int numberOfCellsPerBms) {
+        final int numberOfSegments = numberOfBmsPerSegment.length;
+        Segment[] segments = new Segment[numberOfSegments];
+        for (int i = 0; i < numberOfSegments; i++) {  // open segments
+            segments[i] = new Segment(numberOfBmsPerSegment[i],
+                    numberOfCellsPerBms);
+        }
+        return segments;
+    }
+
+    /**
+     * Creates list of bms devices for segment
+     *
+     * @param numberOfCells       # cell in segment to be controlled by bms
+     *                            devices
+     * @param numberOfCellsPerBms # cells controlled by each bms device
+     * @return list of bms devices for segment
+     */
+    public static BmsDevice[] createBmsDevices(int numberOfCells, int
+            numberOfCellsPerBms) {
+        int numberOfBmsDevices = (int) Math.ceil(numberOfCells /
+                numberOfCellsPerBms);
+        BmsDevice[] bmsDevices = new BmsDevice[numberOfBmsDevices];
+        for (BmsDevice bmsDevice : bmsDevices) {
+            bmsDevice = new BmsDevice(numberOfCellsPerBms);
+        }
+        return bmsDevices;
     }
 }

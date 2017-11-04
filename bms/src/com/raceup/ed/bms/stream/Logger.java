@@ -76,7 +76,7 @@ public class Logger {
      *
      * @param data new data to append
      */
-    public void logBmsDataOrFail(BmsData data) {
+    public void logBmsDataOrFail(BmsLog data) {
         try {
             if (data.isStatusType()) {  // if it's a log, update log frame
                 logBmsLog(new BmsLog(data));

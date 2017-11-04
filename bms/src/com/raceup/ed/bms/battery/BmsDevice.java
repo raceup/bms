@@ -1,41 +1,38 @@
 package com.raceup.ed.bms.battery;
 
-public class BmsDevice extends Cell {
-    private double temperature1;
-    private double temperature2;
+// TODO add docs
+public class BmsDevice {
+    private Cell[] cells;
 
-    /**
-     * Retrieve temperature value
-     *
-     * @return temperature of cell
-     */
-    public synchronized double getTemperature1() {
-        return temperature1;
+    public BmsDevice(int numberOfCells) {
+        cells = new Cell[numberOfCells];
     }
 
-    /**
-     * Retrieve temperature value
-     *
-     * @return temperature of cell
-     */
-    public synchronized double getTemperature2() {
-        return temperature2;
+    public double getTemperature1() {
+        return cells[0].getTemperature();
     }
 
-    @Override
-    public synchronized double getTemperature() {
-        return (temperature1 + temperature2) / 2.0;  // average
+    public void setTemperature1(double value) {
+        for (int i = 0; i < (cells.length + 1) / 2; i++) {
+            cells[i].setTemperature(value);
+        }
     }
 
-    /**
-     * Updatse voltage of device
-     *
-     * @param temperature1 temp1
-     * @param temperature2 temp2
-     */
-    public synchronized void setTemperature(double temperature1, double
-            temperature2) {
-        this.temperature1 = temperature1;
-        this.temperature2 = temperature2;
+    public double getTemperature2() {
+        return cells[cells.length - 1].getTemperature();  // last cell
+    }
+
+    public void setTemperature2(double value) {
+        for (int i = (cells.length + 1) / 2; i < cells.length; i++) {
+            cells[i].setTemperature(value);
+        }
+    }
+
+    public double getVoltageOfCell(int index) {
+        return cells[index].getVoltage();
+    }
+
+    public void setVoltage(int index, double value) {
+        cells[index].setVoltage(value);
     }
 }

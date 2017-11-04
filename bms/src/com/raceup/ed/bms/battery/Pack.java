@@ -16,12 +16,14 @@
 
 package com.raceup.ed.bms.battery;
 
+import com.raceup.ed.bms.utils.BmsUtils;
+
 /**
  * Battery pack containing segments of battery cells
  */
 public class Pack implements BmsControllable {
     private Segment[] segments;  // list of segments in battery pack
-    private final BmsDevicePosition[] bmsDevicesPositions;
+    private final int numberOfCellsPerBms;
 
     /**
      * Builds new battery pack model
@@ -30,64 +32,14 @@ public class Pack implements BmsControllable {
      * @param numberOfCellsPerBms   number of cells in one bms
      */
     public Pack(int[] numberOfBmsPerSegment, int numberOfCellsPerBms) {
-        segments = createSegments(numberOfBmsPerSegment,
+        segments = BmsUtils.createSegments(numberOfBmsPerSegment,
                 numberOfCellsPerBms);
-        bmsDevicesPositions = findBmsDevicePositions(
-                getNumberOfBmsDevices(),
-                segments
-        );
+        this.numberOfCellsPerBms = numberOfCellsPerBms;
     }
 
     /*
      * General info
      */
-
-    /**
-     * Creates list of segments for pack
-     *
-     * @param numberOfBmsPerSegment # cell in each segment
-     * @param numberOfCellsPerBms # cells controlled by each bms
-     * @return list of segments
-     */
-    public static Segment[] createSegments(
-            int[] numberOfBmsPerSegment, int numberOfCellsPerBms) {
-        final int numberOfSegments = numberOfBmsPerSegment.length;
-        Segment[] segments = new Segment[numberOfSegments];
-        for (int i = 0; i < numberOfSegments; i++) {  // open segments
-            segments[i] = new Segment(numberOfBmsPerSegment[i],
-                    numberOfCellsPerBms);
-        }
-        return segments;
-    }
-
-    /**
-     * Finds number of segment of bms device
-     *
-     * @param bmsDevice # of bms device
-     * @param segments  list of segments to look into
-     * @return index of segment with bms device
-     */
-    public static BmsDevicePosition getPositionOfBmsDevice(
-            int bmsDevice, Segment[] segments) {
-        if (bmsDevice < 0) {
-            throw new IllegalArgumentException("Cannot find bms device #" +
-                    Integer.toString(bmsDevice));
-        }
-
-        int bmsDevicesCounter = 0;
-        for (int i = 0; i < segments.length; ++i) {
-            int bmsDevicesInSegment = segments[i].getNumberOfBmsDevices();
-            if (bmsDevice < bmsDevicesCounter + bmsDevicesInSegment) {
-                int positionRelativeToSegment = bmsDevice - bmsDevicesCounter;
-                return new BmsDevicePosition(positionRelativeToSegment, i);
-            }
-
-            bmsDevicesCounter += bmsDevicesInSegment;  // update counter
-        }
-
-        throw new IllegalArgumentException("Cannot find bms device #" +
-                Integer.toString(bmsDevice));
-    }
 
     /**
      * Number of cells for each segment in battery pack
@@ -110,22 +62,8 @@ public class Pack implements BmsControllable {
      *
      * @return length of list of segments
      */
-    public int getNumberOfSegments() {
+    private int getNumberOfSegments() {
         return segments.length;
-    }
-
-    /**
-     * Find number of bms devices in pack
-     *
-     * @return number of bms devices in pack
-     */
-    public int getNumberOfBmsDevices() {
-        int bmsDevicesCounter = 0;
-        for (Segment s : segments) {
-            int bmsDevicesInSegment = s.getNumberOfBmsDevices();
-            bmsDevicesCounter += bmsDevicesInSegment;  // update counter
-        }
-        return bmsDevicesCounter;
     }
 
     /*
@@ -150,26 +88,14 @@ public class Pack implements BmsControllable {
      *
      * @param segment      segment number
      * @param cellPosition cell position in segment (numbers open from 0)
-     * @param temperature  new temperature reading
+     * @param value new temperature reading
      */
-    public void setTemperatureOfCell(int segment, int cellPosition, double
-            temperature) {
-        segments[segment].setTemperatureOfCell(cellPosition, temperature);
-    }
-
-    /**
-     * Finds position of each bms device in segments
-     * @param totalBmsDevices total number of bms devices
-     * @param segments segments to look into
-     * @return list of positions (each position is relative to one device)
-     */
-    public static BmsDevicePosition[] findBmsDevicePositions(
-            int totalBmsDevices, Segment[] segments) {
-        BmsDevicePosition[] positions = new BmsDevicePosition[totalBmsDevices];
-        for (int i = 0; i < totalBmsDevices; i++) {
-            positions[i] = getPositionOfBmsDevice(i, segments);
-        }
-        return positions;
+    public void setTemperature(int segment, int cellPosition, double
+            value) {
+        segments[segment].setTemperatureOfCell(
+                cellPosition / numberOfCellsPerBms,
+                value
+        );
     }
 
     /**
@@ -177,11 +103,12 @@ public class Pack implements BmsControllable {
      *
      * @param segment      segment number
      * @param cellPosition cell position in segment (numbers open from 0)
-     * @param voltage      new voltage reading
+     * @param value      new voltage reading
      */
-    public void setVoltageOfCell(int segment, int cellPosition, double
-            voltage) {
-        segments[segment].setVoltageOfCell(cellPosition, voltage);
+    public void setVoltage(int segment, int cellPosition, double
+            value) {
+        segments[segment].setVoltageOfCell(cellPosition / numberOfCellsPerBms,
+                value);
     }
 
     /**
