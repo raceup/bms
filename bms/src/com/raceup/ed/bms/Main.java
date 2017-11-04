@@ -29,6 +29,14 @@ class Main {
     private static final String APP_NAME_SETTINGS = "awtAppClassName";
     private static final String ERROR_MESSAGE_TITLE =
             "Failure when starting app";
+    private static final String ERROR_MESSAGE = "Sorry the app encountered " +
+            "an error when starting. More details in the following lines.\n\n";
+    private static final String RXTX_ERROR_MESSAGE = "It seems that we " +
+            "cannot load the Arduino " +
+            "serial library RXTX. It is mandatory to install it " +
+            "in order to run the app. You can find more information on how " +
+            "to install in the following web page: http://rxtx" +
+            ".qbang.org/wiki/index.php/Download";
 
     /**
      * Open a gui and start bms manager
@@ -37,8 +45,9 @@ class Main {
      */
     public static void main(String[] args) {
         setAppUiOrFail();
-        BmsGui bmsGui = getGuiOrNull();  // create app
-        startAppOrExit(bmsGui);  // start app
+        Bms bms = GuiSettings.buildBms();
+        startGui(bms);  // create app
+
     }
 
     /**
@@ -59,38 +68,28 @@ class Main {
 
     /**
      * Build a GUI or return a null reference
-     *
+     * @param bms BMS model to open
      * @return bms gui manager already setup
      */
-    private static BmsGui getGuiOrNull() {
+    private static void startGui(Bms bms) {
         try {
-            Bms bms = GuiSettings.buildBms();  // get settings for bms and
-            // create new one
-            return new BmsGui(bms);  // create app
+            BmsGui bmsGui = new BmsGui(bms);
+            startAppOrExit(bmsGui);  // start app
         } catch (Throwable e) {
             System.out.print(e.toString());
-            String errorMessage = "Sorry the app encountered an error when " +
-                    "starting. More details in the following lines.\n\n";
-            errorMessage += e.toString() + "\n\n";
+            String errorMessage = ERROR_MESSAGE + e.toString() + "\n\n";
 
             if (e.toString().toLowerCase().contains("rxtx")) {  // cannot
                 // load arduino serial library
-                errorMessage += "It seems that we cannot load the Arduino " +
-                        "serial library RXTX. It is mandatory to install it " +
-                        "in order to run the app.\n";
-                errorMessage += "You can find more information on how to " +
-                        "install in the following web page: http://rxtx" +
-                        ".qbang.org/wiki/index.php/Download";
+                errorMessage += RXTX_ERROR_MESSAGE;
             }
 
             JOptionPane.showMessageDialog(  // alert dialog with exception
                     null,
                     errorMessage,
-                    "Failure when creating bms",
+                    ERROR_MESSAGE_TITLE,
                     JOptionPane.ERROR_MESSAGE
             );
-
-            return null;
         }
     }
 
