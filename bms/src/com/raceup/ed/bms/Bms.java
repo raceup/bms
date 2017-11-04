@@ -151,6 +151,7 @@ public class Bms extends ArduinoSerial implements Runnable, StartAndStop {
 
     /**
      * Update logger with new data
+     * @param log new log
      */
     private void updateLogs(BmsLog log) {
         if (System.currentTimeMillis() >= nextLogIntervalUpdate) {

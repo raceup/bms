@@ -5,7 +5,7 @@ import com.raceup.ed.bms.utils.gui.JPanelsUtils;
 import javax.swing.*;
 
 public class BmsDevice extends NumAlerter {
-    private static final double[] TEMPERATURE_BOUNDS = new double[]{-100,
+    public static final double[] TEMPERATURE_BOUNDS = new double[]{-100,
             60};  // too low, too high values
     private Cell[] cells;
     private final JLabel temperature1Label = new JLabel("0000.00");

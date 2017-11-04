@@ -62,30 +62,6 @@ public class Cell extends NumAlerter {
     }
 
     /**
-     * Sets temperature bounds
-     *
-     * @param min minimum value; below this value background will color
-     *            VALUE_TOO_LOW_COLOR
-     * @param max maximum value; over this value background will color
-     *            VALUE_TOO_HIGH_COLOR
-     */
-    void setVoltageBounds(double min, double max) {
-        VOLTAGE_BOUNDS[0] = min;
-        VOLTAGE_BOUNDS[1] = max;
-
-        setVoltage(voltage);  // update colors
-    }
-
-    /**
-     * Get voltage bounds
-     *
-     * @return [min, max] array
-     */
-    double[] getVoltageBounds() {
-        return VOLTAGE_BOUNDS;
-    }
-
-    /**
      * Show dialog with more info about cell
      *
      * @param title title of dialog

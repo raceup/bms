@@ -28,17 +28,12 @@ import java.awt.event.MouseEvent;
  * Frame containing raw data from BMS
  */
 public class DataFrame extends JPanel {
-    private Segment[] segments;  // battery segments
+    private BmsDevice[] bmsDevices;  // battery segments
 
     public DataFrame(int[] numberOfCellsPerSegment) {
-        super();  // TODO title should be "Battery pack visualizer"
-
+        super();
         setup(numberOfCellsPerSegment);
     }
-
-    /*
-     * Update
-     */
 
     /**
      * Update value of cell
@@ -50,8 +45,8 @@ public class DataFrame extends JPanel {
             int[] cellToUpdate = new int[]{data.getCell() / 3 * 3, data
                     .getCell() / 3 * 3 + 1, data.getCell() / 3 * 3 + 2};
             for (int cell : cellToUpdate) {
-                if (cell < segments[data.getSegment()].cells.length) {  //
-                    // update only cells that exist
+                if (cell < segments[data.getSegment()].bmsDevices.length) {  //
+                    // update only bmsDevices that exist
                     try {
                         segments[data.getSegment()].setTemperatureOfCell
                                 (cell, data.getValue());
@@ -66,62 +61,10 @@ public class DataFrame extends JPanel {
         }
     }
 
-    /*
-     * Getters and setters
-     */
-
-    /**
-     * Sets temperature bounds
-     *
-     * @param min minimum value; below this value cells will color
-     *            VALUE_TOO_LOW_COLOR
-     * @param max maximum value; over this value cells will color
-     *            VALUE_TOO_HIGH_COLOR
-     */
-    public void setTemperatureBounds(double min, double max) {
-        segments[0].cells[0].setTemperatureBounds(min, max);  // set min,
-        // max in one cell (min, max are shared between classes)
-    }
-
-    /**
-     * Sets temperature bounds
-     *
-     * @param min minimum value; below this value cells will color
-     *            VALUE_TOO_LOW_COLOR
-     * @param max maximum value; over this value cells will color
-     *            VALUE_TOO_HIGH_COLOR
-     */
-    public void setVoltageBounds(double min, double max) {
-        segments[0].cells[0].setVoltageBounds(min, max);  // set min, max in
-        // one cell (min, max are shared between classes)
-    }
-
-    /**
-     * Get temperature bounds of cells
-     *
-     * @return [min, max] array
-     */
-    public double[] getTemperatureBounds() {
-        return segments[0].cells[0].getTemperatureBounds();
-    }
-
-    /**
-     * Get voltage bounds of cells
-     *
-     * @return [min, max] array
-     */
-    public double[] getVoltageBounds() {
-        return segments[0].cells[0].getVoltageBounds();
-    }
-
-    /*
-     * Setup
-     */
-
     /**
      * Setup gui and widgets
      *
-     * @param numberOfCellsPerSegment list of number of cells per segment
+     * @param numberOfCellsPerSegment list of number of bmsDevices per segment
      */
     private void setup(int[] numberOfCellsPerSegment) {
         setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));  // add
@@ -146,15 +89,15 @@ public class DataFrame extends JPanel {
      */
     private void setClickListeners() {
         for (int s = 0; s < segments.length; s++) {
-            for (int c = 0; c < segments[s].cells.length; c++) {
+            for (int c = 0; c < segments[s].bmsDevices.length; c++) {
                 final int cellNumber = c;
                 final int segmentNumber = s;
-                segments[s].cells[c].addMouseListener(new MouseAdapter() {
+                segments[s].bmsDevices[c].addMouseListener(new MouseAdapter() {
                     @Override
                     public void mouseClicked(MouseEvent mouseEvent) {
                         if (SwingUtilities.isLeftMouseButton(mouseEvent)) {
                             // left button
-                            segments[segmentNumber].cells[cellNumber]
+                            segments[segmentNumber].bmsDevices[cellNumber]
                                     .showDialog(
                                             "Cell " + Integer.toString
                                                     (cellNumber +

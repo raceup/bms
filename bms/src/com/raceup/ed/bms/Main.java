@@ -69,7 +69,6 @@ class Main {
     /**
      * Build a GUI or return a null reference
      * @param bms BMS model to open
-     * @return bms gui manager already setup
      */
     private static void startGui(Bms bms) {
         try {
