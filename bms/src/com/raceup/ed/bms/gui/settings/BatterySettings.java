@@ -28,10 +28,10 @@ class BatterySettings extends JPanel {
     // number of cells in segment
     private static final int maxNumberOfBmsPerSegment = 100;
     private static final int statusBarHeight = 60;  // height of status-bar
-    private static final int DEFAULT_CELLS_PER_BMS = 6;
+    private static final int DEFAULT_SEGMENTS_NUMBER = 6;
+    private static final int DEFAULT_BMS_PER_SEGMENT_NUMBER = 3;
     private static final String ADD_NEW_BMS_BUTTON = "Add new BMS";
     private static final String REMOVE_BMS_BUTTON = "Remove last BMS";
-    private int numberOfCellsPerBms = 6;
 
     // in pixel
     private final ArrayList<Integer> numberOfBmsPerSegment = new
@@ -60,14 +60,9 @@ class BatterySettings extends JPanel {
      */
     private void loadDefaultBatteryPack() {
         numberOfBmsPerSegment.clear();  // start from scratch
-        numberOfBmsPerSegment.add(3);  // first segment...
-        numberOfBmsPerSegment.add(3);
-        numberOfBmsPerSegment.add(3);
-        numberOfBmsPerSegment.add(3);
-        numberOfBmsPerSegment.add(3);
-        numberOfBmsPerSegment.add(3);
-        numberOfBmsPerSegment.add(3);
-        numberOfBmsPerSegment.add(3);  // ...and last segment have 34 cells
+        for (int i = 0; i < DEFAULT_SEGMENTS_NUMBER; i++) {
+            numberOfBmsPerSegment.add(DEFAULT_BMS_PER_SEGMENT_NUMBER);
+        }
     }
 
     /**
@@ -78,7 +73,6 @@ class BatterySettings extends JPanel {
         revalidate();
         repaint();
         addCellNumberSpinners();  // spinners
-        addBmsCellsNumberSpinner();  // bms number of cells
         addStatusBar();  // status-bar
 
     }
@@ -100,7 +94,7 @@ class BatterySettings extends JPanel {
                             minNumberOfBmsPerSegment,  // initial value
                             minNumberOfBmsPerSegment,  // min
                             maxNumberOfBmsPerSegment, // max
-                            1  //step
+                            1  // step
                     )
             );  // possible values of cells
             cellNumberSpinner.setValue(numberOfBmsPerSegment.get(i));  //
@@ -117,38 +111,6 @@ class BatterySettings extends JPanel {
             segmentPanel.add(cellNumberSpinner, BorderLayout.LINE_END);
             mainPanel.add(segmentPanel);  // add segment
         }
-
-        add(mainPanel);  // add scroll panel to main panel
-    }
-
-    /**
-     * Setups spinner to give each bms a # of cells to monitor
-     */
-    private void addBmsCellsNumberSpinner() {
-        JPanel mainPanel = new JPanel();
-        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.PAGE_AXIS));
-
-        JPanel spinnerPanel = new JPanel();  // where to put segment
-        JLabel label = new JLabel(
-                "Number of cells monitored by bms:"
-        );
-        JSpinner bmsCellNumberSpinner = new JSpinner(
-                new SpinnerNumberModel(
-                        DEFAULT_CELLS_PER_BMS,  // initial value
-                        1,  // min
-                        100, // max
-                        1  //step
-                )
-        );  // possible values of cells
-        bmsCellNumberSpinner.setValue(DEFAULT_CELLS_PER_BMS);
-        bmsCellNumberSpinner.addChangeListener(  // edit segment number of
-                // cells on edit
-                e -> numberOfBmsPerSegment.set(numberOfCellsPerBms,
-                        (Integer) bmsCellNumberSpinner.getValue())
-        );
-        spinnerPanel.add(label, BorderLayout.LINE_START);
-        spinnerPanel.add(bmsCellNumberSpinner, BorderLayout.LINE_END);
-        mainPanel.add(spinnerPanel);  // add segment
 
         add(mainPanel);  // add scroll panel to main panel
     }

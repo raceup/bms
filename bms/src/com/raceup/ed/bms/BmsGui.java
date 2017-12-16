@@ -18,6 +18,7 @@
 package com.raceup.ed.bms;
 
 import com.raceup.ed.bms.gui.frame.chart.ChartPanel;
+import com.raceup.ed.bms.gui.frame.data.Cell;
 import com.raceup.ed.bms.gui.frame.data.DataFrame;
 import com.raceup.ed.bms.gui.frame.log.LogFrame;
 import com.raceup.ed.bms.stream.bms.data.BmsData;
@@ -441,14 +442,14 @@ public class BmsGui extends ApplicationFrame implements Runnable,
     private void showValueAlertIntervalEditDialog() {
         MinMaxValuePanel minMaxTemperaturePanel = new MinMaxValuePanel(
                 "Temperature bounds (K)",  // title
-                dataPanel.getTemperatureBounds()[0],  // min value
-                dataPanel.getTemperatureBounds()[1]  // max value
+                Cell.TEMPERATURE_BOUNDS[0],  // min value
+                Cell.TEMPERATURE_BOUNDS[1]  // max value
         );
 
         MinMaxValuePanel minMaxVoltagePanel = new MinMaxValuePanel(
                 "Voltage bounds (mV)",  // title
-                dataPanel.getVoltageBounds()[0],  // min value
-                dataPanel.getVoltageBounds()[1]  // max value
+                Cell.VOLTAGE_BOUNDS[0],  // min value
+                Cell.VOLTAGE_BOUNDS[1]  // max value
         );
 
         JPanel panel = new JPanel();
@@ -464,19 +465,6 @@ public class BmsGui extends ApplicationFrame implements Runnable,
                 JOptionPane.CANCEL_OPTION,
                 JOptionPane.PLAIN_MESSAGE
         );
-
-        if (!(userInput == JOptionPane.CANCEL_OPTION || userInput < 0)) {  //
-            // user has not clicked "Cancel" button nor exited panel
-            dataPanel.setTemperatureBounds(
-                    minMaxTemperaturePanel.getMin(),
-                    minMaxTemperaturePanel.getMax()
-            );  // update values
-
-            dataPanel.setVoltageBounds(
-                    minMaxVoltagePanel.getMin(),
-                    minMaxVoltagePanel.getMax()
-            );  // update values
-        }
     }
 
     /**

@@ -27,6 +27,8 @@ import java.awt.*;
 public class Cell extends NumAlerter {
     public static final double[] VOLTAGE_BOUNDS = new double[]{4000.0,
             4200.0};
+    public static final double[] TEMPERATURE_BOUNDS = new double[]{0.0,
+            1000.0};
     // labels
     protected final JLabel voltageLabel = new JLabel("0000.00");
     protected double voltage;
