@@ -40,6 +40,24 @@ public class BmsValue extends BmsData {
     }
 
     /**
+     * Check if data is a temperature value of type 1
+     *
+     * @return True iff data is a temperature value of type 1
+     */
+    public boolean isTemperature1() {
+        return getType().equals("temperature1");
+    }
+
+    /**
+     * Check if data is a temperature value of type 2
+     *
+     * @return True iff data is a temperature value of type 2
+     */
+    public boolean isTemperature2() {
+        return getType().equals("temperature2");
+    }
+
+    /**
      * Check if data is a voltage value
      *
      * @return True iff data is a voltage value

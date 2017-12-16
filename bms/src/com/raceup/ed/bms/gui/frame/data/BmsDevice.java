@@ -1,5 +1,6 @@
 package com.raceup.ed.bms.gui.frame.data;
 
+import com.raceup.ed.bms.gui.frame.chart.ChartFrame;
 import com.raceup.ed.bms.utils.gui.JPanelsUtils;
 
 import javax.swing.*;
@@ -7,7 +8,7 @@ import javax.swing.*;
 public class BmsDevice extends NumAlerter {
     public static final double[] TEMPERATURE_BOUNDS = new double[]{-100,
             60};  // too low, too high values
-    private Cell[] cells;
+    public Cell[] cells;
     private final JLabel temperature1Label = new JLabel("0000.00");
     private final JLabel temperature2Label = new JLabel("0000.00");
     private JLabel label = new JLabel("BMS #");
@@ -24,9 +25,25 @@ public class BmsDevice extends NumAlerter {
         update(temperature2Label, TEMPERATURE_BOUNDS, value);
     }
 
+    public double getTemperature1() {
+        return Double.parseDouble(temperature1Label.getText());
+    }
+
+    public double getTemperature2() {
+        return Double.parseDouble(temperature2Label.getText());
+    }
+
+    public double getAverageTemperature() {
+        return (getTemperature1() + getTemperature2()) / 2.0;
+    }
+
     public void setVoltage(int index, double value) {
         cells[index].setVoltage(value);
         update(label, Cell.VOLTAGE_BOUNDS, value);
+    }
+
+    public double getVoltage(int index) {
+        return cells[index].getVoltage();
     }
 
     private void setupVoltageLabels(int numberOfCells) {
@@ -79,5 +96,49 @@ public class BmsDevice extends NumAlerter {
         setupFlagLabels();
 
         setVisible(true);  // open
+    }
+
+    /**
+     * Show dialog with more info about segment
+     *
+     * @param title title of dialog
+     */
+    void showDialog(String title) {
+        String[] voltageLabels = new String[cells.length];  // labels of chart
+        String[] temperatureLabels = new String[cells.length];
+        for (int c = 0; c < cells.length; c++) {
+            voltageLabels[c] = "Voltage of cell " + Integer.toString(c + 1);
+            temperatureLabels[c] = "Temperature of cell " + Integer.toString
+                    (c + 1);
+        }
+
+        ChartFrame voltagesChart = createAndSetupChart("Voltage of cells in " +
+                "" + title, voltageLabels);  // create charts
+        ChartFrame temperaturesChart = createAndSetupChart("Temperature of " +
+                "cells in " + title, temperatureLabels);
+        temperaturesChart.setLocation(voltagesChart.getX(), voltagesChart
+                .getY() + voltagesChart.getHeight());  // under voltages chart
+
+        Timer updater = new Timer(50, e -> {
+            for (int c = 0; c < cells.length; c++) {
+                voltagesChart.updateOrFail(c, getVoltage(c));
+                temperaturesChart.updateOrFail(c, getAverageTemperature());
+            }
+        });  // timer to update dialog values
+        updater.start();
+    }
+
+    /**
+     * Create and setup chart info dialog
+     *
+     * @param title         title of frame
+     * @param titleOfSeries list of title of series to add to chart
+     * @return info dialog with chart
+     */
+    private ChartFrame createAndSetupChart(final String title, final
+    String[] titleOfSeries) {
+        ChartFrame dialog = new ChartFrame(title, titleOfSeries);
+        dialog.setLocationRelativeTo(null);  // center in screen
+        return dialog;
     }
 }

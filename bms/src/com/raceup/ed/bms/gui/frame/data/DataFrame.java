@@ -42,21 +42,10 @@ public class DataFrame extends JPanel {
      */
     public void updateCellValue(BmsValue data) {
         if (data.isTemperature()) {
-            int[] cellToUpdate = new int[]{data.getCell() / 3 * 3, data
-                    .getCell() / 3 * 3 + 1, data.getCell() / 3 * 3 + 2};
-            for (int cell : cellToUpdate) {
-                if (cell < segments[data.getSegment()].bmsDevices.length) {  //
-                    // update only bmsDevices that exist
-                    try {
-                        segments[data.getSegment()].setTemperatureOfCell
-                                (cell, data.getValue());
-                    } catch (Exception e) {
-                        System.err.println(e.toString());
-                    }
-                }
-            }
+            bmsDevices[data.getSegment()].setTemperature1(data.getValue());
+            bmsDevices[data.getSegment()].setTemperature2(data.getValue());
         } else if (data.isVoltage()) {
-            segments[data.getSegment()].setVoltageOfCell(data.getCell(),
+            bmsDevices[data.getSegment()].setVoltage(data.getCell(),
                     data.getValue());
         }
     }
@@ -69,15 +58,11 @@ public class DataFrame extends JPanel {
     private void setup(int[] numberOfCellsPerSegment) {
         setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));  // add
         // components vertically
-        segments = new Segment[numberOfCellsPerSegment.length];
+        bmsDevices = new BmsDevice[numberOfCellsPerSegment.length];
         for (int i = 0; i < numberOfCellsPerSegment.length; i++) {  // open
             // all segments
-            segments[i] = new Segment(numberOfCellsPerSegment[i]);
-
-            add(new JLabel("Segment " + Integer.toString(i + 1)));  // label
-            // with name of segment
-            add(segments[i], BorderLayout.AFTER_LAST_LINE);  // add segments
-            // in panel
+            bmsDevices[i] = new BmsDevice(i, numberOfCellsPerSegment[i]);
+            add(bmsDevices[i], BorderLayout.AFTER_LAST_LINE);
             add(Box.createRigidArea(new Dimension(0, 10)));  // add spacing
         }
 
@@ -88,27 +73,27 @@ public class DataFrame extends JPanel {
      * Set listeners on mouse clicks
      */
     private void setClickListeners() {
-        for (int s = 0; s < segments.length; s++) {
-            for (int c = 0; c < segments[s].bmsDevices.length; c++) {
+        for (int s = 0; s < bmsDevices.length; s++) {
+            for (int c = 0; c < bmsDevices[s].cells.length; c++) {
                 final int cellNumber = c;
                 final int segmentNumber = s;
-                segments[s].bmsDevices[c].addMouseListener(new MouseAdapter() {
+                bmsDevices[s].cells[c].addMouseListener(new MouseAdapter() {
                     @Override
                     public void mouseClicked(MouseEvent mouseEvent) {
                         if (SwingUtilities.isLeftMouseButton(mouseEvent)) {
                             // left button
-                            segments[segmentNumber].bmsDevices[cellNumber]
+                            bmsDevices[segmentNumber].cells[cellNumber]
                                     .showDialog(
                                             "Cell " + Integer.toString
                                                     (cellNumber +
-                                                    1) + " of segment " +
+                                                            1) + " of bms " +
                                                     Integer
                                                     .toString(segmentNumber
                                                             + 1)
                             );
                         } else if (SwingUtilities.isRightMouseButton
                                 (mouseEvent)) {  // right button
-                            segments[segmentNumber].showDialog(
+                            bmsDevices[segmentNumber].showDialog(
                                     "segment " + Integer.toString
                                             (segmentNumber + 1)
                             );
