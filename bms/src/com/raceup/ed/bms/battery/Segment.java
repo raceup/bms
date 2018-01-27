@@ -39,7 +39,7 @@ public class Segment implements BmsControllable {
         }
 
         bmsDevices = BmsUtils.createBmsDevices(numberOfCells,
-                numberOfCellsPerBms);
+                numberOfCellsPerBms);  // todo use
     }
 
     /*

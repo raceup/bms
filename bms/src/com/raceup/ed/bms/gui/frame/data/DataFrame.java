@@ -24,6 +24,8 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+import static com.raceup.ed.bms.stream.bms.data.BmsData.getBmsDevice;
+
 /**
  * Frame containing raw data from BMS
  */
@@ -41,11 +43,11 @@ public class DataFrame extends JPanel {
      * @param data new data (coming from arduino)
      */
     public void updateCellValue(BmsValue data) {
+        int bmsDevice = getBmsDevice(data.getSegment(), data.getCell());
         if (data.isTemperature()) {
-            bmsDevices[data.getSegment()].setTemperature1(data.getValue());
-            bmsDevices[data.getSegment()].setTemperature2(data.getValue());
+            bmsDevices[bmsDevice].setTemperature1(data.getValue());
         } else if (data.isVoltage()) {
-            bmsDevices[data.getSegment()].setVoltage(data.getCell(),
+            bmsDevices[bmsDevice].setVoltage(data.getCell(),
                     data.getValue());
         }
     }

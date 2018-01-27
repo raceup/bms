@@ -26,6 +26,9 @@ public class BmsData {
     private final String type;  // type of data
     private final int cell;  // number of cell broadcasting value
     private final int segment;  // number of segment broadcasting value
+    public static final int CELLS_PER_BMS = 6;
+    public static final int BMS_PER_SEGMENT = 3;
+    private int bmsDevice;
     private String jsonValue;
 
     /**
@@ -122,5 +125,14 @@ public class BmsData {
      */
     public String getJsonValue() {
         return jsonValue;
+    }
+
+    public static int getBmsDevice(int segment, int cell) {
+        int bmsInSegment = cell / CELLS_PER_BMS;
+        return segment * BMS_PER_SEGMENT + bmsInSegment;
+    }
+
+    public int getBmsDevice() {
+        return getBmsDevice(segment, cell);
     }
 }
