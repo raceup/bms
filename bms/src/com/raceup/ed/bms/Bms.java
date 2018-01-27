@@ -23,7 +23,6 @@ import com.raceup.ed.bms.stream.Logger;
 import com.raceup.ed.bms.stream.bms.data.BmsData;
 import com.raceup.ed.bms.stream.bms.data.BmsLog;
 import com.raceup.ed.bms.stream.bms.data.BmsValue;
-import com.raceup.ed.bms.utils.BmsUtils;
 import org.json.JSONObject;
 
 
@@ -121,10 +120,10 @@ public class Bms extends ArduinoSerial implements Runnable, StartAndStop {
      * @return last value from serial
      */
     BmsData getNewestData() {
-        // TODO: debug only String data = serialData;
+        String data = serialData;
         return new BmsData(
                 new JSONObject(
-                        BmsUtils.getRandomData().trim()
+                        data
                 )
         );
     }

@@ -30,7 +30,7 @@ public class BmsUtils {
         String type, value;
         double randTypeNum = Math.random();
         double minCell = 0, maxCell = 18;
-        double minSegment = 0, maxSegment = 8;
+        double minSegment = 0, maxSegment = 2;
         double randCell = minCell + Math.random() * (maxCell - minCell);
         double randSegment = minSegment + Math.random() * (maxSegment -
                 minCell);

@@ -260,6 +260,7 @@ public class BmsGui extends ApplicationFrame implements Runnable,
         } catch (NullPointerException | InterruptedException e) {
             System.err.println(TAG + " has encountered some errors while " +
                     "updateOrFail()");
+            System.err.println(e.toString());
         }
     }
 

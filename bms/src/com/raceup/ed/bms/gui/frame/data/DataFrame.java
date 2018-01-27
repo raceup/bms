@@ -24,6 +24,7 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+import static com.raceup.ed.bms.stream.bms.data.BmsData.getBmsCell;
 import static com.raceup.ed.bms.stream.bms.data.BmsData.getBmsDevice;
 
 /**
@@ -44,11 +45,11 @@ public class DataFrame extends JPanel {
      */
     public void updateCellValue(BmsValue data) {
         int bmsDevice = getBmsDevice(data.getSegment(), data.getCell());
+        int bmsCell = getBmsCell(data.getSegment(), data.getCell());
         if (data.isTemperature()) {
             bmsDevices[bmsDevice].setTemperature1(data.getValue());
         } else if (data.isVoltage()) {
-            bmsDevices[bmsDevice].setVoltage(data.getCell(),
-                    data.getValue());
+            bmsDevices[bmsDevice].setVoltage(bmsCell, data.getValue());
         }
     }
 
@@ -59,10 +60,15 @@ public class DataFrame extends JPanel {
      */
     private void setup(int[] numberOfBmsPerSegment) {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));  // vertical
-        bmsDevices = new BmsDevice[numberOfBmsPerSegment.length];
-        for (int i = 0; i < numberOfBmsPerSegment.length; i++) {  // open
+        int totalDevices = 0;
+        for (int bmsDevice : numberOfBmsPerSegment) {
+            totalDevices += bmsDevice;
+        }
+
+        bmsDevices = new BmsDevice[totalDevices];
+        for (int i = 0; i < bmsDevices.length; i++) {  // open
             // all segments
-            bmsDevices[i] = new BmsDevice(i, numberOfBmsPerSegment[i]);
+            bmsDevices[i] = new BmsDevice(i, 6);  // todo refactor
             add(bmsDevices[i], BorderLayout.AFTER_LAST_LINE);
             add(Box.createRigidArea(new Dimension(0, 10)));  // add spacing
         }
