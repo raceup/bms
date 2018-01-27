@@ -165,13 +165,13 @@ public class BmsGui extends ApplicationFrame implements Runnable,
      * Setup gui and backend
      */
     private void setup() {
-        int[] numberOfCellsPerSegment = bms.batteryPack
-                .getNumberOfCellsPerSegment();
+        int[] numberOfBmsPerSegment = bms.batteryPack
+                .getNumberOfBmsPerSegment();
         chartPanel = new ChartPanel(new String[]{"Voltage (mV)"});
         chartPanel.setMaximumSize(
                 new Dimension(1000, 800)
         );  // aliasing blurring
-        dataPanel = new DataFrame(numberOfCellsPerSegment);
+        dataPanel = new DataFrame(numberOfBmsPerSegment);
         logPanel = new LogFrame();
         setupLayout();  // setup frame manager
     }

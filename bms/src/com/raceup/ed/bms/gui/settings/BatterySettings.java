@@ -52,7 +52,6 @@ class BatterySettings extends JPanel {
      */
     public int[] getNumberOfBmsPerSegment() {
         return numberOfBmsPerSegment.stream().mapToInt(i -> i).toArray();
-        // ArrayList > Integer[] > int[]
     }
 
     /**

@@ -4,6 +4,7 @@ import com.raceup.ed.bms.gui.frame.chart.ChartFrame;
 import com.raceup.ed.bms.utils.gui.JPanelsUtils;
 
 import javax.swing.*;
+import java.awt.*;
 
 public class BmsDevice extends NumAlerter {
     public static final double[] TEMPERATURE_BOUNDS = new double[]{-100,
@@ -48,7 +49,7 @@ public class BmsDevice extends NumAlerter {
 
     private void setupVoltageLabels(int numberOfCells) {
         JPanel cellsPanel = new JPanel();
-        cellsPanel.setLayout(new BoxLayout(cellsPanel, BoxLayout.Y_AXIS));
+        cellsPanel.setLayout(new BoxLayout(cellsPanel, BoxLayout.X_AXIS));
 
         cells = new Cell[numberOfCells];
         for (int i = 0; i < numberOfCells; i++) {
@@ -86,15 +87,19 @@ public class BmsDevice extends NumAlerter {
     }
 
     private void setup(int index, int numberOfCells) {
-        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 
         label = new JLabel("BMS " + Integer.toString(index));
         add(label);
+        add(Box.createRigidArea(new Dimension(10, 0)));  // add spacing
 
         setupVoltageLabels(numberOfCells);
-        setupTemperatureLabels();
-        setupFlagLabels();
+        add(Box.createRigidArea(new Dimension(10, 0)));  // add spacing
 
+        setupTemperatureLabels();
+        add(Box.createRigidArea(new Dimension(10, 0)));  // add spacing
+
+        setupFlagLabels();
         setVisible(true);  // open
     }
 

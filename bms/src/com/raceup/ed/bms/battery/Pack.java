@@ -46,15 +46,15 @@ public class Pack implements BmsControllable {
      *
      * @return list of number of cells
      */
-    public int[] getNumberOfCellsPerSegment() {
-        int[] numberOfCellsPerSegment = new int[getNumberOfSegments()];  //
+    public int[] getNumberOfBmsPerSegment() {
+        int[] numberOfBmsPerSegment = new int[getNumberOfSegments()];  //
         // result list
-        for (int i = 0; i < numberOfCellsPerSegment.length; i++) {   // loop
+        for (int i = 0; i < numberOfBmsPerSegment.length; i++) {   // loop
             // through each segment
-            numberOfCellsPerSegment[i] = segments[i].getNumberOfCells();  //
+            numberOfBmsPerSegment[i] = segments[i].getNumberOfCells();  //
             // count cells in each segment
         }
-        return numberOfCellsPerSegment;
+        return numberOfBmsPerSegment;
     }
 
     /**

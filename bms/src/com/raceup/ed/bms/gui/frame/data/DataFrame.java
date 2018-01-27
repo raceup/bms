@@ -30,9 +30,9 @@ import java.awt.event.MouseEvent;
 public class DataFrame extends JPanel {
     private BmsDevice[] bmsDevices;  // battery segments
 
-    public DataFrame(int[] numberOfCellsPerSegment) {
+    public DataFrame(int[] numberOfBmsPerSegment) {
         super();
-        setup(numberOfCellsPerSegment);
+        setup(numberOfBmsPerSegment);
     }
 
     /**
@@ -53,15 +53,14 @@ public class DataFrame extends JPanel {
     /**
      * Setup gui and widgets
      *
-     * @param numberOfCellsPerSegment list of number of bmsDevices per segment
+     * @param numberOfBmsPerSegment list of number of bmsDevices per segment
      */
-    private void setup(int[] numberOfCellsPerSegment) {
-        setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));  // add
-        // components vertically
-        bmsDevices = new BmsDevice[numberOfCellsPerSegment.length];
-        for (int i = 0; i < numberOfCellsPerSegment.length; i++) {  // open
+    private void setup(int[] numberOfBmsPerSegment) {
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));  // vertical
+        bmsDevices = new BmsDevice[numberOfBmsPerSegment.length];
+        for (int i = 0; i < numberOfBmsPerSegment.length; i++) {  // open
             // all segments
-            bmsDevices[i] = new BmsDevice(i, numberOfCellsPerSegment[i]);
+            bmsDevices[i] = new BmsDevice(i, numberOfBmsPerSegment[i]);
             add(bmsDevices[i], BorderLayout.AFTER_LAST_LINE);
             add(Box.createRigidArea(new Dimension(0, 10)));  // add spacing
         }
