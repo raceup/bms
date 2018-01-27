@@ -42,12 +42,13 @@ public class ArduinoSerial implements SerialPortEventListener {
             "/dev/tty.usbserial-A9007UX1", // Mac OS X
             "/dev/ttyACM0", // Raspberry Pi
             "/dev/ttyUSB0", // Linux
-            "COM3" // Windows
+            "COM3", // Windows
+            "COM4" // Windows
     };
-    public int msSerialIntervalUpdate = 10;  // interval (in milliseconds)
+    public int msSerialIntervalUpdate = 100;  // interval (in milliseconds)
     // between 2 updates
     protected int BAUD_RATE;  // reading baud rate
-    protected String serialData;  // last data from serial
+    private String serialData;  // last data from serial
     private long lastUpdateMs;  // ms of last update series
     private SerialPort serialPort;  // serial port reading raw data from
     // arduino
@@ -121,6 +122,11 @@ public class ArduinoSerial implements SerialPortEventListener {
     private void initializeOrFail() {
         portId = findPort();
         configureSerialPortOrFail(portId);
+        try {
+            Thread.sleep(4000);
+        } catch (Exception e) {
+            System.out.println("Cannot wait for arduinoooo");
+        }
     }
 
     /**
@@ -180,6 +186,10 @@ public class ArduinoSerial implements SerialPortEventListener {
         }
     }
 
+    public String getRawData() {
+        return serialData;
+    }
+
     /**
      * Read last update from serial and stores it
      *
@@ -188,18 +198,15 @@ public class ArduinoSerial implements SerialPortEventListener {
     private synchronized void readFromSerial() throws IOException {
         long timeNowMs = System.currentTimeMillis();  // get ms when updated
         // with new data
-        if (timeNowMs - lastUpdateMs >= msSerialIntervalUpdate) {  // update
-            // series interval
-            String newData = serialInput.readLine();  // get new data
-            if (newData != null) {
-                lastUpdateMs = timeNowMs;  // update last time of update
-                serialData = newData;  // store new value
-            }
+        String newData = serialInput.readLine();  // get new data
+        System.out.println("New data from Arduino! " + newData);
+        if (newData != null) {
+            serialData = newData;  // store new value
+        }
 
-            if (output != null) {
-                output.write((timeNowMs + " - " + newData + "\n").getBytes()
-                );  // write new data to output
-            }
+        if (output != null) {
+            output.write((timeNowMs + " - " + newData + "\n").getBytes()
+            );  // write new data to output
         }
     }
 
@@ -208,7 +215,16 @@ public class ArduinoSerial implements SerialPortEventListener {
      *
      * @param oEvent any event that occurs in the serial
      */
-    public synchronized void serialEvent(SerialPortEvent oEvent) {
+    public void serialEvent(SerialPortEvent oEvent) {
+        System.out.println("New serial event from Arduino!");
+        try {
+            System.out.println("Printing event...");
+            System.out.println(serialInput.readLine());
+        } catch (IOException e) {
+            System.out.println("Cannot print new data");
+        }
+
+
         if (oEvent.getEventType() == SerialPortEvent.DATA_AVAILABLE) {
             try {
                 readFromSerial();

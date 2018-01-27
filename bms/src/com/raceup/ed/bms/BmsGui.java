@@ -58,7 +58,7 @@ public class BmsGui extends ApplicationFrame implements Runnable,
     private static final Dimension MAX_DIMENSION = new Dimension(
             (int) (SCREEN.getWidth() * 0.8), (int) (SCREEN.getHeight() * 0.8)
     );
-    private int msGuiIntervalUpdate = 100;  // GUI interval update
+    private int msGuiIntervalUpdate = 1000;  // GUI interval update
     private final Bms bms;  // bms manager
     private final JButton startButton = new JButton("Start");  // start
     // stop buttons
@@ -260,7 +260,8 @@ public class BmsGui extends ApplicationFrame implements Runnable,
         } catch (NullPointerException | InterruptedException e) {
             System.err.println(TAG + " has encountered some errors while " +
                     "updateOrFail()");
-            System.err.println(e.toString());
+            e.printStackTrace();
+            System.err.println();
         }
     }
 

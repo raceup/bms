@@ -120,7 +120,12 @@ public class Bms extends ArduinoSerial implements Runnable, StartAndStop {
      * @return last value from serial
      */
     BmsData getNewestData() {
-        String data = serialData;
+        String data = getRawData();  // todo BmsUtils.getRandomData().trim();
+        System.out.println("Requesting newest data: " + data);
+        if (data == null) {
+            return null;
+        }
+
         return new BmsData(
                 new JSONObject(
                         data
@@ -187,13 +192,13 @@ public class Bms extends ArduinoSerial implements Runnable, StartAndStop {
      * Asks Arduino to start logging data
      */
     private void askArduinoToStartLogging() {
-        sendSerialDataOrFail(ARDUINO_START_LOGGING_MSG);
+        // todo sendSerialDataOrFail(ARDUINO_START_LOGGING_MSG);
     }
 
     /**
      * Asks Arduino to balance segments
      */
     void askArduinoToBalanceCells() {
-        sendSerialDataOrFail(ARDUINO_BALANCE_MSG);
+        // todo sendSerialDataOrFail(ARDUINO_BALANCE_MSG);
     }
 }
