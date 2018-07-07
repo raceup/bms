@@ -24,7 +24,6 @@ import com.raceup.ed.bms.stream.bms.data.BmsData;
 import com.raceup.ed.bms.stream.bms.data.BmsLog;
 import com.raceup.ed.bms.stream.bms.data.BmsValue;
 import com.raceup.ed.bms.utils.gui.AboutDialog;
-import com.raceup.ed.bms.utils.gui.JPanelsUtils;
 import org.jfree.ui.ApplicationFrame;
 
 import javax.swing.*;
@@ -32,6 +31,8 @@ import java.awt.*;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import static com.raceup.ed.bms.utils.Streams.readAllFromStream;
 
@@ -42,8 +43,7 @@ import static com.raceup.ed.bms.utils.Streams.readAllFromStream;
  * - chart with total tension of battery (i.e ChartFrame)
  * - text area with errors (i.e ErrorsAreaFrame)
  */
-public class BmsGui extends ApplicationFrame implements Runnable,
-        StartAndStop {
+public class BmsGui extends ApplicationFrame {
     private static final String APP_NAME_SETTINGS = "com.apple.mrj" +
             ".application.apple.menu.about.name";
     private static final String THIS_PACKAGE = "com.raceup.ed.bms.BmsGui";
@@ -52,21 +52,7 @@ public class BmsGui extends ApplicationFrame implements Runnable,
             THIS_PACKAGE.getClass().getResource(ICON_PATH)
     );
     private static final String TAG = "BmsGui";
-    private static final Dimension SCREEN =
-            Toolkit.getDefaultToolkit().getScreenSize();
-    private static final Dimension MAX_DIMENSION = new Dimension(
-            (int) (SCREEN.getWidth() * 0.8), (int) (SCREEN.getHeight() * 0.8)
-    );
-    private int msGuiIntervalUpdate = 1000;  // GUI interval update
-    private final JButton startButton = new JButton("Start");  // start
-    // stop buttons
-    private final JButton pauseButton = new JButton("Pause");
-    private final JButton stopButton = new JButton("Stop");
-    // balance button
     private final JButton balanceButton = new JButton("Balance cells");
-    private volatile boolean amIStarted = false;  // start and stop management
-    private volatile boolean amIPaused = false;
-    private volatile boolean amIStopped = false;
     private DataFrame dataPanel;  // gui frames
     private ChartPanel chartPanel;
     private LogFrame logPanel;  // frame used for logging
@@ -104,43 +90,30 @@ public class BmsGui extends ApplicationFrame implements Runnable,
      * Start GUI and bms
      */
     public void start() {
-        if (!amIStopped && !amIStarted) {  // only when i'm not stopped
-            amIStarted = true;  // start updating
-
-            if (!amIPaused) {  // first time to start
-                new Thread(this, this.getClass().getName()).start();  //
-                // start gui thread
+        Timer t = new Timer();
+        t.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                System.out.println("[" + System.currentTimeMillis() + "]: " +
+                        "new run");
+                try {
+                    BmsData data = null;  // todo get newest data
+                    if (data != null) {
+                        if (data.isStatusType()) {  // if it's a log, update log frame
+                            updateLogFrameOrFail(data);
+                        } else if (data.isValueType()) {  // if it's a value update
+                            // data and chart frames
+                            updateDataFrameOrFail(data);
+                        }
+                    }
+                } catch (Exception e) {
+                    System.err.println(TAG + " has encountered some errors while " +
+                            "updateOrFail()");
+                    e.printStackTrace();
+                    System.err.println();
+                }
             }
-        }
-    }
-
-    /**
-     * Pause reading data from arduino and updating GUI
-     */
-    public void pause() {
-        amIStarted = false;  // stop updating
-        amIPaused = true;
-    }
-
-    /**
-     * Close arduino connection but keep GUI on screen (stop updating)
-     */
-    public void stop() {
-        amIStarted = false;
-        amIPaused = false;
-        amIStopped = true;
-    }
-
-    /**
-     * Start monitoring arduino port in new thread and updateOrFail series
-     * screen with values
-     */
-    public void run() {
-        while (!amIStopped) {
-            while (amIStarted) {
-                updateOrFail();
-            }
-        }
+        }, 0, 150);
     }
 
     /*
@@ -201,52 +174,12 @@ public class BmsGui extends ApplicationFrame implements Runnable,
      */
     private JPanel createStartStopPanel() {
         JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
-        JPanelsUtils.addTitleBorderOnPanel(panel, "Run monitor");
+        panel.setLayout(new BoxLayout(panel, BoxLayout.LINE_AXIS));
 
-        startButton.addActionListener(e -> start());  // add action listeners
-        pauseButton.addActionListener(e -> pause());
-        stopButton.addActionListener(e -> stop());
-
-        panel.add(startButton);  // add to panel
-        panel.add(Box.createRigidArea(new Dimension(0, 10)));
-        panel.add(pauseButton);
-        panel.add(Box.createRigidArea(new Dimension(0, 10)));
-        panel.add(stopButton);
-        panel.add(Box.createRigidArea(new Dimension(0, 10)));
         panel.add(balanceButton);
-        panel.add(Box.createRigidArea(new Dimension(0, 10)));
+        panel.add(Box.createRigidArea(new Dimension(10, 0)));
 
-        panel.setMaximumSize(new Dimension(200, 800));
         return panel;
-    }
-
-    /*
-     * Update
-     */
-
-    /**
-     * Update screen with newest data
-     */
-    private void updateOrFail() {
-        try {
-            BmsData data = null;  // get newest data
-
-            if (data != null) {
-                if (data.isStatusType()) {  // if it's a log, update log frame
-                    updateLogFrameOrFail(data);
-                } else if (data.isValueType()) {  // if it's a value update
-                    // data and chart frames
-                    updateDataFrameOrFail(data);
-                }
-            }
-            Thread.sleep(msGuiIntervalUpdate);  // wait until next update
-        } catch (NullPointerException | InterruptedException e) {
-            System.err.println(TAG + " has encountered some errors while " +
-                    "updateOrFail()");
-            e.printStackTrace();
-            System.err.println();
-        }
     }
 
     /**
@@ -290,7 +223,6 @@ public class BmsGui extends ApplicationFrame implements Runnable,
         JMenuBar menuBar = new JMenuBar();
         menuBar.add(createFileMenu());  // file
         menuBar.add(createShowFramesMenu());  // windows toggle status
-        menuBar.add(createEditMenu());  // edit update intervals
         menuBar.add(createHelpMenu());  // help/ about
 
         return menuBar;
@@ -344,30 +276,6 @@ public class BmsGui extends ApplicationFrame implements Runnable,
     }
 
     /**
-     * Creates new edit menu
-     *
-     * @return edit menu
-     */
-    private JMenu createEditMenu() {
-        JMenu menu = new JMenu("Edit");  // file menu
-
-        JMenuItem item = new JMenuItem("GUI update interval");
-        item.addActionListener(e -> {
-            String userInput = JOptionPane.showInputDialog("Milliseconds " +
-                            "between two consecutive GUI updates",
-                    msGuiIntervalUpdate);
-            msGuiIntervalUpdate = Integer.parseInt(userInput);  // update
-        });
-        menu.add(item);
-
-        item = new JMenuItem("Values alert interval");
-        item.addActionListener(e -> showValueAlertIntervalEditDialog());
-        menu.add(item);
-
-        return menu;
-    }
-
-    /**
      * Creates new help menu with help/about options
      *
      * @return help menu
@@ -384,41 +292,6 @@ public class BmsGui extends ApplicationFrame implements Runnable,
         menu.add(item);
 
         return menu;
-    }
-
-    /*
-     * Dialogs
-     */
-
-    /**
-     * Show a dialog to edit values alert interval
-     */
-    private void showValueAlertIntervalEditDialog() {
-        MinMaxValuePanel minMaxTemperaturePanel = new MinMaxValuePanel(
-                "Temperature bounds (K)",  // title
-                com.raceup.ed.bms.gui.frame.data.Bms.TEMPERATURE_BOUNDS[0],  // min value
-                com.raceup.ed.bms.gui.frame.data.Bms.TEMPERATURE_BOUNDS[1]  // max value
-        );
-
-        MinMaxValuePanel minMaxVoltagePanel = new MinMaxValuePanel(
-                "Voltage bounds (mV)",  // title
-                com.raceup.ed.bms.gui.frame.data.Bms.VOLTAGE_BOUNDS[0],  // min value
-                com.raceup.ed.bms.gui.frame.data.Bms.VOLTAGE_BOUNDS[1]  // max value
-        );
-
-        JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));  // add
-        // components vertically with horizontal gap, vertical gap
-        panel.add(minMaxTemperaturePanel);  // add sub-panels
-        panel.add(minMaxVoltagePanel);
-
-        int userInput = JOptionPane.showConfirmDialog(
-                null,
-                panel,
-                "Edit values bounds",  // question for the user
-                JOptionPane.CANCEL_OPTION,
-                JOptionPane.PLAIN_MESSAGE
-        );
     }
 
     /**
@@ -457,66 +330,5 @@ public class BmsGui extends ApplicationFrame implements Runnable,
 
         String title = "Help";
         new AboutDialog(this, content, title).setVisible(true);
-    }
-
-    /*
-     * Recharge
-     */
-
-    /**
-     * Panel to get/set min, max values
-     */
-    private class MinMaxValuePanel extends JPanel {
-        JTextArea minInput;  // input labels
-        JTextArea maxInput;
-        private double min;  // input values
-        private double max;
-
-        /**
-         * New MinMaxValuePanel
-         *
-         * @param title title of panel
-         * @param min   initial min value
-         * @param max   initial max value
-         */
-        MinMaxValuePanel(String title, double min, double max) {
-            super();
-            this.min = min;  // initial values
-            this.max = max;
-
-            setup();
-            setLayout(new GridLayout(2, 2));  // rows, columns
-            JPanelsUtils.addTitleEmptyBorderOnPanel(this, title);  // add title
-        }
-
-        /**
-         * Get min value
-         *
-         * @return min value
-         */
-        public double getMin() {
-            min = Double.parseDouble(minInput.getText());  // update value
-            return min;
-        }
-
-        /**
-         * Get max value
-         *
-         * @return max value
-         */
-        public double getMax() {
-            max = Double.parseDouble(maxInput.getText());  // update value
-            return max;
-        }
-
-        private void setup() {
-            add(new JLabel("Min value"));
-            minInput = new JTextArea(Double.toString(min));
-            add(minInput);
-
-            add(new JLabel("Max value"));
-            maxInput = new JTextArea(Double.toString(max));
-            add(maxInput);
-        }
     }
 }

@@ -16,8 +16,9 @@
 
 package com.raceup.ed.bms;
 
+import com.raceup.ed.bms.battery.Pack;
+
 import javax.swing.*;
-import java.awt.*;
 
 /**
  * Main driver program
@@ -36,31 +37,9 @@ class Main {
      * @param args default args
      */
     public static void main(String[] args) {
-        /*setAppUiOrFail();
-        Bms bms = GuiSettings.buildBms();
-        startGui(bms);  // create app*/
-
-        // Pack battery = new Pack(8, 3);
-        // Bms bms = new Bms(115200, null, battery);
-        // bms.start();
-        BmsGui gui = new BmsGui();
-        gui.open();
-    }
-
-    /**
-     * Set application name or do nothing
-     */
-    private static void setAppUiOrFail() {
-        try {
-            Toolkit xToolkit = Toolkit.getDefaultToolkit();
-            java.lang.reflect.Field awtAppClassNameField =
-                    xToolkit.getClass().getDeclaredField(APP_NAME_SETTINGS);
-            awtAppClassNameField.setAccessible(true);
-            awtAppClassNameField.set(xToolkit, Bms.appName + " " + Bms
-                    .appVersion);
-        } catch (Exception e) {
-            System.err.println(e.toString());
-        }
+        Pack battery = new Pack(8, 3);
+        Bms bms = new Bms(115200, null, battery);
+        startGui(bms);
     }
 
     /**

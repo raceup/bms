@@ -16,8 +16,6 @@
 
 package com.raceup.ed.bms.gui.frame.data;
 
-import com.raceup.ed.bms.gui.frame.chart.ChartFrame;
-
 import javax.swing.*;
 import java.awt.*;
 
@@ -70,22 +68,6 @@ public class Bms extends JPanel {
 
     public void setMaxVoltage(double value) {
         voltageMaxLabel.update(VOLTAGE_BOUNDS, value);
-    }
-
-    /**
-     * Show dialog with more info about cell
-     *
-     * @param title title of dialog
-     */
-    void showDialog(String title) {
-        ChartFrame dialog = new ChartFrame(title, new String[]{"Voltage (mV)" +
-                "", "Temperature (K)"});
-        dialog.setLocationRelativeTo(null);  // center in screen
-
-        Timer updater = new Timer(10, e -> {
-            dialog.updateOrFail(0, getVoltage());
-        });  // timer to update dialog values
-        updater.start();
     }
 
     /*
