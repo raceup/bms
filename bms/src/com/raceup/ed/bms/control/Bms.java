@@ -118,7 +118,7 @@ public class Bms implements Runnable, StartAndStop {
      *
      * @return last value from serial
      */
-    BmsData getNewestData() {
+    public BmsData getNewestData() {
         try {
             String data = arduino.getRawData();
             System.out.println("Requesting newest data: " + data);
@@ -204,5 +204,9 @@ public class Bms implements Runnable, StartAndStop {
      */
     void askArduinoToBalanceCells() {
         arduino.sendSerialDataOrFail(ARDUINO_BALANCE_MSG);
+    }
+
+    public void close() {
+        arduino.close();
     }
 }

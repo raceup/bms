@@ -83,6 +83,7 @@ public class Gui extends ApplicationFrame {
 
         pack();
         setLocation(0, 0);  // top left corner
+        setResizable(false);
         setVisible(true);
     }
 
@@ -117,7 +118,7 @@ public class Gui extends ApplicationFrame {
     }
 
     public void close() {
-
+        bms.close();
     }
 
     /*

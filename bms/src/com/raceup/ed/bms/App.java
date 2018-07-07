@@ -80,7 +80,7 @@ class App {
     public void start() {
         try {
             ui.open();
-            // todo start connection
+            ui.start();
         } catch (Exception e) {
             System.err.println("Error while opening UI");
         }
