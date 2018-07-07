@@ -42,6 +42,20 @@ public class Os {
         return nameOfOs.contains("sunos");
     }
 
+    public static OsType getCurrentOs() {
+        if (isWindows()) {
+            return OsType.WINDOWS;
+        } else if (isMac()) {
+            return OsType.MAC_OSX;
+        } else if (isUnix()) {
+            return OsType.LINUX;
+        } else if (isSolaris()) {
+            return OsType.SUNOS;
+        }
+
+        return null;
+    }
+
     public static void setNativeLookAndFeelOrFail() {
         try {
             String nativeLookAndFeelPackage = "";

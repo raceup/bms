@@ -55,7 +55,7 @@ public class Bms extends ArduinoSerial implements Runnable, StartAndStop {
      * @param batteryPack virtual battery pock to monitor
      */
     public Bms(int BAUD_RATE, Logger logger, Pack batteryPack) {
-        super(BAUD_RATE, System.out);
+        super(BAUD_RATE);
 
         this.logger = logger;  // logger
         this.batteryPack = batteryPack;  // create battery pack model
