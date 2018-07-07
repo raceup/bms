@@ -3,6 +3,7 @@ package com.raceup.ed.bms.ui.panel.stream;
 import com.raceup.ed.bms.control.BmsOperatingMode;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ItemEvent;
 import java.util.HashMap;
 
@@ -24,8 +25,15 @@ public class ModePanel extends JPanel {
 
     private void setup() {
         modeChooser = new JComboBox<>();
+        BmsOperatingMode.OperatingMode[] modes = new BmsOperatingMode
+                .OperatingMode[]{
+                BmsOperatingMode.OperatingMode.NORMAL,
+                BmsOperatingMode.OperatingMode.BALANCE,
+                BmsOperatingMode.OperatingMode.SLEEP,
+                BmsOperatingMode.OperatingMode.DEBUG
+        };
 
-        for (BmsOperatingMode.OperatingMode key : OPERATING_MODE.keySet()) {
+        for (BmsOperatingMode.OperatingMode key : modes) {
             BmsOperatingMode mode = OPERATING_MODE.get(key);
             String description = mode.getDescription();
             modeChooser.addItem(description);
@@ -39,11 +47,15 @@ public class ModePanel extends JPanel {
                         modeCommandBms.get(item) + ")");
             }
         });
+        modeChooser.setSelectedIndex(0);
     }
 
     private void setupLayout() {
-        setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
-        add(new JLabel("Select operating mode"));
+        setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+
+        add(new JLabel("Select operating mode:"));
+        add(Box.createRigidArea(new Dimension(10, 0)));
         add(modeChooser);
+        add(Box.createRigidArea(new Dimension(0, 10)));
     }
 }

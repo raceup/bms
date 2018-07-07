@@ -141,6 +141,7 @@ public class Gui extends ApplicationFrame {
         );  // border
 
         add(modePanel);
+        add(Box.createRigidArea(new Dimension(0, 10)));
         add(dataPanel);
         setJMenuBar(createMenuBar());  // set menu-bar
     }
