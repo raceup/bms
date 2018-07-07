@@ -4,22 +4,25 @@ import javax.swing.*;
 import java.awt.*;
 import java.text.DecimalFormat;
 
-public class NumAlerter extends JPanel {
+public class NumAlerter extends JLabel {
     private static final DecimalFormat NUM_FORMAT = new DecimalFormat
             ("0000.00");  // decimal places
     final Color VALUE_TOO_HIGH_COLOR = Color.RED;
     final Color VALUE_NORMAL_COLOR = Color.GREEN;
     final Color VALUE_TOO_LOW_COLOR = Color.CYAN;
 
+    public NumAlerter(String text) {
+        super(text);
+    }
+
     /**
      * Update widget with new value
      *
-     * @param label  label to update series
      * @param bounds min, max of value allowed
      * @param value  new value
      */
-    protected void update(JLabel label, double[] bounds, double value) {
-        label.setText(NUM_FORMAT.format(value));
+    protected void update(double[] bounds, double value) {
+        setText(NUM_FORMAT.format(value));
         updateBackground(value, bounds);
     }
 

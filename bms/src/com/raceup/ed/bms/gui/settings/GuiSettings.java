@@ -88,10 +88,7 @@ public class GuiSettings {
         return new Bms(
                 arduinoSettings.getBaudRate(),  // baud rate
                 new Logger(loggerSettings.getPathChosen()),  // log folder
-                new Pack(
-                        batterySettings.getNumberOfBmsPerSegment(),
-                        3
-                )
+                new Pack(8, 3)
         );
     }
 

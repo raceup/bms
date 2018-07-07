@@ -18,7 +18,6 @@
 package com.raceup.ed.bms;
 
 import com.raceup.ed.bms.gui.frame.chart.ChartPanel;
-import com.raceup.ed.bms.gui.frame.data.Cell;
 import com.raceup.ed.bms.gui.frame.data.DataFrame;
 import com.raceup.ed.bms.gui.frame.log.LogFrame;
 import com.raceup.ed.bms.stream.bms.data.BmsData;
@@ -59,7 +58,6 @@ public class BmsGui extends ApplicationFrame implements Runnable,
             (int) (SCREEN.getWidth() * 0.8), (int) (SCREEN.getHeight() * 0.8)
     );
     private int msGuiIntervalUpdate = 1000;  // GUI interval update
-    private final Bms bms;  // bms manager
     private final JButton startButton = new JButton("Start");  // start
     // stop buttons
     private final JButton pauseButton = new JButton("Pause");
@@ -75,18 +73,12 @@ public class BmsGui extends ApplicationFrame implements Runnable,
 
     /**
      * Prepare and run gui
-     *
-     * @param bms bms manager to monitor
      */
-    BmsGui(Bms bms) {
+    BmsGui() {
         super("BmsUtils manager");  // set title
         setIconImage(appIcon);  // set icon
-        System.setProperty(APP_NAME_SETTINGS, "BmsUtils Manager");  // set
-        // app name
-
+        System.setProperty(APP_NAME_SETTINGS, "YOLO Bms Desktop");
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);  // destroy
-        // app when closed
-        this.bms = bms;  // setup bms
 
         setup();
     }
@@ -96,12 +88,11 @@ public class BmsGui extends ApplicationFrame implements Runnable,
      */
     void open() {
         dataPanel.setVisible(true);
-        chartPanel.setVisible(true);
-        logPanel.setVisible(true);
+        // chartPanel.setVisible(true);
+        // logPanel.setVisible(true);
 
         pack();
         setLocation(0, 0);  // top left corner
-        setMinimumSize(MAX_DIMENSION);
         setVisible(true);
     }
 
@@ -114,7 +105,6 @@ public class BmsGui extends ApplicationFrame implements Runnable,
      */
     public void start() {
         if (!amIStopped && !amIStarted) {  // only when i'm not stopped
-            bms.start();  // start bms thread
             amIStarted = true;  // start updating
 
             if (!amIPaused) {  // first time to start
@@ -130,8 +120,6 @@ public class BmsGui extends ApplicationFrame implements Runnable,
     public void pause() {
         amIStarted = false;  // stop updating
         amIPaused = true;
-
-        bms.pause();
     }
 
     /**
@@ -141,8 +129,6 @@ public class BmsGui extends ApplicationFrame implements Runnable,
         amIStarted = false;
         amIPaused = false;
         amIStopped = true;
-
-        bms.stop();  // stop bms backend
     }
 
     /**
@@ -165,13 +151,13 @@ public class BmsGui extends ApplicationFrame implements Runnable,
      * Setup gui and backend
      */
     private void setup() {
-        int[] numberOfBmsPerSegment = bms.batteryPack
+        /*int[] numberOfBmsPerSegment = bms.batteryPack
                 .getNumberOfBmsPerSegment();
         chartPanel = new ChartPanel(new String[]{"Voltage (mV)"});
         chartPanel.setMaximumSize(
                 new Dimension(1000, 800)
-        );  // aliasing blurring
-        dataPanel = new DataFrame(numberOfBmsPerSegment);
+        );  // aliasing blurring*/
+        dataPanel = new DataFrame(8, 3);
         logPanel = new LogFrame();
         setupLayout();  // setup frame manager
     }
@@ -199,7 +185,7 @@ public class BmsGui extends ApplicationFrame implements Runnable,
                 )
         );  // border
 
-        panel.add(chartPanel);
+        // panel.add(chartPanel);
         panel.add(Box.createRigidArea(new Dimension(10, 0)));
         panel.add(createStartStopPanel());
 
@@ -221,7 +207,6 @@ public class BmsGui extends ApplicationFrame implements Runnable,
         startButton.addActionListener(e -> start());  // add action listeners
         pauseButton.addActionListener(e -> pause());
         stopButton.addActionListener(e -> stop());
-        balanceButton.addActionListener(e -> sendBalanceCellsAction());
 
         panel.add(startButton);  // add to panel
         panel.add(Box.createRigidArea(new Dimension(0, 10)));
@@ -245,7 +230,7 @@ public class BmsGui extends ApplicationFrame implements Runnable,
      */
     private void updateOrFail() {
         try {
-            BmsData data = bms.getNewestData();  // get newest data
+            BmsData data = null;  // get newest data
 
             if (data != null) {
                 if (data.isStatusType()) {  // if it's a log, update log frame
@@ -253,7 +238,6 @@ public class BmsGui extends ApplicationFrame implements Runnable,
                 } else if (data.isValueType()) {  // if it's a value update
                     // data and chart frames
                     updateDataFrameOrFail(data);
-                    updateChartFrameOrFail();
                 }
             }
             Thread.sleep(msGuiIntervalUpdate);  // wait until next update
@@ -273,24 +257,11 @@ public class BmsGui extends ApplicationFrame implements Runnable,
     private void updateDataFrameOrFail(BmsData data) {
         try {
             if (data.isValueType()) {
-                dataPanel.updateCellValue(new BmsValue(data));
+                dataPanel.update(new BmsValue(data));
             }
         } catch (Exception e) {
             System.err.println(e.toString());
         }
-    }
-
-    /**
-     * Fetch newest average tmp/volt value and updateOrFail series chart
-     */
-    private void updateChartFrameOrFail() {
-        try {
-            chartPanel.updateSeriesOrFail(0, bms.batteryPack
-                    .getVoltage());  // update voltage
-        } catch (Exception e) {
-            System.err.println(e.toString());
-        }
-
     }
 
     /**
@@ -389,25 +360,6 @@ public class BmsGui extends ApplicationFrame implements Runnable,
         });
         menu.add(item);
 
-        item = new JMenuItem("BmsUtils update interval");
-        item.addActionListener(e -> {
-            String userInput = JOptionPane.showInputDialog("Milliseconds " +
-                    "between two consecutive bms updates", bms
-                    .msSerialIntervalUpdate);
-            bms.msSerialIntervalUpdate = Integer.parseInt(userInput);  //
-            // update
-        });
-        menu.add(item);
-
-        item = new JMenuItem("Log update interval");
-        item.addActionListener(e -> {
-            String userInput = JOptionPane.showInputDialog("Milliseconds " +
-                    "between two consecutive log data updates", bms
-                    .msLogIntervalUpdate);
-            bms.msLogIntervalUpdate = Integer.parseInt(userInput);  // update
-        });
-        menu.add(item);
-
         item = new JMenuItem("Values alert interval");
         item.addActionListener(e -> showValueAlertIntervalEditDialog());
         menu.add(item);
@@ -444,14 +396,14 @@ public class BmsGui extends ApplicationFrame implements Runnable,
     private void showValueAlertIntervalEditDialog() {
         MinMaxValuePanel minMaxTemperaturePanel = new MinMaxValuePanel(
                 "Temperature bounds (K)",  // title
-                Cell.TEMPERATURE_BOUNDS[0],  // min value
-                Cell.TEMPERATURE_BOUNDS[1]  // max value
+                com.raceup.ed.bms.gui.frame.data.Bms.TEMPERATURE_BOUNDS[0],  // min value
+                com.raceup.ed.bms.gui.frame.data.Bms.TEMPERATURE_BOUNDS[1]  // max value
         );
 
         MinMaxValuePanel minMaxVoltagePanel = new MinMaxValuePanel(
                 "Voltage bounds (mV)",  // title
-                Cell.VOLTAGE_BOUNDS[0],  // min value
-                Cell.VOLTAGE_BOUNDS[1]  // max value
+                com.raceup.ed.bms.gui.frame.data.Bms.VOLTAGE_BOUNDS[0],  // min value
+                com.raceup.ed.bms.gui.frame.data.Bms.VOLTAGE_BOUNDS[1]  // max value
         );
 
         JPanel panel = new JPanel();
@@ -505,13 +457,6 @@ public class BmsGui extends ApplicationFrame implements Runnable,
 
         String title = "Help";
         new AboutDialog(this, content, title).setVisible(true);
-    }
-
-    /**
-     * Sends to Arduino recharge action
-     */
-    private void sendBalanceCellsAction() {
-        bms.askArduinoToBalanceCells();
     }
 
     /*
