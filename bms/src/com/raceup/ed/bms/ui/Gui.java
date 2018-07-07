@@ -19,11 +19,8 @@ package com.raceup.ed.bms.ui;
 
 import com.raceup.ed.bms.control.Bms;
 import com.raceup.ed.bms.models.stream.bms.BmsData;
-import com.raceup.ed.bms.models.stream.bms.BmsLog;
 import com.raceup.ed.bms.models.stream.bms.BmsValue;
-import com.raceup.ed.bms.ui.frame.chart.ChartPanel;
-import com.raceup.ed.bms.ui.frame.data.DataFrame;
-import com.raceup.ed.bms.ui.frame.log.LogFrame;
+import com.raceup.ed.bms.ui.panel.data.DataPanel;
 import com.raceup.ed.bms.utils.gui.AboutDialog;
 import org.jfree.ui.ApplicationFrame;
 
@@ -40,7 +37,7 @@ import static com.raceup.ed.bms.utils.Streams.readAllFromStream;
 /**
  * Font-end (ui) of BMS
  * - ~spreadsheet with race data values and dialog to get more info (i.e
- * DataFrame)
+ * DataPanel)
  * - chart with total tension of battery (i.e ChartFrame)
  * - text area with errors (i.e ErrorsAreaFrame)
  */
@@ -54,9 +51,7 @@ public class Gui extends ApplicationFrame {
     );
     private static final String TAG = "Gui";
     private final JButton balanceButton = new JButton("Balance cells");
-    private DataFrame dataPanel;  // ui frames
-    private ChartPanel chartPanel;
-    private LogFrame logPanel;  // frame used for logging
+    private DataPanel dataPanel;  // ui frames
     private Bms bms;
 
     /**
@@ -100,9 +95,7 @@ public class Gui extends ApplicationFrame {
                 try {
                     BmsData data = null;  // todo get newest data
                     if (data != null) {
-                        if (data.isStatusType()) {  // if it's a log, update log frame
-                            updateLogFrameOrFail(data);
-                        } else if (data.isValueType()) {  // if it's a value update
+                        if (data.isValueType()) {  // if it's a value update
                             // data and chart frames
                             updateDataFrameOrFail(data);
                         }
@@ -129,14 +122,8 @@ public class Gui extends ApplicationFrame {
      * Setup ui and backend
      */
     private void setup() {
-        /*int[] numberOfBmsPerSegment = bms.batteryPack
-                .getNumberOfBmsPerSegment();
-        chartPanel = new ChartPanel(new String[]{"Voltage (mV)"});
-        chartPanel.setMaximumSize(
-                new Dimension(1000, 800)
-        );  // aliasing blurring*/
-        dataPanel = new DataFrame(8, 3);
-        logPanel = new LogFrame();
+        dataPanel = new DataPanel(8, 3);
+
         setupLayout();  // setup frame manager
     }
 
@@ -156,14 +143,6 @@ public class Gui extends ApplicationFrame {
         // data and chart
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.LINE_AXIS));
-        panel.setAlignmentX(JScrollPane.RIGHT_ALIGNMENT);
-        panel.setBorder(
-                BorderFactory.createEmptyBorder(
-                        10, 10, 10, 10
-                )
-        );  // border
-
-        // panel.add(chartPanel);
         panel.add(Box.createRigidArea(new Dimension(10, 0)));
         panel.add(createStartStopPanel());
 
@@ -202,19 +181,6 @@ public class Gui extends ApplicationFrame {
         }
     }
 
-    /**
-     * Update log frame
-     *
-     * @param data new data with which update log frame
-     */
-    private void updateLogFrameOrFail(BmsData data) {
-        try {
-            logPanel.update(new BmsLog(data));
-        } catch (Exception e) {
-            System.err.println(e.toString());
-        }
-    }
-
     /*
      * Menu bar
      */
@@ -243,38 +209,6 @@ public class Gui extends ApplicationFrame {
 
         JMenuItem item = new JMenuItem("Exit");
         item.addActionListener(e -> System.exit(0));
-        menu.add(item);
-
-        return menu;
-    }
-
-    /**
-     * Menu to toggle view status of each frame
-     *
-     * @return frame show menu
-     */
-    private JMenu createShowFramesMenu() {
-        JMenu menu = new JMenu("Windows");  // file menu
-
-        JMenuItem item = new JMenu("Data");
-        JMenuItem subMenuItem = new JMenuItem("Toggle view status");
-        subMenuItem.addActionListener(e -> dataPanel.setVisible(!dataPanel
-                .isVisible()));
-        item.add(subMenuItem);
-        menu.add(item);
-
-        item = new JMenu("Chart");
-        subMenuItem = new JMenuItem("Toggle view status");
-        subMenuItem.addActionListener(e -> chartPanel.setVisible(
-                !chartPanel.isVisible()));
-        item.add(subMenuItem);
-        menu.add(item);
-
-        item = new JMenu("Log");
-        subMenuItem = new JMenuItem("Toggle view status");
-        subMenuItem.addActionListener(e -> logPanel.setVisible(!logPanel
-                .isVisible()));
-        item.add(subMenuItem);
         menu.add(item);
 
         return menu;

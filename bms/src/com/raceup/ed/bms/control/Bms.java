@@ -17,14 +17,13 @@
 
 package com.raceup.ed.bms.control;
 
-import com.raceup.ed.bms.StartAndStop;
 import com.raceup.ed.bms.models.battery.Pack;
-import com.raceup.ed.bms.models.stream.Logger;
 import com.raceup.ed.bms.models.stream.bms.BmsData;
 import com.raceup.ed.bms.models.stream.bms.BmsValue;
 import com.raceup.ed.bms.models.stream.serial.ArduinoSerial;
 import org.json.JSONObject;
 
+import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -33,21 +32,28 @@ import java.util.TimerTask;
  * Battery management system (with multithreading support)
  * Provides data from arduino serial port
  */
-public class Bms implements Runnable, StartAndStop {
-    public static final String appName = "BmsManager";  // app settings
-    static final String appVersion = "3.0";
-    private static final String TAG = "BmsUtils";
-    private static final String ARDUINO_START_LOGGING_MSG = "H";  // send
-    // this message to ask Arduino to start logging
-    private static final String ARDUINO_BALANCE_MSG = "B";  // send this
-    // message to ask Arduino to balance segments
-    final Pack batteryPack;  // battery pack settings
-    private final Logger logger;  // log data to file
+public class Bms {
+    public static final String TAG = "Bms";  // app settings
+    public static final HashMap<BmsOperatingMode.OperatingMode, BmsOperatingMode> operatingMode;
     private ArduinoSerial arduino;
-    int msLogIntervalUpdate = 1000;  // logging interval update
-    private volatile boolean amIStarted = false;  // start and stop management
-    private volatile boolean amIPaused = false;
-    private volatile boolean amIStopped = false;
+
+    static {
+        operatingMode = new HashMap<>();
+        operatingMode.put(BmsOperatingMode.OperatingMode.NORMAL,
+                new BmsOperatingMode("N", "Normal")
+        );
+        operatingMode.put(BmsOperatingMode.OperatingMode.BALANCE,
+                new BmsOperatingMode("B", "Balance")
+        );
+        operatingMode.put(BmsOperatingMode.OperatingMode.SLEEP,
+                new BmsOperatingMode("S", "Sleep")
+        );
+        operatingMode.put(BmsOperatingMode.OperatingMode.DEBUG,
+                new BmsOperatingMode("D", "Debug")
+        );
+    }
+
+    private final Pack batteryPack;  // battery pack settings
 
     /**
      * Create new arduino binding with default baud rate
@@ -57,7 +63,6 @@ public class Bms implements Runnable, StartAndStop {
     public Bms(ArduinoSerial arduino, Pack batteryPack) {
         this.arduino = arduino;
         this.batteryPack = batteryPack;  // create battery pack model
-        this.logger = null;  // logger
     }
 
     /**
@@ -65,52 +70,8 @@ public class Bms implements Runnable, StartAndStop {
      * BmsLog and updating battery pack
      */
     public void start() {
-        if (!amIStopped && !amIStarted) {  // only when i'm not stopped
-            amIStarted = true;  // start updating
-            askArduinoToStartLogging();  // start logging
-
-            if (!amIPaused) {  // first time
-                new Thread(this, this.getClass().getName()).start();  //
-                // start in new thread
-            }
-        }
-    }
-
-    /**
-     * Pause reading data from serial
-     */
-    public void pause() {
-        amIStarted = false;  // stop updating
-        amIPaused = true;
-    }
-
-    /**
-     * Close serial port and never re-open it
-     */
-    public void stop() {
-        amIStarted = false;
-        amIPaused = false;
-        amIStopped = true;
-
-        try {
-            arduino.close();  // close arduino serial
-        } catch (Exception e) {
-            System.err.println(e.toString());
-        }
-    }
-
-    /**
-     * Monitoring BMS
-     * 1) read newest value from serial
-     * 2) updateOrFail series values in BMS model
-     * 3) loop
-     */
-    public void run() {  // exit thread only when stopped
-        while (!amIStopped) {
-            while (amIStarted) {
-                updateOrFail();
-            }
-        }
+        setNormalMode();  // start logging
+        updateOrFail();
     }
 
     /**
@@ -192,18 +153,26 @@ public class Bms implements Runnable, StartAndStop {
         }
     }
 
-    /**
-     * Asks Arduino to start logging data
-     */
-    private void askArduinoToStartLogging() {
-        arduino.sendSerialDataOrFail(ARDUINO_START_LOGGING_MSG);
+    private void setMode(BmsOperatingMode.OperatingMode mode) {
+        BmsOperatingMode command = operatingMode.get(BmsOperatingMode
+                .OperatingMode.NORMAL);
+        arduino.sendSerialDataOrFail(command.getArduinoCommand());
     }
 
-    /**
-     * Asks Arduino to balance segments
-     */
-    void askArduinoToBalanceCells() {
-        arduino.sendSerialDataOrFail(ARDUINO_BALANCE_MSG);
+    public void setNormalMode() {
+        setMode(BmsOperatingMode.OperatingMode.NORMAL);
+    }
+
+    public void setBalancingMode() {
+        setMode(BmsOperatingMode.OperatingMode.BALANCE);
+    }
+
+    public void setSleepMode() {
+        setMode(BmsOperatingMode.OperatingMode.SLEEP);
+    }
+
+    public void setDebugMode() {
+        setMode(BmsOperatingMode.OperatingMode.DEBUG);
     }
 
     public void close() {

@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package com.raceup.ed.bms.ui.frame.data;
+package com.raceup.ed.bms.ui.panel.data;
 
 import javax.swing.*;
 import java.awt.*;

@@ -17,6 +17,8 @@
 
 package com.raceup.ed.bms.ui.frame.chart;
 
+import com.raceup.ed.bms.ui.panel.chart.ChartPanel;
+
 import javax.swing.*;
 
 /**

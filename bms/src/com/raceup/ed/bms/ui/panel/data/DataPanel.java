@@ -15,7 +15,7 @@
  */
 
 
-package com.raceup.ed.bms.ui.frame.data;
+package com.raceup.ed.bms.ui.panel.data;
 
 import com.raceup.ed.bms.models.stream.bms.BmsValue;
 
@@ -25,10 +25,10 @@ import java.awt.*;
 /**
  * Frame containing raw data from BMS
  */
-public class DataFrame extends JPanel {
+public class DataPanel extends JPanel {
     private Bms[] bmsDevices;
 
-    public DataFrame(int numberOfSegments, int numberOfBmsPerSegment) {
+    public DataPanel(int numberOfSegments, int numberOfBmsPerSegment) {
         super();
         bmsDevices = new Bms[numberOfSegments * numberOfBmsPerSegment];
         setup(numberOfSegments, numberOfBmsPerSegment);

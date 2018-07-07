@@ -1,4 +1,4 @@
-package com.raceup.ed.bms.ui.frame.chart;
+package com.raceup.ed.bms.ui.panel.chart;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.plot.XYPlot;
