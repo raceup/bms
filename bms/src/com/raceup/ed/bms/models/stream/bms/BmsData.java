@@ -25,7 +25,6 @@ public class BmsData {
     final String value;  // value of bms of segment
     private final String type;  // type of data
     private final int bms;  // number of bms broadcasting value
-    public static final int BMS_DEVICE_PER_SEGMENT = 8;
     public static final String TYPE_KEY = "type";
     public static final String BMS_KEY = "BMS";
     public static final String VALUE_KEY = "value";
@@ -67,13 +66,30 @@ public class BmsData {
     }
 
     /**
+     * Check if data is a temperature value
+     *
+     * @return True iff data is a temperature value
+     */
+    public boolean isTemperature() {
+        return getType().startsWith(TEMPERATURE_KEY);
+    }
+
+    /**
+     * Check if data is a voltage value
+     *
+     * @return True iff data is a voltage value
+     */
+    public boolean isVoltage() {
+        return getType().startsWith(VOLTAGE_KEY);
+    }
+
+    /**
      * Check if current data is a battery bms value
      *
      * @return True iff data is a value
      */
     public boolean isValueType() {
-        return (type.startsWith(VOLTAGE_KEY) ||
-                type.startsWith(TEMPERATURE_KEY));
+        return isTemperature() || isVoltage();
     }
 
     /**

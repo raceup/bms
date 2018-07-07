@@ -30,21 +30,12 @@ public class BmsValue extends BmsData {
     }
 
     /**
-     * Check if data is a temperature value
-     *
-     * @return True iff data is a temperature value
-     */
-    public boolean isTemperature() {
-        return getType().startsWith("temperature");
-    }
-
-    /**
      * Check if data is a temperature value of type 1
      *
      * @return True iff data is a temperature value of type 1
      */
     public boolean isTemperature1() {
-        return getType().equals("temperature_1");
+        return getType().equals(TEMPERATURE_KEY + "_1");
     }
 
     /**
@@ -53,16 +44,7 @@ public class BmsValue extends BmsData {
      * @return True iff data is a temperature value of type 2
      */
     public boolean isTemperature2() {
-        return getType().equals("temperature_2");
-    }
-
-    /**
-     * Check if data is a voltage value
-     *
-     * @return True iff data is a voltage value
-     */
-    public boolean isVoltage() {
-        return getType().startsWith(VOLTAGE_KEY);
+        return getType().equals(TEMPERATURE_KEY + "_2");
     }
 
     /**
