@@ -30,6 +30,7 @@ import java.awt.*;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 
 import static com.raceup.ed.bms.utils.Streams.readAllFromStream;
 
@@ -129,7 +130,7 @@ public class Gui extends ApplicationFrame implements Runnable {
                 dataPanel.update(new BmsValue(data));
             }
         } catch (Exception e) {
-            System.err.println(e.toString());
+            System.err.println("Ui " + e.toString());
         }
     }
 
@@ -220,19 +221,23 @@ public class Gui extends ApplicationFrame implements Runnable {
 
     @Override
     public void run() {
-        try {
-            BmsData data = null;  // todo get newest data
-            if (data != null) {
-                if (data.isValueType()) {  // if it's a value update
-                    // data and chart frames
-                    updateDataFrameOrFail(data);
-                }
+        while (true) {
+            try {
+                loop();
+                Thread.sleep(500);
+            } catch (Exception e) {
+                System.err.println(TAG + " " + e.toString());
             }
-        } catch (Exception e) {
-            System.err.println(TAG + " has encountered some errors while " +
-                    "updateOrFail()");
-            e.printStackTrace();
-            System.err.println();
+        }
+    }
+
+    public void loop() {
+        // todo scan all model instead of getting newest data
+        ArrayList<BmsData> buffer = bms.getNewestData();
+        for (BmsData data : buffer) {
+            if (data != null && data.isValueType()) {
+                updateDataFrameOrFail(data);
+            }
         }
     }
 }

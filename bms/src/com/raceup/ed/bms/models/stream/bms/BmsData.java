@@ -26,6 +26,11 @@ public class BmsData {
     private final String type;  // type of data
     private final int bms;  // number of bms broadcasting value
     public static final int BMS_DEVICE_PER_SEGMENT = 8;
+    private static final String TYPE_KEY = "type";
+    private static final String BMS_KEY = "BMS";
+    private static final String VALUE_KEY = "value";
+    private static final String VOLTAGE_KEY = "voltage";
+    private static final String TEMPERATURE_KEY = "temperature";
 
     /**
      * Create and set params of new data
@@ -46,9 +51,9 @@ public class BmsData {
      */
     public BmsData(JSONObject root) {
         this(
-                root.getString("type"),
-                root.getString("bms"),
-                root.getString("value")
+                root.getString(TYPE_KEY),
+                root.getString(BMS_KEY),
+                root.getString(VALUE_KEY)
         );
     }
 
@@ -58,10 +63,7 @@ public class BmsData {
      * @return True iff data represents a log
      */
     public boolean isStatusType() {
-        return type.startsWith("status") ||
-                type.startsWith("alert") ||
-                type.startsWith("fault") ||
-                type.startsWith("log");
+        return false;  // todo ask gorgo
     }
 
     /**
@@ -70,12 +72,8 @@ public class BmsData {
      * @return True iff data is a value
      */
     public boolean isValueType() {
-        return (type.startsWith("voltage") ||
-                type.startsWith("temperature"));
-    }
-
-    public int getSegment() {
-        return (int) Math.ceil((getBms() - 1) / BMS_DEVICE_PER_SEGMENT);
+        return (type.startsWith(VOLTAGE_KEY) ||
+                type.startsWith(TEMPERATURE_KEY));
     }
 
     /**

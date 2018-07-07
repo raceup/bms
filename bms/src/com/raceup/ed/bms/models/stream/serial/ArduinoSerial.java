@@ -22,9 +22,7 @@ import jssc.SerialPortEvent;
 import jssc.SerialPortEventListener;
 import jssc.SerialPortException;
 
-import java.util.ArrayList;
 import java.util.NoSuchElementException;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 
 /**
@@ -34,7 +32,7 @@ public class ArduinoSerial implements SerialPortEventListener {
     private static final String TAG = "ArduinoSerial";
     // between 2 updates
     protected final int BAUD_RATE;  // reading baud rate
-    private ConcurrentLinkedQueue<String> dataBuffer = new ConcurrentLinkedQueue<>();
+    private volatile String rawBuffer = "";
     private SerialPort serialPort;  // serial port reading raw data from
     // arduino
 
@@ -45,6 +43,8 @@ public class ArduinoSerial implements SerialPortEventListener {
      */
     public ArduinoSerial(int BAUD_RATE) {
         this.BAUD_RATE = BAUD_RATE;  // baud rate to read data
+
+        setup();
     }
 
     public void close() {
@@ -100,10 +100,10 @@ public class ArduinoSerial implements SerialPortEventListener {
         }
     }
 
-    public ArrayList<String> getRawData() {
-        ArrayList<String> buffer = new ArrayList<>();
-        buffer.addAll(dataBuffer);
-        return buffer;
+    public String[] getRawData() {
+        String[] lines = rawBuffer.split("\n");
+        rawBuffer = "";
+        return lines;
     }
 
     @Override
@@ -112,7 +112,7 @@ public class ArduinoSerial implements SerialPortEventListener {
             try {
                 String receivedData = serialPort.readString(event.getEventValue());
                 if (receivedData != null) {
-                    dataBuffer.add(receivedData);
+                    rawBuffer += receivedData;
                 }
             } catch (SerialPortException ex) {
             }

@@ -72,7 +72,7 @@ public class Bms implements Runnable {
     }
 
     public ArrayList<BmsData> getNewestData() {
-        ArrayList<String> buffer = arduino.getRawData();
+        String[] buffer = arduino.getRawData();
         ArrayList<BmsData> parsed = new ArrayList<>();
         for (String data : buffer) {
             try {
@@ -89,33 +89,22 @@ public class Bms implements Runnable {
      * @param data new data coming from arduino
      */
     private void updateBatteryPack(BmsValue data) {
+        int bms = data.getBms() - 1;
+        double value = data.getValue();
+
         if (data.isTemperature()) {
             if (data.isTemperature1()) {
-                batteryPack.setTemperature1(
-                        data.getSegment(),  // cell position
-                        data.getBms(),
-                        data.getValue()  // value
-                );
+                batteryPack.setTemperature1(bms, value);
             } else if (data.isTemperature2()) {
-                batteryPack.setTemperature2(
-                        data.getSegment(),  // cell position
-                        data.getBms(),
-                        data.getValue()  // value
-                );
+                batteryPack.setTemperature2(bms, value);
             }
         } else if (data.isVoltage()) {
-            batteryPack.setVoltage(
-                    data.getSegment(),
-                    data.getBms(),
-                    data.getCell(),
-                    data.getValue()  // value
-            );
+            batteryPack.setVoltage(bms, data.getCell() - 1, value);
         }
     }
 
     private void setMode(BmsOperatingMode.OperatingMode mode) {
-        BmsOperatingMode command = OPERATING_MODE.get(BmsOperatingMode
-                .OperatingMode.NORMAL);
+        BmsOperatingMode command = OPERATING_MODE.get(mode);
         arduino.sendSerialDataOrFail(command.getArduinoCommand());
     }
 
@@ -141,9 +130,20 @@ public class Bms implements Runnable {
 
     @Override
     public void run() {
+        while (true) {
+            try {
+                loop();
+                Thread.sleep(250);
+            } catch (Exception e) {
+                System.err.println(TAG + e.toString());
+            }
+        }
+    }
+
+    public void loop() {
         ArrayList<BmsData> newestData = getNewestData();
         for (BmsData data : newestData) {
-            if (data.isValueType()) {
+            if (data != null && data.isValueType()) {
                 updateBatteryPack(new BmsValue(data));
             }
         }

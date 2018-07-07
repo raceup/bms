@@ -23,8 +23,6 @@ import com.raceup.ed.bms.ui.Gui;
 
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.Timer;
-import java.util.TimerTask;
 
 /**
  * App driver program
@@ -35,7 +33,6 @@ class App {
     private ArduinoSerial arduino;
     private Bms bms;
     private Gui ui;
-    private Thread uiThread;
 
     public App() {
         setup();
@@ -73,7 +70,6 @@ class App {
                     System.exit(0);
                 }
             });
-            uiThread = new Thread(ui);
         } catch (Exception e) {
             System.err.println("Error while creating UI");
         }
@@ -84,19 +80,10 @@ class App {
     public void start() {
         try {
             ui.open();  // start frontend
-            uiThread.start();
+            Thread thread = new Thread(ui);  // start thread
+            thread.start();
         } catch (Exception e) {
             System.err.println("Error while opening UI");
         }
-
-        Timer t = new Timer();
-        t.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                System.out.println("[" + System.currentTimeMillis() + "]: " +
-                        "new run");
-                // todo update ui
-            }
-        }, 0, 150);
     }
 }

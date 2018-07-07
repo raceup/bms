@@ -76,25 +76,29 @@ public class Pack implements BmsControllable {
     /**
      * Update temperature of cell of given cell
      *
-     * @param segment      segment number
      * @param value new temperature reading
      */
-    public void setTemperature1(int segment, int bms, double value) {
-        segments[segment].setTemperature1OfBms(bms, value);
+    public void setTemperature1(int bms, double value) {
+        segments[getSegmentOfBms(bms)].setTemperature1OfBms(
+                getBmsIndex(bms), value
+        );
     }
 
-    public void setTemperature2(int segment, int bms, double value) {
-        segments[segment].setTemperature2OfBms(bms, value);
+    public void setTemperature2(int bms, double value) {
+        segments[getSegmentOfBms(bms)].setTemperature2OfBms(
+                getBmsIndex(bms), value
+        );
     }
 
     /**
      * Update voltage of cell of given cell
      *
-     * @param segment      segment number
      * @param value      new voltage reading
      */
-    public void setVoltage(int segment, int bms, int cell, double value) {
-        segments[segment].setVoltageOfBms(bms, cell, value);
+    public void setVoltage(int bms, int cell, double value) {
+        segments[getSegmentOfBms(bms)].setVoltageOfBms(
+                getBmsIndex(bms), cell, value
+        );
     }
 
     /**
@@ -108,5 +112,13 @@ public class Pack implements BmsControllable {
             sum += segment.getVoltage();
         }
         return sum;
+    }
+
+    public int getSegmentOfBms(int bms) {
+        return bms / getNumberOfBmsPerSegment();
+    }
+
+    public int getBmsIndex(int bms) {
+        return bms % getNumberOfBmsPerSegment();
     }
 }

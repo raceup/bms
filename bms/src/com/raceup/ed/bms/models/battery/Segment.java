@@ -30,6 +30,9 @@ public class Segment implements BmsControllable {
      */
     public Segment(int numberOfBms) {
         bmsDevices = new BmsDevice[numberOfBms];
+        for (int i = 0; i < bmsDevices.length; i++) {
+            bmsDevices[i] = new BmsDevice();
+        }
     }
 
     public int getNumberOfBms() {
