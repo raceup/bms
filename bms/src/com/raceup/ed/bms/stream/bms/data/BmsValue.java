@@ -26,8 +26,7 @@ public class BmsValue extends BmsData {
      * @param data generic data type
      */
     public BmsValue(BmsData data) {
-        super(data.getType(), Integer.toString(data.getBms()), Integer
-                .toString(data.getSegment()), data.value);
+        super(data.getType(), Integer.toString(data.getBms()), data.value);
     }
 
     /**
@@ -36,7 +35,7 @@ public class BmsValue extends BmsData {
      * @return True iff data is a temperature value
      */
     public boolean isTemperature() {
-        return getType().equals("temperature");
+        return getType().startsWith("temperature");
     }
 
     /**
@@ -45,7 +44,7 @@ public class BmsValue extends BmsData {
      * @return True iff data is a temperature value of type 1
      */
     public boolean isTemperature1() {
-        return getType().equals("temperature1");
+        return getType().equals("temperature_1");
     }
 
     /**
@@ -54,7 +53,7 @@ public class BmsValue extends BmsData {
      * @return True iff data is a temperature value of type 2
      */
     public boolean isTemperature2() {
-        return getType().equals("temperature2");
+        return getType().equals("temperature_2");
     }
 
     /**
@@ -73,5 +72,14 @@ public class BmsValue extends BmsData {
      */
     public double getValue() {
         return Double.parseDouble(value);
+    }
+
+    public int getCell() {
+        if (isVoltage()) {
+            String rawCell = getType().split("_")[1];
+            return Integer.parseInt(rawCell);
+        }
+
+        return -1;
     }
 }

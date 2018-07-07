@@ -25,13 +25,12 @@ public class BmsData {
     final String value;  // value of bms of segment
     private final String type;  // type of data
     private final int bms;  // number of bms broadcasting value
+    public static final int BMS_DEVICE_PER_SEGMENT = 8;
 
     /**
      * Create and set params of new data
      *
      * @param type    type of data
-     * @param cell    number of bms broadcasting value
-     * @param segment number of segment broadcasting value
      * @param value   value of bms of segment
      */
     public BmsData(String type, String bms, String value) {
@@ -59,10 +58,10 @@ public class BmsData {
      * @return True iff data represents a log
      */
     public boolean isStatusType() {
-        return type.equals("Status") ||
-                type.equals("Alert") ||
-                type.equals("Fault") ||
-                type.equals("Log");
+        return type.startsWith("status") ||
+                type.startsWith("alert") ||
+                type.startsWith("fault") ||
+                type.startsWith("log");
     }
 
     /**
@@ -73,6 +72,10 @@ public class BmsData {
     public boolean isValueType() {
         return (type.startsWith("voltage") ||
                 type.startsWith("temperature"));
+    }
+
+    public int getSegment() {
+        return (int) Math.ceil((getBms() - 1) / BMS_DEVICE_PER_SEGMENT);
     }
 
     /**

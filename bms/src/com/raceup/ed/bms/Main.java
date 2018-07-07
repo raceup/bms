@@ -16,7 +16,7 @@
 
 package com.raceup.ed.bms;
 
-import com.raceup.ed.bms.gui.settings.GuiSettings;
+import com.raceup.ed.bms.battery.Pack;
 
 import javax.swing.*;
 import java.awt.*;
@@ -38,10 +38,13 @@ class Main {
      * @param args default args
      */
     public static void main(String[] args) {
-        setAppUiOrFail();
+        /*setAppUiOrFail();
         Bms bms = GuiSettings.buildBms();
-        startGui(bms);  // create app
+        startGui(bms);  // create app*/
 
+        Pack battery = new Pack(8, 3);
+        Bms bms = new Bms(115200, null, battery);
+        bms.start();
     }
 
     /**

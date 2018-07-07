@@ -21,7 +21,6 @@ import com.raceup.ed.bms.battery.Pack;
 import com.raceup.ed.bms.stream.ArduinoSerial;
 import com.raceup.ed.bms.stream.Logger;
 import com.raceup.ed.bms.stream.bms.data.BmsData;
-import com.raceup.ed.bms.stream.bms.data.BmsLog;
 import com.raceup.ed.bms.stream.bms.data.BmsValue;
 import org.json.JSONObject;
 
@@ -152,7 +151,8 @@ public class Bms extends ArduinoSerial implements Runnable, StartAndStop {
                         if (newestData.isValueType()) {
                             updateBatteryPack(new BmsValue(newestData));
                         } else {
-                            logger.logBmsDataOrFail(new BmsLog(newestData));
+                            // todo logger.logBmsDataOrFail(new BmsLog
+                            // (newestData));
                         }
                     }
                 } catch (Throwable t) {
@@ -169,18 +169,25 @@ public class Bms extends ArduinoSerial implements Runnable, StartAndStop {
      * @param data new data coming from arduino
      */
     private void updateBatteryPack(BmsValue data) {
-        if (data.isTemperature()) {  // retrieve coordinate of cells and set
-            // value
-            batteryPack.setTemperature(
-                    data.getSegment(),  // cell position
-                    data.getBms(),
-                    data.getValue()  // value
-            );
-        } else if (data.isVoltage()) {  // retrieve coordinate of cells and
-            // set value
+        if (data.isTemperature()) {
+            if (data.isTemperature1()) {
+                batteryPack.setTemperature1(
+                        data.getSegment(),  // cell position
+                        data.getBms(),
+                        data.getValue()  // value
+                );
+            } else if (data.isTemperature2()) {
+                batteryPack.setTemperature2(
+                        data.getSegment(),  // cell position
+                        data.getBms(),
+                        data.getValue()  // value
+                );
+            }
+        } else if (data.isVoltage()) {
             batteryPack.setVoltage(
-                    data.getSegment(),  // cell position
+                    data.getSegment(),
                     data.getBms(),
+                    data.getCell(),
                     data.getValue()  // value
             );
         }
