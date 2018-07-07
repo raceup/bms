@@ -16,7 +16,9 @@
 
 package com.raceup.ed.bms;
 
-import com.raceup.ed.bms.battery.Pack;
+import com.raceup.ed.bms.control.Bms;
+import com.raceup.ed.bms.models.battery.Pack;
+import com.raceup.ed.bms.models.stream.serial.ArduinoSerial;
 
 import javax.swing.*;
 
@@ -32,13 +34,14 @@ class Main {
             "an error when starting.";
 
     /**
-     * Open a gui and start bms manager
+     * Open a ui and start bms manager
      *
      * @param args default args
      */
     public static void main(String[] args) {
         Pack battery = new Pack(8, 3);
-        Bms bms = new Bms(115200, null, battery);
+        ArduinoSerial arduino = new ArduinoSerial(115200);
+        Bms bms = new Bms(arduino, battery);
         startGui(bms);
     }
 

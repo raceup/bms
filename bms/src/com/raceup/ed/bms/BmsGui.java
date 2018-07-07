@@ -17,12 +17,12 @@
 
 package com.raceup.ed.bms;
 
-import com.raceup.ed.bms.gui.frame.chart.ChartPanel;
-import com.raceup.ed.bms.gui.frame.data.DataFrame;
-import com.raceup.ed.bms.gui.frame.log.LogFrame;
-import com.raceup.ed.bms.stream.bms.data.BmsData;
-import com.raceup.ed.bms.stream.bms.data.BmsLog;
-import com.raceup.ed.bms.stream.bms.data.BmsValue;
+import com.raceup.ed.bms.models.stream.bms.BmsData;
+import com.raceup.ed.bms.models.stream.bms.BmsLog;
+import com.raceup.ed.bms.models.stream.bms.BmsValue;
+import com.raceup.ed.bms.ui.frame.chart.ChartPanel;
+import com.raceup.ed.bms.ui.frame.data.DataFrame;
+import com.raceup.ed.bms.ui.frame.log.LogFrame;
 import com.raceup.ed.bms.utils.gui.AboutDialog;
 import org.jfree.ui.ApplicationFrame;
 
@@ -37,7 +37,7 @@ import java.util.TimerTask;
 import static com.raceup.ed.bms.utils.Streams.readAllFromStream;
 
 /**
- * Font-end (gui) of BMS
+ * Font-end (ui) of BMS
  * - ~spreadsheet with race data values and dialog to get more info (i.e
  * DataFrame)
  * - chart with total tension of battery (i.e ChartFrame)
@@ -53,12 +53,12 @@ public class BmsGui extends ApplicationFrame {
     );
     private static final String TAG = "BmsGui";
     private final JButton balanceButton = new JButton("Balance cells");
-    private DataFrame dataPanel;  // gui frames
+    private DataFrame dataPanel;  // ui frames
     private ChartPanel chartPanel;
     private LogFrame logPanel;  // frame used for logging
 
     /**
-     * Prepare and run gui
+     * Prepare and run ui
      */
     BmsGui() {
         super("BmsUtils manager");  // set title
@@ -81,10 +81,6 @@ public class BmsGui extends ApplicationFrame {
         setLocation(0, 0);  // top left corner
         setVisible(true);
     }
-
-    /*
-     * Thread
-     */
 
     /**
      * Start GUI and bms
@@ -121,7 +117,7 @@ public class BmsGui extends ApplicationFrame {
      */
 
     /**
-     * Setup gui and backend
+     * Setup ui and backend
      */
     private void setup() {
         /*int[] numberOfBmsPerSegment = bms.batteryPack
@@ -136,7 +132,7 @@ public class BmsGui extends ApplicationFrame {
     }
 
     /**
-     * Setup gui of main frame (manager)
+     * Setup ui of main frame (manager)
      */
     private void setupLayout() {
         getContentPane().setLayout(

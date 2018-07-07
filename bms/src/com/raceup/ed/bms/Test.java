@@ -1,6 +1,6 @@
 package com.raceup.ed.bms;
 
-import com.raceup.ed.bms.stream.ArduinoSerial;
+import com.raceup.ed.bms.models.stream.serial.ArduinoSerial;
 
 import java.util.Timer;
 import java.util.TimerTask;
