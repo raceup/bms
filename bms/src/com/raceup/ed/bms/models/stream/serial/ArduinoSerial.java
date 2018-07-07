@@ -100,10 +100,10 @@ public class ArduinoSerial implements SerialPortEventListener {
         }
     }
 
-    public String[] getRawData() {
+    public ArrayList<String> getRawData() {
         ArrayList<String> buffer = new ArrayList<>();
         buffer.addAll(dataBuffer);
-        return buffer.toArray(new String[buffer.size()]);
+        return buffer;
     }
 
     @Override

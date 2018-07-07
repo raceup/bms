@@ -23,9 +23,8 @@ import com.raceup.ed.bms.models.stream.bms.BmsValue;
 import com.raceup.ed.bms.models.stream.serial.ArduinoSerial;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Timer;
-import java.util.TimerTask;
 
 
 /**
@@ -35,6 +34,7 @@ import java.util.TimerTask;
 public class Bms implements Runnable {
     public static final String TAG = "Bms";  // app settings
     private ArduinoSerial arduino;
+    private boolean stopRequest = false;
 
     public static final HashMap<BmsOperatingMode.OperatingMode, BmsOperatingMode> OPERATING_MODE;
     static {
@@ -63,55 +63,24 @@ public class Bms implements Runnable {
     public Bms(ArduinoSerial arduino, Pack batteryPack) {
         this.arduino = arduino;
         this.batteryPack = batteryPack;  // create battery pack model
+
+        setup();
     }
 
-    /**
-     * Start reading data from arduino serial, wrapping it in BmsValue or
-     * BmsLog and updating battery pack
-     */
-    public void start() {
+    public void setup() {
         setNormalMode();  // start logging
-        updateOrFail();
     }
 
-    /**
-     * Read last value in serial, parse, and return it
-     *
-     * @return last value from serial
-     */
-    public BmsData getNewestData() {
-        try {
-            String data = arduino.getRawData();
-            if (data != null) {
-                return null;
+    public ArrayList<BmsData> getNewestData() {
+        ArrayList<String> buffer = arduino.getRawData();
+        ArrayList<BmsData> parsed = new ArrayList<>();
+        for (String data : buffer) {
+            try {
+                parsed.add(new BmsData(new JSONObject(data)));
+            } catch (Exception e) {
             }
-
-            return new BmsData(
-                    new JSONObject(
-                            data
-                    )
-            );
-        } catch (Exception e) {
-            return null;
         }
-    }
-
-    /**
-     * Get new data, parse and updateOrFail battery pack
-     */
-    private void updateOrFail() {
-        Timer t = new Timer();
-        t.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                try {
-
-                } catch (Throwable t) {
-                    System.err.println(TAG + " has encountered some errors while " +
-                            "updateOrFail()");
-                }
-            }
-        }, 0, 100);
+        return parsed;
     }
 
     /**
@@ -172,13 +141,10 @@ public class Bms implements Runnable {
 
     @Override
     public void run() {
-        BmsData newestData = getNewestData();
-        if (newestData != null) {
-            if (newestData.isValueType()) {
-                updateBatteryPack(new BmsValue(newestData));
-            } else {
-                // todo logger.logBmsDataOrFail(new BmsLog
-                // (newestData));
+        ArrayList<BmsData> newestData = getNewestData();
+        for (BmsData data : newestData) {
+            if (data.isValueType()) {
+                updateBatteryPack(new BmsValue(data));
             }
         }
     }
