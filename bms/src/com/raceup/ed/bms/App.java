@@ -35,6 +35,7 @@ class App {
     private ArduinoSerial arduino;
     private Bms bms;
     private Gui ui;
+    private Thread uiThread;
 
     public App() {
         setup();
@@ -72,15 +73,18 @@ class App {
                     System.exit(0);
                 }
             });
+            uiThread = new Thread(ui);
         } catch (Exception e) {
             System.err.println("Error while creating UI");
         }
     }
 
+    // todo measure lag between when serial receives data and when updates
+    // model and screen
     public void start() {
         try {
-            ui.open();
-            ui.start();
+            ui.open();  // start frontend
+            uiThread.start();
         } catch (Exception e) {
             System.err.println("Error while opening UI");
         }

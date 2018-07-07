@@ -30,8 +30,6 @@ import java.awt.*;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import static com.raceup.ed.bms.utils.Streams.readAllFromStream;
 
@@ -42,7 +40,7 @@ import static com.raceup.ed.bms.utils.Streams.readAllFromStream;
  * - chart with total tension of battery (i.e ChartFrame)
  * - text area with errors (i.e ErrorsAreaFrame)
  */
-public class Gui extends ApplicationFrame {
+public class Gui extends ApplicationFrame implements Runnable {
     private static final String APP_NAME_SETTINGS = "com.apple.mrj" +
             ".application.apple.menu.about.name";
     private static final String THIS_PACKAGE = "com.raceup.ed.bms.ui.Gui";
@@ -54,6 +52,7 @@ public class Gui extends ApplicationFrame {
     private ModePanel modePanel = new ModePanel();
     private DataPanel dataPanel;  // ui frames
     private Bms bms;
+    private Thread bmsThread;
 
     /**
      * Prepare and run ui
@@ -70,9 +69,8 @@ public class Gui extends ApplicationFrame {
      * Start frontend GUI and backend engines
      */
     public void open() {
+        startMonitorBms();
         dataPanel.setVisible(true);
-        // chartPanel.setVisible(true);
-        // logPanel.setVisible(true);
 
         pack();
         setLocation(0, 0);  // top left corner
@@ -80,41 +78,15 @@ public class Gui extends ApplicationFrame {
         setVisible(true);
     }
 
-    /**
-     * Start GUI and bms
-     */
-    public void start() {
-        Timer t = new Timer();
-        t.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                System.out.println("[" + System.currentTimeMillis() + "]: " +
-                        "new run");
-                try {
-                    BmsData data = null;  // todo get newest data
-                    if (data != null) {
-                        if (data.isValueType()) {  // if it's a value update
-                            // data and chart frames
-                            updateDataFrameOrFail(data);
-                        }
-                    }
-                } catch (Exception e) {
-                    System.err.println(TAG + " has encountered some errors while " +
-                            "updateOrFail()");
-                    e.printStackTrace();
-                    System.err.println();
-                }
-            }
-        }, 0, 150);
-    }
-
     public void close() {
         bms.close();
     }
 
-    /*
-     * Setup main frame
-     */
+    private void startMonitorBms() {
+        bms.setup();  // start backend
+        bmsThread = new Thread(bms);
+        bmsThread.start();
+    }
 
     /**
      * Setup ui and backend
@@ -244,5 +216,23 @@ public class Gui extends ApplicationFrame {
 
         String title = "Help";
         new AboutDialog(this, content, title).setVisible(true);
+    }
+
+    @Override
+    public void run() {
+        try {
+            BmsData data = null;  // todo get newest data
+            if (data != null) {
+                if (data.isValueType()) {  // if it's a value update
+                    // data and chart frames
+                    updateDataFrameOrFail(data);
+                }
+            }
+        } catch (Exception e) {
+            System.err.println(TAG + " has encountered some errors while " +
+                    "updateOrFail()");
+            e.printStackTrace();
+            System.err.println();
+        }
     }
 }
