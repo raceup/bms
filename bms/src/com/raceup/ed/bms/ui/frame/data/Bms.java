@@ -23,10 +23,10 @@ import java.awt.*;
  * GUI frame that contains battery cell info
  */
 public class Bms extends JPanel {
-    public static final double[] VOLTAGE_BOUNDS = new double[]{3600.0,
+    public static final double[] VOLTAGE_BOUNDS = new double[]{3000.0,
             4200.0};
     public static final double[] TEMPERATURE_BOUNDS = new double[]{0.0,
-            1000.0};
+            60.0};
     // labels
     protected final NumAlerter voltageMinLabel = new NumAlerter("0000.00");
     protected final NumAlerter voltageAvgLabel = new NumAlerter("0000.00");

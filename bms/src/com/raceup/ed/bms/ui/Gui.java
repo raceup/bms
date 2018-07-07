@@ -15,8 +15,9 @@
  */
 
 
-package com.raceup.ed.bms;
+package com.raceup.ed.bms.ui;
 
+import com.raceup.ed.bms.control.Bms;
 import com.raceup.ed.bms.models.stream.bms.BmsData;
 import com.raceup.ed.bms.models.stream.bms.BmsLog;
 import com.raceup.ed.bms.models.stream.bms.BmsValue;
@@ -43,25 +44,28 @@ import static com.raceup.ed.bms.utils.Streams.readAllFromStream;
  * - chart with total tension of battery (i.e ChartFrame)
  * - text area with errors (i.e ErrorsAreaFrame)
  */
-public class BmsGui extends ApplicationFrame {
+public class Gui extends ApplicationFrame {
     private static final String APP_NAME_SETTINGS = "com.apple.mrj" +
             ".application.apple.menu.about.name";
-    private static final String THIS_PACKAGE = "com.raceup.ed.bms.BmsGui";
+    private static final String THIS_PACKAGE = "com.raceup.ed.bms.ui.Gui";
     private static final String ICON_PATH = "/res/images/icon.png";
     private static final Image appIcon = Toolkit.getDefaultToolkit().getImage(
             THIS_PACKAGE.getClass().getResource(ICON_PATH)
     );
-    private static final String TAG = "BmsGui";
+    private static final String TAG = "Gui";
     private final JButton balanceButton = new JButton("Balance cells");
     private DataFrame dataPanel;  // ui frames
     private ChartPanel chartPanel;
     private LogFrame logPanel;  // frame used for logging
+    private Bms bms;
 
     /**
      * Prepare and run ui
      */
-    BmsGui() {
-        super("BmsUtils manager");  // set title
+    public Gui(Bms bms) {
+        super("YOLO Bms");  // set title
+
+        this.bms = bms;
         setIconImage(appIcon);  // set icon
         System.setProperty(APP_NAME_SETTINGS, "YOLO Bms Desktop");
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);  // destroy
@@ -72,7 +76,7 @@ public class BmsGui extends ApplicationFrame {
     /**
      * Start frontend GUI and backend engines
      */
-    void open() {
+    public void open() {
         dataPanel.setVisible(true);
         // chartPanel.setVisible(true);
         // logPanel.setVisible(true);
@@ -110,6 +114,10 @@ public class BmsGui extends ApplicationFrame {
                 }
             }
         }, 0, 150);
+    }
+
+    public void close() {
+
     }
 
     /*
@@ -296,7 +304,7 @@ public class BmsGui extends ApplicationFrame {
     private void showAboutDialogOrFail() {
         String content = "";
         try {
-            InputStream inputStream = BmsGui.class.getResourceAsStream
+            InputStream inputStream = Gui.class.getResourceAsStream
                     ("/res/strings/about.html");
             content = readAllFromStream(new BufferedReader(new
                     InputStreamReader(inputStream)));  // read content of
@@ -314,7 +322,7 @@ public class BmsGui extends ApplicationFrame {
      */
     private void showHelpDialogOrFail() {
         String content = "";
-        InputStream inputStream = BmsGui.class.getResourceAsStream
+        InputStream inputStream = Gui.class.getResourceAsStream
                 ("/res/strings/help.html");
         try {
             content = readAllFromStream(new BufferedReader(new
