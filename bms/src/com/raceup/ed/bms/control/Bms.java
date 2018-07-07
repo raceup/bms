@@ -32,11 +32,11 @@ import java.util.TimerTask;
  * Battery management system (with multithreading support)
  * Provides data from arduino serial port
  */
-public class Bms {
+public class Bms implements Runnable {
     public static final String TAG = "Bms";  // app settings
-    public static final HashMap<BmsOperatingMode.OperatingMode, BmsOperatingMode> OPERATING_MODE;
     private ArduinoSerial arduino;
 
+    public static final HashMap<BmsOperatingMode.OperatingMode, BmsOperatingMode> OPERATING_MODE;
     static {
         OPERATING_MODE = new HashMap<>();
         OPERATING_MODE.put(BmsOperatingMode.OperatingMode.NORMAL,
@@ -82,8 +82,7 @@ public class Bms {
     public BmsData getNewestData() {
         try {
             String data = arduino.getRawData();
-            System.out.println("Requesting newest data: " + data);
-            if (data == null) {
+            if (data != null) {
                 return null;
             }
 
@@ -106,15 +105,7 @@ public class Bms {
             @Override
             public void run() {
                 try {
-                    BmsData newestData = getNewestData();
-                    if (newestData != null) {
-                        if (newestData.isValueType()) {
-                            updateBatteryPack(new BmsValue(newestData));
-                        } else {
-                            // todo logger.logBmsDataOrFail(new BmsLog
-                            // (newestData));
-                        }
-                    }
+
                 } catch (Throwable t) {
                     System.err.println(TAG + " has encountered some errors while " +
                             "updateOrFail()");
@@ -177,5 +168,18 @@ public class Bms {
 
     public void close() {
         arduino.close();
+    }
+
+    @Override
+    public void run() {
+        BmsData newestData = getNewestData();
+        if (newestData != null) {
+            if (newestData.isValueType()) {
+                updateBatteryPack(new BmsValue(newestData));
+            } else {
+                // todo logger.logBmsDataOrFail(new BmsLog
+                // (newestData));
+            }
+        }
     }
 }
