@@ -34,21 +34,21 @@ import java.util.TimerTask;
  */
 public class Bms {
     public static final String TAG = "Bms";  // app settings
-    public static final HashMap<BmsOperatingMode.OperatingMode, BmsOperatingMode> operatingMode;
+    public static final HashMap<BmsOperatingMode.OperatingMode, BmsOperatingMode> OPERATING_MODE;
     private ArduinoSerial arduino;
 
     static {
-        operatingMode = new HashMap<>();
-        operatingMode.put(BmsOperatingMode.OperatingMode.NORMAL,
+        OPERATING_MODE = new HashMap<>();
+        OPERATING_MODE.put(BmsOperatingMode.OperatingMode.NORMAL,
                 new BmsOperatingMode("N", "Normal")
         );
-        operatingMode.put(BmsOperatingMode.OperatingMode.BALANCE,
+        OPERATING_MODE.put(BmsOperatingMode.OperatingMode.BALANCE,
                 new BmsOperatingMode("B", "Balance")
         );
-        operatingMode.put(BmsOperatingMode.OperatingMode.SLEEP,
+        OPERATING_MODE.put(BmsOperatingMode.OperatingMode.SLEEP,
                 new BmsOperatingMode("S", "Sleep")
         );
-        operatingMode.put(BmsOperatingMode.OperatingMode.DEBUG,
+        OPERATING_MODE.put(BmsOperatingMode.OperatingMode.DEBUG,
                 new BmsOperatingMode("D", "Debug")
         );
     }
@@ -154,7 +154,7 @@ public class Bms {
     }
 
     private void setMode(BmsOperatingMode.OperatingMode mode) {
-        BmsOperatingMode command = operatingMode.get(BmsOperatingMode
+        BmsOperatingMode command = OPERATING_MODE.get(BmsOperatingMode
                 .OperatingMode.NORMAL);
         arduino.sendSerialDataOrFail(command.getArduinoCommand());
     }

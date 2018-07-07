@@ -21,6 +21,7 @@ import com.raceup.ed.bms.control.Bms;
 import com.raceup.ed.bms.models.stream.bms.BmsData;
 import com.raceup.ed.bms.models.stream.bms.BmsValue;
 import com.raceup.ed.bms.ui.panel.data.DataPanel;
+import com.raceup.ed.bms.ui.panel.stream.ModePanel;
 import com.raceup.ed.bms.utils.gui.AboutDialog;
 import org.jfree.ui.ApplicationFrame;
 
@@ -50,7 +51,7 @@ public class Gui extends ApplicationFrame {
             THIS_PACKAGE.getClass().getResource(ICON_PATH)
     );
     private static final String TAG = "Gui";
-    private final JButton balanceButton = new JButton("Balance cells");
+    private ModePanel modePanel = new ModePanel();
     private DataPanel dataPanel;  // ui frames
     private Bms bms;
 
@@ -61,11 +62,8 @@ public class Gui extends ApplicationFrame {
         super("YOLO Bms");  // set title
 
         this.bms = bms;
-        setIconImage(appIcon);  // set icon
-        System.setProperty(APP_NAME_SETTINGS, "YOLO Bms Desktop");
-        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);  // destroy
-
         setup();
+        setupLayout();  // setup frame manager
     }
 
     /**
@@ -124,7 +122,9 @@ public class Gui extends ApplicationFrame {
     private void setup() {
         dataPanel = new DataPanel(8, 3);
 
-        setupLayout();  // setup frame manager
+        setIconImage(appIcon);  // set icon
+        System.setProperty(APP_NAME_SETTINGS, "YOLO Bms Desktop");
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);  // destroy
     }
 
     /**
@@ -140,30 +140,9 @@ public class Gui extends ApplicationFrame {
                 )
         );  // border
 
-        // data and chart
-        JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.LINE_AXIS));
-        panel.add(Box.createRigidArea(new Dimension(10, 0)));
-        panel.add(createStartStopPanel());
-
-        add(panel);
+        add(modePanel);
         add(dataPanel);
         setJMenuBar(createMenuBar());  // set menu-bar
-    }
-
-    /**
-     * Create panel that starts and stops monitor the bms
-     *
-     * @return panel with buttons to monitor bms
-     */
-    private JPanel createStartStopPanel() {
-        JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.LINE_AXIS));
-
-        panel.add(balanceButton);
-        panel.add(Box.createRigidArea(new Dimension(10, 0)));
-
-        return panel;
     }
 
     /**
@@ -181,10 +160,6 @@ public class Gui extends ApplicationFrame {
         }
     }
 
-    /*
-     * Menu bar
-     */
-
     /**
      * Creates a menu bar for frame
      *
@@ -193,7 +168,6 @@ public class Gui extends ApplicationFrame {
     private JMenuBar createMenuBar() {
         JMenuBar menuBar = new JMenuBar();
         menuBar.add(createFileMenu());  // file
-        menuBar.add(createShowFramesMenu());  // windows toggle status
         menuBar.add(createHelpMenu());  // help/ about
 
         return menuBar;
