@@ -5,23 +5,26 @@ import java.awt.*;
 import java.text.DecimalFormat;
 
 public class NumAlerter extends JLabel {
-    private static final DecimalFormat NUM_FORMAT = new DecimalFormat
-            ("0000.00");  // decimal places
+    public static final DecimalFormat NUM_FORMAT = new DecimalFormat
+            ("    ");  // decimal places
     final Color VALUE_TOO_HIGH_COLOR = Color.RED;
     final Color VALUE_NORMAL_COLOR = Color.GREEN;
     final Color VALUE_TOO_LOW_COLOR = Color.CYAN;
+    private final double[] bounds;
 
-    public NumAlerter(String text) {
+    public NumAlerter(String text, double[] bounds) {
         super(text);
+        setOpaque(true);
+
+        this.bounds = bounds;
     }
 
     /**
      * Update widget with new value
      *
-     * @param bounds min, max of value allowed
      * @param value  new value
      */
-    protected void update(double[] bounds, double value) {
+    protected void update(double value) {
         setText(NUM_FORMAT.format(value));
         updateBackground(value, bounds);
     }

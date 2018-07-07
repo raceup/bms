@@ -62,7 +62,7 @@ public class BmsValue extends BmsData {
      * @return True iff data is a voltage value
      */
     public boolean isVoltage() {
-        return getType().equals("voltage");
+        return getType().startsWith(VOLTAGE_KEY);
     }
 
     /**

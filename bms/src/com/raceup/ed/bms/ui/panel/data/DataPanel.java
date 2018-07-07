@@ -40,7 +40,18 @@ public class DataPanel extends JPanel {
      * @param data new data (coming from arduino)
      */
     public void update(BmsValue data) {
-        int bmsDevice = data.getBms();  // todo
+        int bms = data.getBms() - 1;
+        double value = data.getValue();
+
+        if (data.isTemperature()) {
+            if (data.isTemperature1()) {
+                bmsDevices[bms].setTemperature1(value);
+            } else if (data.isTemperature2()) {
+                bmsDevices[bms].setTemperature2(value);
+            }
+        } else if (data.isVoltage()) {
+            bmsDevices[bms].setMinVoltage(value);
+        }
     }
 
     /**

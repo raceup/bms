@@ -26,13 +26,22 @@ public class Bms extends JPanel {
     public static final double[] VOLTAGE_BOUNDS = new double[]{3000.0,
             4200.0};
     public static final double[] TEMPERATURE_BOUNDS = new double[]{0.0,
-            60.0};
-    // labels
-    protected final NumAlerter voltageMinLabel = new NumAlerter("0000.00");
-    protected final NumAlerter voltageAvgLabel = new NumAlerter("0000.00");
-    protected final NumAlerter voltageMaxLabel = new NumAlerter("0000.00");
-    protected final NumAlerter temperature1Label = new NumAlerter("0000.00");
-    protected final NumAlerter temperature2Label = new NumAlerter("0000.00");
+            20.0};
+    private final NumAlerter voltageMinLabel = new NumAlerter(
+            "DNF ", VOLTAGE_BOUNDS
+    );
+    private final NumAlerter voltageAvgLabel = new NumAlerter(
+            "DNF ", VOLTAGE_BOUNDS
+    );
+    private final NumAlerter voltageMaxLabel = new NumAlerter(
+            "DNF", VOLTAGE_BOUNDS
+    );
+    private final NumAlerter temperature1Label = new NumAlerter(
+            "DNF", TEMPERATURE_BOUNDS
+    );
+    private final NumAlerter temperature2Label = new NumAlerter(
+            "DNF", TEMPERATURE_BOUNDS
+    );
     private JButton button;
 
     Bms(int indexInBms) {
@@ -59,15 +68,23 @@ public class Bms extends JPanel {
      * @param value new voltage to set
      */
     public void setMinVoltage(double value) {
-        voltageMinLabel.update(VOLTAGE_BOUNDS, value);
+        voltageMinLabel.update(value);
     }
 
     public void setAvgVoltage(double value) {
-        voltageAvgLabel.update(VOLTAGE_BOUNDS, value);
+        voltageAvgLabel.update(value);
     }
 
     public void setMaxVoltage(double value) {
-        voltageMaxLabel.update(VOLTAGE_BOUNDS, value);
+        voltageMaxLabel.update(value);
+    }
+
+    public void setTemperature1(double value) {
+        temperature1Label.update(value);
+    }
+
+    public void setTemperature2(double value) {
+        temperature2Label.update(value);
     }
 
     /*

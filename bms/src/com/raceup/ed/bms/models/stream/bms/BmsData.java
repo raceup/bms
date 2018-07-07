@@ -26,11 +26,11 @@ public class BmsData {
     private final String type;  // type of data
     private final int bms;  // number of bms broadcasting value
     public static final int BMS_DEVICE_PER_SEGMENT = 8;
-    private static final String TYPE_KEY = "type";
-    private static final String BMS_KEY = "BMS";
-    private static final String VALUE_KEY = "value";
-    private static final String VOLTAGE_KEY = "voltage";
-    private static final String TEMPERATURE_KEY = "temperature";
+    public static final String TYPE_KEY = "type";
+    public static final String BMS_KEY = "BMS";
+    public static final String VALUE_KEY = "value";
+    public static final String VOLTAGE_KEY = "voltage";
+    public static final String TEMPERATURE_KEY = "temperature";
 
     /**
      * Create and set params of new data
