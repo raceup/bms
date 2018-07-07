@@ -25,6 +25,9 @@ import com.raceup.ed.bms.stream.bms.data.BmsLog;
 import com.raceup.ed.bms.stream.bms.data.BmsValue;
 import org.json.JSONObject;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 
 /**
  * Battery management system (with multithreading support)
@@ -41,8 +44,6 @@ public class Bms extends ArduinoSerial implements Runnable, StartAndStop {
     final Pack batteryPack;  // battery pack settings
     private final Logger logger;  // log data to file
     int msLogIntervalUpdate = 1000;  // logging interval update
-    private long nextLogIntervalUpdate = System.currentTimeMillis() + (long)
-            msLogIntervalUpdate;  // time to log data
     private volatile boolean amIStarted = false;  // start and stop management
     private volatile boolean amIPaused = false;
     private volatile boolean amIStopped = false;
@@ -120,49 +121,46 @@ public class Bms extends ArduinoSerial implements Runnable, StartAndStop {
      * @return last value from serial
      */
     BmsData getNewestData() {
-        String data = getRawData();  // todo BmsUtils.getRandomData().trim();
-        System.out.println("Requesting newest data: " + data);
-        if (data == null) {
+        try {
+            String data = getRawData();  // todo BmsUtils.getRandomData().trim();
+            System.out.println("Requesting newest data: " + data);
+            if (data == null) {
+                return null;
+            }
+
+            return new BmsData(
+                    new JSONObject(
+                            data
+                    )
+            );
+        } catch (Exception e) {
             return null;
         }
-
-        return new BmsData(
-                new JSONObject(
-                        data
-                )
-        );
     }
 
     /**
      * Get new data, parse and updateOrFail battery pack
      */
     private void updateOrFail() {
-        try {
-            BmsData newestData = getNewestData();
-            if (newestData != null) {
-                if (newestData.isValueType()) {
-                    updateBatteryPack(new BmsValue(newestData));
-                } else {
-                    updateLogs(new BmsLog(newestData));
+        Timer t = new Timer();
+        t.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                try {
+                    BmsData newestData = getNewestData();
+                    if (newestData != null) {
+                        if (newestData.isValueType()) {
+                            updateBatteryPack(new BmsValue(newestData));
+                        } else {
+                            logger.logBmsDataOrFail(new BmsLog(newestData));
+                        }
+                    }
+                } catch (Throwable t) {
+                    System.err.println(TAG + " has encountered some errors while " +
+                            "updateOrFail()");
                 }
             }
-            Thread.sleep(msSerialIntervalUpdate);
-        } catch (NullPointerException | InterruptedException e) {
-            System.err.println(TAG + " has encountered some errors while " +
-                    "updateOrFail()");
-        }
-    }
-
-    /**
-     * Update logger with new data
-     * @param log new log
-     */
-    private void updateLogs(BmsLog log) {
-        if (System.currentTimeMillis() >= nextLogIntervalUpdate) {
-            logger.logBmsDataOrFail(log);
-            nextLogIntervalUpdate = System.currentTimeMillis() +
-                    msLogIntervalUpdate;
-        }
+        }, 0, 100);
     }
 
     /**
@@ -175,14 +173,14 @@ public class Bms extends ArduinoSerial implements Runnable, StartAndStop {
             // value
             batteryPack.setTemperature(
                     data.getSegment(),  // cell position
-                    data.getCell(),
+                    data.getBms(),
                     data.getValue()  // value
             );
         } else if (data.isVoltage()) {  // retrieve coordinate of cells and
             // set value
             batteryPack.setVoltage(
                     data.getSegment(),  // cell position
-                    data.getCell(),
+                    data.getBms(),
                     data.getValue()  // value
             );
         }
@@ -192,13 +190,13 @@ public class Bms extends ArduinoSerial implements Runnable, StartAndStop {
      * Asks Arduino to start logging data
      */
     private void askArduinoToStartLogging() {
-        // todo sendSerialDataOrFail(ARDUINO_START_LOGGING_MSG);
+        sendSerialDataOrFail(ARDUINO_START_LOGGING_MSG);
     }
 
     /**
      * Asks Arduino to balance segments
      */
     void askArduinoToBalanceCells() {
-        // todo sendSerialDataOrFail(ARDUINO_BALANCE_MSG);
+        sendSerialDataOrFail(ARDUINO_BALANCE_MSG);
     }
 }

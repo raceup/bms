@@ -22,36 +22,22 @@ import org.json.JSONObject;
  * Generic data coming from arduino
  */
 public class BmsData {
-    final String value;  // value of cell of segment
+    final String value;  // value of bms of segment
     private final String type;  // type of data
-    private final int cell;  // number of cell broadcasting value
-    private final int segment;  // number of segment broadcasting value
-    public static final int CELLS_PER_BMS = 6;
-    public static final int BMS_PER_SEGMENT = 3;
-    private String jsonValue;
+    private final int bms;  // number of bms broadcasting value
 
     /**
      * Create and set params of new data
      *
      * @param type    type of data
-     * @param cell    number of cell broadcasting value
+     * @param cell    number of bms broadcasting value
      * @param segment number of segment broadcasting value
-     * @param value   value of cell of segment
+     * @param value   value of bms of segment
      */
-    public BmsData(String type, String cell, String segment, String value) {
+    public BmsData(String type, String bms, String value) {
         this.type = type;
-        this.cell = Integer.parseInt(cell);
-        this.segment = Integer.parseInt(segment);
+        this.bms = Integer.parseInt(bms);
         this.value = value;
-
-        jsonValue = "" +
-                "{\n" +
-                "\t\"type\": \"" + this.type + "\",\n" +
-                "\t\"cell\": \"" + Integer.toString(this.cell) + "\",\n" +
-                "\t\"segment\": \"" + Integer.toString(this.segment) + "\"," +
-                "\n" +
-                "\t\"value\": \"" + this.value + "\"\n" +
-                "}";
     }
 
     /**
@@ -62,8 +48,7 @@ public class BmsData {
     public BmsData(JSONObject root) {
         this(
                 root.getString("type"),
-                root.getString("cell"),
-                root.getString("segment"),
+                root.getString("bms"),
                 root.getString("value")
         );
     }
@@ -81,13 +66,13 @@ public class BmsData {
     }
 
     /**
-     * Check if current data is a battery cell value
+     * Check if current data is a battery bms value
      *
      * @return True iff data is a value
      */
     public boolean isValueType() {
-        return (type.equals("voltage") ||
-                type.equals("temperature"));
+        return (type.startsWith("voltage") ||
+                type.startsWith("temperature"));
     }
 
     /**
@@ -100,42 +85,11 @@ public class BmsData {
     }
 
     /**
-     * Getter for cell
+     * Getter for bms
      *
-     * @return data cell
+     * @return data bms
      */
-    public int getCell() {
-        return cell;
-    }
-
-    /**
-     * Getter for segment
-     *
-     * @return data segment
-     */
-    public int getSegment() {
-        return segment;
-    }
-
-    /**
-     * Getter for value as json format
-     *
-     * @return Json value with info about this data
-     */
-    public String getJsonValue() {
-        return jsonValue;
-    }
-
-    public static int getBmsDevice(int segment, int cell) {
-        int bmsInSegment = cell / CELLS_PER_BMS;
-        return segment * BMS_PER_SEGMENT + bmsInSegment;
-    }
-
-    public static int getBmsCell(int segment, int cell) {
-        return cell % CELLS_PER_BMS;
-    }
-
-    public int getBmsDevice() {
-        return getBmsDevice(segment, cell);
+    public int getBms() {
+        return bms;
     }
 }

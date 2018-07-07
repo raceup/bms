@@ -1,15 +1,21 @@
 package com.raceup.ed.bms.battery;
 
-public class BmsDevice {
-    private Cell[] cells;
+public class BmsDevice implements BmsControllable {
+    private double[] voltages;
+    private double temperature1;
+    private double temperature2;
+
+    public BmsDevice() {
+        this(6);
+    }
 
     /**
      * Builds new Bms device
      *
-     * @param numberOfCells number of cells in BMS
+     * @param numberOfVoltages number of voltages in BMS
      */
-    public BmsDevice(int numberOfCells) {
-        cells = new Cell[numberOfCells];
+    public BmsDevice(int numberOfVoltages) {
+        voltages = new double[numberOfVoltages];
     }
 
     /**
@@ -17,7 +23,7 @@ public class BmsDevice {
      * @return temperature 1
      */
     public double getTemperature1() {
-        return cells[0].getTemperature();
+        return temperature1;
     }
 
     /**
@@ -25,9 +31,7 @@ public class BmsDevice {
      * @param value temperature 2
      */
     public void setTemperature1(double value) {
-        for (int i = 0; i < (cells.length + 1) / 2; i++) {
-            cells[i].setTemperature(value);
-        }
+        temperature1 = value;
     }
 
     /**
@@ -35,7 +39,7 @@ public class BmsDevice {
      * @return temperature 2
      */
     public double getTemperature2() {
-        return cells[cells.length - 1].getTemperature();  // last cell
+        return temperature2;
     }
 
     /**
@@ -43,9 +47,7 @@ public class BmsDevice {
      * @param value temperature 2
      */
     public void setTemperature2(double value) {
-        for (int i = (cells.length + 1) / 2; i < cells.length; i++) {
-            cells[i].setTemperature(value);
-        }
+        temperature2 = value;
     }
 
     /**
@@ -53,8 +55,8 @@ public class BmsDevice {
      * @param index number of cell
      * @return voltage of cell
      */
-    public double getVoltageOfCell(int index) {
-        return cells[index].getVoltage();
+    public double getVoltage(int index) {
+        return voltages[index];
     }
 
     /**
@@ -63,6 +65,20 @@ public class BmsDevice {
      * @param value voltage of cell
      */
     public void setVoltage(int index, double value) {
-        cells[index].setVoltage(value);
+        voltages[index] = value;
+    }
+
+    @Override
+    public double getTemperature() {
+        return (getTemperature1() + getTemperature2()) / 2.0;
+    }
+
+    @Override
+    public double getVoltage() {
+        double sum = 0.0;
+        for (double voltage : voltages) {
+            sum += voltage;
+        }
+        return sum / voltages.length;
     }
 }

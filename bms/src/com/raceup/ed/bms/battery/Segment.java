@@ -16,57 +16,26 @@
 
 package com.raceup.ed.bms.battery;
 
-import com.raceup.ed.bms.utils.BmsUtils;
-
 /**
  * Battery segment containing battery cells
  */
 public class Segment implements BmsControllable {
-    private final Cell[] cells;  // list of cell in segment
     private final BmsDevice[] bmsDevices;
     // bms
 
     /**
      * Create segment with selected number of cells
      *
-     * @param numberOfCells number of cells in segment
-     * @param numberOfCellsPerBms number of cells controlled by 1 bms device
+     * @param numberOfBms number of cells in segment
      */
-    public Segment(int numberOfCells, int numberOfCellsPerBms) {
-        cells = new Cell[numberOfCells];  // create list of cells
-        for (int i = 0; i < numberOfCells; i++) {
-            cells[i] = new Cell();
-        }
-
-        bmsDevices = BmsUtils.createBmsDevices(numberOfCells,
-                numberOfCellsPerBms);  // todo use
+    public Segment(int numberOfBms) {
+        bmsDevices = new BmsDevice[numberOfBms];
     }
 
-    /*
-     * General info
-     */
-
-    /**
-     * Find number of cells in segment
-     *
-     * @return number of cells in segment
-     */
-    public int getNumberOfCells() {
-        return cells.length;
-    }
-
-    /**
-     * Find number of bms devices in segment
-     *
-     * @return number of bms devices in segment
-     */
-    public int getNumberOfBmsDevices() {
+    public int getNumberOfBms() {
         return bmsDevices.length;
     }
 
-    /*
-     * Temperatures
-     */
 
     /**
      * Retrieve average temperature value of segment
@@ -75,20 +44,28 @@ public class Segment implements BmsControllable {
      */
     public double getTemperature() {
         double sum = 0.0;
-        for (Cell cell : cells) {
-            sum += cell.getTemperature();
+        for (BmsDevice device : bmsDevices) {
+            sum += device.getTemperature();
         }
-        return sum / cells.length;
+        return sum / bmsDevices.length;
     }
 
     /**
      * Update temperature of cell of given cell
      *
-     * @param cellPosition cell position in segment (numbers show from 0)
      * @param temperature  new temperature reading
      */
-    public void setTemperatureOfCell(int cellPosition, double temperature) {
-        cells[cellPosition].setTemperature(temperature);
+    public void setTemperature1OfBms(int bmsDevice, double temperature) {
+        bmsDevices[bmsDevice].setTemperature1(temperature);
+    }
+
+    /**
+     * Update temperature of cell of given cell
+     *
+     * @param temperature new temperature reading
+     */
+    public void setTemperature2OfBms(int bmsDevice, double temperature) {
+        bmsDevices[bmsDevice].setTemperature2(temperature);
     }
 
     /*
@@ -102,8 +79,8 @@ public class Segment implements BmsControllable {
      */
     public double getVoltage() {
         double sum = 0.0;
-        for (Cell cell : cells) {
-            sum += cell.getVoltage();
+        for (BmsDevice device : bmsDevices) {
+            sum += device.getVoltage();
         }
         return sum;
     }
@@ -111,11 +88,11 @@ public class Segment implements BmsControllable {
     /**
      * Update voltage of cell of given cell
      *
-     * @param cellPosition cell position in segment (numbers show from 0)
+     * @param bmsDevice cell position in segment (numbers show from 0)
      * @param voltage      new voltage reading
      */
-    void setVoltageOfCell(int cellPosition, double voltage) {
-        cells[cellPosition].setVoltage(voltage);
+    void setVoltageOfBms(int bmsDevice, int cell, double voltage) {
+        bmsDevices[bmsDevice].setVoltage(cell, voltage);
     }
 
 }

@@ -16,25 +16,22 @@
 
 package com.raceup.ed.bms.battery;
 
-import com.raceup.ed.bms.utils.BmsUtils;
-
 /**
  * Battery pack containing segments of battery cells
  */
 public class Pack implements BmsControllable {
     private Segment[] segments;  // list of segments in battery pack
-    private final int numberOfCellsPerBms;
 
     /**
      * Builds new battery pack model
      *
      * @param numberOfBmsPerSegment number of bms in each segment
-     * @param numberOfCellsPerBms   number of cells in one bms
      */
-    public Pack(int[] numberOfBmsPerSegment, int numberOfCellsPerBms) {
-        segments = BmsUtils.createSegments(numberOfBmsPerSegment,
-                numberOfCellsPerBms);
-        this.numberOfCellsPerBms = numberOfCellsPerBms;
+    public Pack(int numberOfSegments, int numberOfBmsPerSegment) {
+        segments = new Segment[numberOfSegments];
+        for (int i = 0; i < segments.length; i++) {
+            segments[i] = new Segment(numberOfBmsPerSegment);
+        }
     }
 
     /*
@@ -46,15 +43,8 @@ public class Pack implements BmsControllable {
      *
      * @return list of number of cells
      */
-    public int[] getNumberOfBmsPerSegment() {
-        int[] numberOfBmsPerSegment = new int[getNumberOfSegments()];  //
-        // result list
-        for (int i = 0; i < numberOfBmsPerSegment.length; i++) {   // loop
-            // through each segment
-            numberOfBmsPerSegment[i] = segments[i].getNumberOfCells();  //
-            // count cells in each segment
-        }
-        return numberOfBmsPerSegment;
+    public int getNumberOfBmsPerSegment() {
+        return segments[0].getNumberOfBms();
     }
 
     /**
@@ -80,35 +70,31 @@ public class Pack implements BmsControllable {
         for (Segment segment : segments) {
             sum += segment.getTemperature();
         }
-        return sum;
+        return sum / segments.length;
     }
 
     /**
      * Update temperature of cell of given cell
      *
      * @param segment      segment number
-     * @param cellPosition cell position in segment (numbers open from 0)
      * @param value new temperature reading
      */
-    public void setTemperature(int segment, int cellPosition, double
-            value) {
-        segments[segment].setTemperatureOfCell(
-                cellPosition / numberOfCellsPerBms,
-                value
-        );
+    public void setTemperature1(int segment, int bms, double value) {
+        segments[segment].setTemperature1OfBms(bms, value);
+    }
+
+    public void setTemperature2(int segment, int bms, double value) {
+        segments[segment].setTemperature2OfBms(bms, value);
     }
 
     /**
      * Update voltage of cell of given cell
      *
      * @param segment      segment number
-     * @param cellPosition cell position in segment (numbers open from 0)
      * @param value      new voltage reading
      */
-    public void setVoltage(int segment, int cellPosition, double
-            value) {
-        segments[segment].setVoltageOfCell(cellPosition / numberOfCellsPerBms,
-                value);
+    public void setVoltage(int segment, int bms, int cell, double value) {
+        segments[segment].setVoltageOfBms(bms, cell, value);
     }
 
     /**

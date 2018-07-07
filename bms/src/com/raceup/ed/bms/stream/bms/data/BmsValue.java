@@ -26,7 +26,7 @@ public class BmsValue extends BmsData {
      * @param data generic data type
      */
     public BmsValue(BmsData data) {
-        super(data.getType(), Integer.toString(data.getCell()), Integer
+        super(data.getType(), Integer.toString(data.getBms()), Integer
                 .toString(data.getSegment()), data.value);
     }
 

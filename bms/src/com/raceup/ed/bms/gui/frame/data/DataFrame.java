@@ -44,8 +44,8 @@ public class DataFrame extends JPanel {
      * @param data new data (coming from arduino)
      */
     public void updateCellValue(BmsValue data) {
-        int bmsDevice = getBmsDevice(data.getSegment(), data.getCell());
-        int bmsCell = getBmsCell(data.getSegment(), data.getCell());
+        int bmsDevice = getBmsDevice(data.getSegment(), data.getBms());
+        int bmsCell = getBmsCell(data.getSegment(), data.getBms());
         if (data.isTemperature()) {
             bmsDevices[bmsDevice].setTemperature1(data.getValue());
         } else if (data.isVoltage()) {

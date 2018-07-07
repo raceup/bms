@@ -68,7 +68,7 @@ public class Logger {
                 // time
                 + "\"" + Integer.toString(data.getSegment()) + "\"" + "," //
                 // segment
-                + "\"" + Integer.toString(data.getCell()) + "\"";
+                + "\"" + Integer.toString(data.getBms()) + "\"";
     }
 
     /**

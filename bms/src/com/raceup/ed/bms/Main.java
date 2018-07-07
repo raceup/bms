@@ -30,13 +30,7 @@ class Main {
     private static final String ERROR_MESSAGE_TITLE =
             "Failure when starting app";
     private static final String ERROR_MESSAGE = "Sorry the app encountered " +
-            "an error when starting. More details in the following lines.\n\n";
-    private static final String RXTX_ERROR_MESSAGE = "It seems that we " +
-            "cannot load the Arduino " +
-            "serial library RXTX. It is mandatory to install it " +
-            "in order to run the app. You can find more information on how " +
-            "to install in the following web page: http://rxtx" +
-            ".qbang.org/wiki/index.php/Download";
+            "an error when starting.";
 
     /**
      * Open a gui and start bms manager
@@ -78,12 +72,7 @@ class Main {
             }
         } catch (Throwable e) {
             System.out.print(e.toString());
-            String errorMessage = ERROR_MESSAGE + e.toString() + "\n\n";
-
-            if (e.toString().toLowerCase().contains("rxtx")) {  // cannot
-                // load arduino serial library
-                errorMessage += RXTX_ERROR_MESSAGE;
-            }
+            String errorMessage = ERROR_MESSAGE + e.toString();
 
             JOptionPane.showMessageDialog(  // alert dialog with exception
                     null,
@@ -107,9 +96,8 @@ class Main {
         try {
             bmsGui.open();  // open in screen
         } catch (Throwable e) {
-            String errorMessage = "Sorry the app encountered an error when " +
-                    "opening. More details in the following lines.\n\n";
-            errorMessage += e.toString() + "\n\n";
+            String errorMessage = ERROR_MESSAGE + "\n\n ";
+            errorMessage += e.toString();
             JOptionPane.showMessageDialog(  // alert dialog with exception
                     null,
                     errorMessage,

@@ -31,7 +31,6 @@ import java.util.NoSuchElementException;
  */
 public class ArduinoSerial implements SerialPortEventListener {
     private static final String TAG = "ArduinoSerial";
-    public int msSerialIntervalUpdate = 100;  // interval (in milliseconds)
     // between 2 updates
     protected final int BAUD_RATE;  // reading baud rate
     private String serialData;  // last data from serial
