@@ -45,18 +45,14 @@ public class ArduinoSerial implements SerialPortEventListener {
      */
     public ArduinoSerial(int BAUD_RATE) {
         this.BAUD_RATE = BAUD_RATE;  // baud rate to read data
-        setup();
     }
 
-    /**
-     * This should be called when you stop using the port. This will prevent
-     * port locking on platforms like Linux.
-     */
-    protected synchronized void close() {
+    public void close() {
+        System.out.println("close port");
         try {
             serialPort.closePort();
-        } catch (SerialPortException ex) {
-            System.out.println(ex);
+        } catch (Throwable t) {
+            System.err.println(t.toString());
         }
     }
 
@@ -92,7 +88,6 @@ public class ArduinoSerial implements SerialPortEventListener {
         try {
             System.out.println("[" + TAG + "]: connecting to " + port);
             serialPort = new SerialPort(port);
-
             System.out.println("[" + TAG + "]: port opened " +
                     serialPort.openPort());
             System.out.println("[" + TAG + "]: params set " + serialPort
@@ -117,7 +112,6 @@ public class ArduinoSerial implements SerialPortEventListener {
                 System.out.println("Received response: " + receivedData);
                 serialData = receivedData;
             } catch (SerialPortException ex) {
-                System.out.println("Error in receiving string from COM-port: " + ex);
             }
         }
     }
@@ -133,6 +127,17 @@ public class ArduinoSerial implements SerialPortEventListener {
         } catch (Exception e) {
             System.err.println("ArduinoSerial cannot send data " + data + " " +
                     "because:\n" + e.toString());
+        }
+    }
+
+    @Override
+    public void finalize() {
+        System.out.println("finalizing....");
+        try {
+            super.finalize();
+            close();
+        } catch (Throwable t) {
+            System.err.println(t.toString());
         }
     }
 }
