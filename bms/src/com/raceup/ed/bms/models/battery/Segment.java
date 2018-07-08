@@ -18,6 +18,8 @@ package com.raceup.ed.bms.models.battery;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.NoSuchElementException;
 
 /**
  * Battery segment containing battery cells
@@ -49,11 +51,22 @@ public class Segment implements BmsControllable {
      * @return average temperature of segment
      */
     public double getTemperature() {
-        double sum = 0.0;
+        double result = 0.0;
+        int samples = 0;
         for (BmsDevice device : bmsDevices) {
-            sum += device.getTemperature();
+            double temperature = device.getTemperature();
+            if (temperature > 0) {
+                result += temperature;
+                samples += 1;
+            }
         }
-        return sum / bmsDevices.length;
+
+        if (result == 0.0) {
+            throw new NoSuchElementException("Cannot find avg");
+        }
+
+        result /= samples;
+        return result;
     }
 
     /**
@@ -98,11 +111,20 @@ public class Segment implements BmsControllable {
      * @return average voltage of segment
      */
     public double getVoltage() {
-        double sum = 0.0;
+        double result = 0.0;
         for (BmsDevice device : bmsDevices) {
-            sum += device.getVoltage();
+            double voltage = device.getVoltage();
+            if (voltage > 0) {
+                result += voltage;
+            }
         }
-        return sum;
+
+        if (result == 0.0) {
+            throw new NoSuchElementException("Cannot find tot");
+        }
+
+        return result;
+
     }
 
     /**
@@ -134,6 +156,14 @@ public class Segment implements BmsControllable {
 
     public double getMaxVoltage(int bmsDevice) {
         return bmsDevices[bmsDevice].getMaxVoltage();
+    }
+
+    public HashMap<String, Double> getCurrentValues(int bmsDevice) {
+        try {
+            return bmsDevices[bmsDevice].getCurrentValues();
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     public double getMinVoltage() {

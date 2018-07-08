@@ -50,7 +50,42 @@ public class DataPanel extends JPanel {
                 bmsDevices[bms].setTemperature2(value);
             }
         } else if (data.isVoltage()) {
+            bmsDevices[bms].setAvgVoltage(value);
+        }
+    }
+
+    public void setMinVoltage(int bms, double value) {
+        try {
             bmsDevices[bms].setMinVoltage(value);
+        } catch (Exception e) {
+        }
+    }
+
+    public void setAvgVoltage(int bms, double value) {
+        try {
+            bmsDevices[bms].setAvgVoltage(value);
+        } catch (Exception e) {
+        }
+    }
+
+    public void setMaxVoltage(int bms, double value) {
+        try {
+            bmsDevices[bms].setMaxVoltage(value);
+        } catch (Exception e) {
+        }
+    }
+
+    public void setTemperature1(int bms, double value) {
+        try {
+            bmsDevices[bms].setTemperature1(value);
+        } catch (Exception e) {
+        }
+    }
+
+    public void setTemperature2(int bms, double value) {
+        try {
+            bmsDevices[bms].setTemperature2(value);
+        } catch (Exception e) {
         }
     }
 

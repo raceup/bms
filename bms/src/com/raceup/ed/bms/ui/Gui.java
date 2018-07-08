@@ -31,7 +31,7 @@ import java.awt.*;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
+import java.util.HashMap;
 
 import static com.raceup.ed.bms.utils.Streams.readAllFromStream;
 
@@ -227,26 +227,22 @@ public class Gui extends ApplicationFrame implements Runnable {
                 loop();
                 Thread.sleep(500);
             } catch (Exception e) {
-                System.err.println(TAG + " " + e.toString());
             }
         }
     }
 
     public void loop() {
         Pack battery = bms.getBatteryPack();
-        for (int i = 0; i < battery.getNumberOfBms(); i++) {
-            double temperature1 = battery.getTemperature1(i);
-            double temperature2 = battery.getTemperature2(i);
-            double minVoltage = battery.getMinVoltage(i);
-            double avgVoltage = battery.getAvgVoltage(i);
-            double maxVoltage = battery.getMaxVoltage(i);
-        }
+        HashMap<String, Double> voltageOverall = battery.getVoltageOverall();
 
-        // todo scan all model instead of getting newest data
-        ArrayList<BmsData> buffer = bms.getNewestData();
-        for (BmsData data : buffer) {
-            if (data != null && data.isValueType()) {
-                updateDataFrameOrFail(data);
+        for (int i = 0; i < battery.getNumberOfBms(); i++) {
+            HashMap<String, Double> info = battery.getCurrentValues(i);
+            if (info != null) {
+                dataPanel.setMinVoltage(i, info.get("min"));
+                dataPanel.setMaxVoltage(i, info.get("max"));
+                dataPanel.setAvgVoltage(i, info.get("avg"));
+                dataPanel.setTemperature1(i, info.get("t1"));
+                dataPanel.setTemperature2(i, info.get("t2"));
             }
         }
     }

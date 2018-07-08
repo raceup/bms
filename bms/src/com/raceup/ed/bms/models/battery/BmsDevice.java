@@ -1,8 +1,13 @@
 package com.raceup.ed.bms.models.battery;
 
+import java.util.HashMap;
 import java.util.NoSuchElementException;
 
 public class BmsDevice implements BmsControllable {
+    public static final double[] VOLTAGE_BOUNDS = new double[]{3000.0,
+            4200.0};
+    public static final double[] TEMPERATURE_BOUNDS = new double[]{0.0,
+            60.0};
     private double[] voltages;
     private double temperature1;
     private double temperature2;
@@ -130,5 +135,40 @@ public class BmsDevice implements BmsControllable {
 
         result /= samples;
         return result;
+    }
+
+    public HashMap<String, Double> getCurrentValues() {
+        HashMap<String, Double> map = new HashMap<>();
+        try {
+            map.put("min", getMinVoltage());
+        } catch (Exception e) {
+            map.put("min", null);
+        }
+
+        try {
+            map.put("max", getMaxVoltage());
+        } catch (Exception e) {
+            map.put("max", null);
+        }
+
+        try {
+            map.put("avg", getAvgVoltage());
+        } catch (Exception e) {
+            map.put("avg", null);
+        }
+
+        try {
+            map.put("t1", getTemperature1());
+        } catch (Exception e) {
+            map.put("t1", null);
+        }
+
+        try {
+            map.put("t2", getTemperature2());
+        } catch (Exception e) {
+            map.put("t2", null);
+        }
+
+        return map;
     }
 }

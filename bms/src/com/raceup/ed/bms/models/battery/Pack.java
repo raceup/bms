@@ -18,6 +18,7 @@ package com.raceup.ed.bms.models.battery;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.NoSuchElementException;
 
 /**
@@ -79,11 +80,22 @@ public class Pack implements BmsControllable {
      * @return average temperature
      */
     public double getTemperature() {
-        double sum = 0.0;
+        double result = 0.0;
+        int samples = 0;
         for (Segment segment : segments) {
-            sum += segment.getTemperature();
+            double temperature = segment.getTemperature();
+            if (temperature > 0) {
+                result += temperature;
+                samples += 1;
+            }
         }
-        return sum / segments.length;
+
+        if (result == 0.0) {
+            throw new NoSuchElementException("Cannot find avg");
+        }
+
+        result /= samples;
+        return result;
     }
 
     public double getMaxTemperature() {
@@ -146,11 +158,19 @@ public class Pack implements BmsControllable {
      * @return average voltage
      */
     public double getVoltage() {
-        double sum = 0.0;
+        double result = 0.0;
         for (Segment segment : segments) {
-            sum += segment.getVoltage();
+            double voltage = segment.getVoltage();
+            if (voltage > 0) {
+                result += voltage;
+            }
         }
-        return sum;
+
+        if (result == 0.0) {
+            throw new NoSuchElementException("Cannot find tot");
+        }
+
+        return result;
     }
 
     public double getVoltage(int bms, int cell) {
@@ -202,5 +222,43 @@ public class Pack implements BmsControllable {
 
     public int getBmsIndex(int bms) {
         return bms % getNumberOfBmsPerSegment();
+    }
+
+    public HashMap<String, Double> getVoltageOverall() {
+        HashMap<String, Double> map = new HashMap<>();
+        try {
+            map.put("min", getMinVoltage());
+        } catch (Exception e) {
+            map.put("min", null);
+        }
+
+        try {
+            map.put("max", getMaxVoltage());
+        } catch (Exception e) {
+            map.put("max", null);
+        }
+
+        try {
+            map.put("tot", getVoltage());
+        } catch (Exception e) {
+            map.put("tot", null);
+        }
+
+        try {
+            map.put("tMax", getMaxTemperature());
+        } catch (Exception e) {
+            map.put("tMax", null);
+        }
+
+        return map;
+    }
+
+    public HashMap<String, Double> getCurrentValues(int bms) {
+        try {
+            return segments[getSegmentOfBms(bms)].getCurrentValues
+                    (getBmsIndex(bms));
+        } catch (Exception e) {
+            return null;
+        }
     }
 }

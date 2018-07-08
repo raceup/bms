@@ -19,28 +19,27 @@ package com.raceup.ed.bms.ui.panel.data;
 import javax.swing.*;
 import java.awt.*;
 
+import static com.raceup.ed.bms.models.battery.BmsDevice.TEMPERATURE_BOUNDS;
+import static com.raceup.ed.bms.models.battery.BmsDevice.VOLTAGE_BOUNDS;
+
 /**
  * GUI frame that contains battery cell info
  */
 public class Bms extends JPanel {
-    public static final double[] VOLTAGE_BOUNDS = new double[]{3000.0,
-            4200.0};
-    public static final double[] TEMPERATURE_BOUNDS = new double[]{0.0,
-            60.0};
-    private final NumAlerter voltageMinLabel = new NumAlerter(
-            "DNF ", VOLTAGE_BOUNDS
+    private final NumAlerter voltageMinPanel = new NumAlerter(
+            "Min volt (mV)", "DNF", VOLTAGE_BOUNDS, BoxLayout.PAGE_AXIS
     );
-    private final NumAlerter voltageAvgLabel = new NumAlerter(
-            "DNF ", VOLTAGE_BOUNDS
+    private final NumAlerter voltageAvgPanel = new NumAlerter(
+            "Avg volt (mV)", "DNF", VOLTAGE_BOUNDS, BoxLayout.PAGE_AXIS
     );
-    private final NumAlerter voltageMaxLabel = new NumAlerter(
-            "DNF", VOLTAGE_BOUNDS
+    private final NumAlerter voltageMaxPanel = new NumAlerter(
+            "Max volt (mV)", "DNF", VOLTAGE_BOUNDS, BoxLayout.PAGE_AXIS
     );
-    private final NumAlerter temperature1Label = new NumAlerter(
-            "DNF", TEMPERATURE_BOUNDS
+    private final NumAlerter temperature1Panel = new NumAlerter(
+            "Temp 1 (C°)", "DNF", TEMPERATURE_BOUNDS, BoxLayout.LINE_AXIS
     );
-    private final NumAlerter temperature2Label = new NumAlerter(
-            "DNF", TEMPERATURE_BOUNDS
+    private final NumAlerter temperature2Panel = new NumAlerter(
+            "Temp 2 (C°)", "DNF", TEMPERATURE_BOUNDS, BoxLayout.LINE_AXIS
     );
     private JButton button;
 
@@ -54,37 +53,28 @@ public class Bms extends JPanel {
      */
 
     /**
-     * Retrieve voltage value
-     *
-     * @return getter method for voltage
-     */
-    public double getVoltage() {
-        return Double.parseDouble(voltageAvgLabel.getText());
-    }
-
-    /**
      * Show new value in label and bar
      *
      * @param value new voltage to set
      */
     public void setMinVoltage(double value) {
-        voltageMinLabel.update(value);
+        voltageMinPanel.update(value);
     }
 
     public void setAvgVoltage(double value) {
-        voltageAvgLabel.update(value);
+        voltageAvgPanel.update(value);
     }
 
     public void setMaxVoltage(double value) {
-        voltageMaxLabel.update(value);
+        voltageMaxPanel.update(value);
     }
 
     public void setTemperature1(double value) {
-        temperature1Label.update(value);
+        temperature1Panel.update(value);
     }
 
     public void setTemperature2(double value) {
-        temperature2Label.update(value);
+        temperature2Panel.update(value);
     }
 
     /*
@@ -102,20 +92,6 @@ public class Bms extends JPanel {
         JPanel upRight = new JPanel();
         upRight.setLayout(new BoxLayout(upRight, BoxLayout.PAGE_AXIS));
 
-        JPanel temperature1Panel = new JPanel();
-        temperature1Panel.setLayout(new BoxLayout(temperature1Panel,
-                BoxLayout.LINE_AXIS));
-        temperature1Panel.add(new JLabel("Temp 1 (C°)"));
-        temperature1Panel.add(Box.createRigidArea(new Dimension(20, 0)));
-        temperature1Panel.add(temperature1Label);
-
-        JPanel temperature2Panel = new JPanel();
-        temperature2Panel.setLayout(new BoxLayout(temperature2Panel,
-                BoxLayout.LINE_AXIS));
-        temperature2Panel.add(new JLabel("Temp 2 (C°)"));
-        temperature2Panel.add(Box.createRigidArea(new Dimension(20, 0)));
-        temperature2Panel.add(temperature2Label);
-
         upRight.add(temperature1Panel);
         upRight.add(temperature2Panel);
 
@@ -126,26 +102,11 @@ public class Bms extends JPanel {
         JPanel down = new JPanel();
         down.setLayout(new BoxLayout(down, BoxLayout.LINE_AXIS));
 
-        JPanel minPanel = new JPanel();
-        minPanel.setLayout(new BoxLayout(minPanel, BoxLayout.PAGE_AXIS));
-        minPanel.add(new JLabel("Min volt (mV)"));
-        minPanel.add(voltageMinLabel);
-
-        JPanel avgPanel = new JPanel();
-        avgPanel.setLayout(new BoxLayout(avgPanel, BoxLayout.PAGE_AXIS));
-        avgPanel.add(new JLabel("Avg volt (mV)"));
-        avgPanel.add(voltageAvgLabel);
-
-        JPanel maxPanel = new JPanel();
-        maxPanel.setLayout(new BoxLayout(maxPanel, BoxLayout.PAGE_AXIS));
-        maxPanel.add(new JLabel("Max volt (mV)"));
-        maxPanel.add(voltageMaxLabel);
-
-        down.add(minPanel);
+        down.add(voltageMinPanel);
         down.add(Box.createRigidArea(new Dimension(20, 0)));
-        down.add(avgPanel);
+        down.add(voltageAvgPanel);
         down.add(Box.createRigidArea(new Dimension(20, 0)));
-        down.add(maxPanel);
+        down.add(voltageMaxPanel);
 
         add(up);
         add(Box.createRigidArea(new Dimension(0, 10)));

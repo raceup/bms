@@ -4,19 +4,31 @@ import javax.swing.*;
 import java.awt.*;
 import java.text.DecimalFormat;
 
-public class NumAlerter extends JLabel {
+public class NumAlerter extends JPanel {
     public static final DecimalFormat NUM_FORMAT = new DecimalFormat
             ("    ");  // decimal places
     final Color VALUE_TOO_HIGH_COLOR = Color.RED;
     final Color VALUE_NORMAL_COLOR = Color.GREEN;
     final Color VALUE_TOO_LOW_COLOR = Color.CYAN;
+    private final JLabel text;
     private final double[] bounds;
 
-    public NumAlerter(String text, double[] bounds) {
-        super(text);
-        setOpaque(true);
+    public NumAlerter(String label, String text, double[] bounds, int layout) {
+        super();
 
+        this.text = new JLabel(text);
         this.bounds = bounds;
+        setup(label, layout);
+    }
+
+    private void setup(String label, int layout) {
+        setLayout(new BoxLayout(this, layout));
+
+        add(new JLabel(label));
+        add(Box.createRigidArea(new Dimension(20, 0)));
+        add(text);
+
+        setOpaque(true);
     }
 
     /**
@@ -24,9 +36,12 @@ public class NumAlerter extends JLabel {
      *
      * @param value  new value
      */
-    protected void update(double value) {
-        setText(NUM_FORMAT.format(value));
-        updateBackground(value, bounds);
+    public void update(double value) {
+        try {
+            text.setText(NUM_FORMAT.format(value));
+            updateBackground(value, bounds);
+        } catch (Exception e) {
+        }
     }
 
     /**
