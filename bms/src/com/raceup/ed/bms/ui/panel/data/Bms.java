@@ -111,7 +111,5 @@ public class Bms extends JPanel {
         add(up);
         add(Box.createRigidArea(new Dimension(0, 10)));
         add(down);
-
-        setVisible(true);  // open
     }
 }

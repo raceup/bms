@@ -3,7 +3,7 @@ package com.raceup.ed.bms.ui.panel.data;
 import javax.swing.*;
 import java.awt.*;
 
-import static com.raceup.ed.bms.models.battery.BmsDevice.VOLTAGE_BOUNDS;
+import static com.raceup.ed.bms.models.battery.BmsDevice.*;
 
 /**
  * Shows min, max, total voltage of pack and temperature
@@ -16,10 +16,10 @@ public class InfoPanel extends JPanel {
             "Max volt (mV)", "DNF", VOLTAGE_BOUNDS, BoxLayout.PAGE_AXIS
     );
     private final NumAlerter totVoltage = new NumAlerter(
-            "Tot volt (V)", "DNF", VOLTAGE_BOUNDS, BoxLayout.PAGE_AXIS
+            "Tot volt (V)", "DNF", TOT_VOLTAGE_BOUNDS, BoxLayout.PAGE_AXIS
     );
     private final NumAlerter maxTemperature = new NumAlerter(
-            "Max temp (C°)", "DNF", VOLTAGE_BOUNDS, BoxLayout.PAGE_AXIS
+            "Max temp (C°)", "DNF", TEMPERATURE_BOUNDS, BoxLayout.PAGE_AXIS
     );
 
     public InfoPanel() {
@@ -38,8 +38,6 @@ public class InfoPanel extends JPanel {
         add(Box.createRigidArea(new Dimension(20, 0)));
         add(maxTemperature);
         add(Box.createRigidArea(new Dimension(20, 0)));
-
-        setVisible(true);
     }
 
     public void setMinVoltage(double value) {

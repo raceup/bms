@@ -224,7 +224,7 @@ public class Pack implements BmsControllable {
         return bms % getNumberOfBmsPerSegment();
     }
 
-    public HashMap<String, Double> getVoltageOverall() {
+    public HashMap<String, Double> getInfoOverall() {
         HashMap<String, Double> map = new HashMap<>();
         try {
             map.put("min", getMinVoltage());

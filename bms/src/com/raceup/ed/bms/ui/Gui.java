@@ -22,6 +22,7 @@ import com.raceup.ed.bms.models.battery.Pack;
 import com.raceup.ed.bms.models.stream.bms.BmsData;
 import com.raceup.ed.bms.models.stream.bms.BmsValue;
 import com.raceup.ed.bms.ui.panel.data.DataPanel;
+import com.raceup.ed.bms.ui.panel.data.InfoPanel;
 import com.raceup.ed.bms.ui.panel.stream.ModePanel;
 import com.raceup.ed.bms.utils.gui.AboutDialog;
 import org.jfree.ui.ApplicationFrame;
@@ -52,7 +53,8 @@ public class Gui extends ApplicationFrame implements Runnable {
     );
     private static final String TAG = "Gui";
     private ModePanel modePanel = new ModePanel();
-    private DataPanel dataPanel;  // ui frames
+    private DataPanel dataPanel;  // ui panels
+    private InfoPanel infoPanel = new InfoPanel();
     private Bms bms;
     private Thread bmsThread;
 
@@ -115,6 +117,8 @@ public class Gui extends ApplicationFrame implements Runnable {
         );  // border
 
         add(modePanel);
+        add(Box.createRigidArea(new Dimension(0, 10)));
+        add(infoPanel);
         add(Box.createRigidArea(new Dimension(0, 10)));
         add(dataPanel);
         setJMenuBar(createMenuBar());  // set menu-bar
@@ -233,17 +237,30 @@ public class Gui extends ApplicationFrame implements Runnable {
 
     public void loop() {
         Pack battery = bms.getBatteryPack();
-        HashMap<String, Double> voltageOverall = battery.getVoltageOverall();
+        HashMap<String, Double> info = battery.getInfoOverall();
+        updateInfoPanel(info);
 
         for (int i = 0; i < battery.getNumberOfBms(); i++) {
-            HashMap<String, Double> info = battery.getCurrentValues(i);
-            if (info != null) {
-                dataPanel.setMinVoltage(i, info.get("min"));
-                dataPanel.setMaxVoltage(i, info.get("max"));
-                dataPanel.setAvgVoltage(i, info.get("avg"));
-                dataPanel.setTemperature1(i, info.get("t1"));
-                dataPanel.setTemperature2(i, info.get("t2"));
-            }
+            updateBmsDevice(battery.getCurrentValues(i), i);
+        }
+    }
+
+    private void updateInfoPanel(HashMap<String, Double> info) {
+        if (info != null) {
+            infoPanel.setMinVoltage(info.get("min"));
+            infoPanel.setMaxVoltage(info.get("max"));
+            infoPanel.setTotVoltage(info.get("tot") / 1000.0);  // mv -> V
+            infoPanel.setMaxTemperature(info.get("tMax"));
+        }
+    }
+
+    private void updateBmsDevice(HashMap<String, Double> info, int i) {
+        if (info != null) {
+            dataPanel.setMinVoltage(i, info.get("min"));
+            dataPanel.setMaxVoltage(i, info.get("max"));
+            dataPanel.setAvgVoltage(i, info.get("avg"));
+            dataPanel.setTemperature1(i, info.get("t1"));
+            dataPanel.setTemperature2(i, info.get("t2"));
         }
     }
 }
