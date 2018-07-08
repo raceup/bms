@@ -16,6 +16,10 @@
 
 package com.raceup.ed.bms.models.battery;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.NoSuchElementException;
+
 /**
  * Battery pack containing segments of battery cells
  */
@@ -80,6 +84,22 @@ public class Pack implements BmsControllable {
             sum += segment.getTemperature();
         }
         return sum / segments.length;
+    }
+
+    public double getMaxTemperature() {
+        double result = Double.MIN_VALUE;
+        for (Segment segment : segments) {
+            double temperature = segment.getTemperature();
+            if (temperature > 0 && temperature > result) {
+                result = temperature;
+            }
+        }
+
+        if (result == Double.MIN_VALUE) {
+            throw new NoSuchElementException("Cannot find max");
+        }
+
+        return result;
     }
 
     /**
@@ -148,6 +168,32 @@ public class Pack implements BmsControllable {
 
     public double getAvgVoltage(int bms) {
         return segments[getSegmentOfBms(bms)].getAvgVoltage(getBmsIndex(bms));
+    }
+
+    public double getMinVoltage() {
+        ArrayList<Double> voltages = new ArrayList<>();
+        for (Segment segment : segments) {
+            try {
+                voltages.add(segment.getMinVoltage());
+            } catch (Exception e) {
+            }
+        }
+
+        int index = voltages.indexOf(Collections.min(voltages));
+        return voltages.get(index);
+    }
+
+    public double getMaxVoltage() {
+        ArrayList<Double> voltages = new ArrayList<>();
+        for (Segment segment : segments) {
+            try {
+                voltages.add(segment.getMaxVoltage());
+            } catch (Exception e) {
+            }
+        }
+
+        int index = voltages.indexOf(Collections.min(voltages));
+        return voltages.get(index);
     }
 
     public int getSegmentOfBms(int bms) {

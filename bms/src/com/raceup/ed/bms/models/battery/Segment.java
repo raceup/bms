@@ -16,6 +16,9 @@
 
 package com.raceup.ed.bms.models.battery;
 
+import java.util.ArrayList;
+import java.util.Collections;
+
 /**
  * Battery segment containing battery cells
  */
@@ -131,5 +134,31 @@ public class Segment implements BmsControllable {
 
     public double getMaxVoltage(int bmsDevice) {
         return bmsDevices[bmsDevice].getMaxVoltage();
+    }
+
+    public double getMinVoltage() {
+        ArrayList<Double> voltages = new ArrayList<>();
+        for (BmsDevice bms : bmsDevices) {
+            try {
+                voltages.add(bms.getMinVoltage());
+            } catch (Exception e) {
+            }
+        }
+
+        int index = voltages.indexOf(Collections.min(voltages));
+        return voltages.get(index);
+    }
+
+    public double getMaxVoltage() {
+        ArrayList<Double> voltages = new ArrayList<>();
+        for (BmsDevice bms : bmsDevices) {
+            try {
+                voltages.add(bms.getMaxVoltage());
+            } catch (Exception e) {
+            }
+        }
+
+        int index = voltages.indexOf(Collections.max(voltages));
+        return voltages.get(index);
     }
 }

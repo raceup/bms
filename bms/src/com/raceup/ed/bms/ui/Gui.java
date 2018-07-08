@@ -234,11 +234,12 @@ public class Gui extends ApplicationFrame implements Runnable {
 
     public void loop() {
         Pack battery = bms.getBatteryPack();
-        for (int i = 0; i < battery.getNumberOfBms();
-             i++) {
+        for (int i = 0; i < battery.getNumberOfBms(); i++) {
             double temperature1 = battery.getTemperature1(i);
             double temperature2 = battery.getTemperature2(i);
-            double voltage = battery.getTemperature1(i);
+            double minVoltage = battery.getMinVoltage(i);
+            double avgVoltage = battery.getAvgVoltage(i);
+            double maxVoltage = battery.getMaxVoltage(i);
         }
 
         // todo scan all model instead of getting newest data

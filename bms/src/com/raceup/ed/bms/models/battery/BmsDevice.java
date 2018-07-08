@@ -102,7 +102,7 @@ public class BmsDevice implements BmsControllable {
     public double getMaxVoltage() throws NoSuchElementException {
         double result = Double.MIN_VALUE;
         for (double voltage : voltages) {
-            if (voltage > 0 && voltage < result) {
+            if (voltage > 0 && voltage > result) {
                 result = voltage;
             }
         }
@@ -118,7 +118,7 @@ public class BmsDevice implements BmsControllable {
         double result = 0.0;
         int samples = 0;
         for (double voltage : voltages) {
-            if (voltage > 0 && voltage < result) {
+            if (voltage > 0) {
                 result += voltage;
                 samples += 1;
             }
