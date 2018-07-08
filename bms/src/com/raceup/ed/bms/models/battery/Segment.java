@@ -71,6 +71,20 @@ public class Segment implements BmsControllable {
         bmsDevices[bmsDevice].setTemperature2(temperature);
     }
 
+    /**
+     * Update temperature of cell of given cell
+     */
+    public double getTemperature1OfBms(int bmsDevice) {
+        return bmsDevices[bmsDevice].getTemperature1();
+    }
+
+    /**
+     * Update temperature of cell of given cell
+     */
+    public double getTemperature2OfBms(int bmsDevice) {
+        return bmsDevices[bmsDevice].getTemperature2();
+    }
+
     /*
      * Voltages
      */
@@ -94,8 +108,28 @@ public class Segment implements BmsControllable {
      * @param bmsDevice cell position in segment (numbers show from 0)
      * @param voltage      new voltage reading
      */
-    void setVoltageOfBms(int bmsDevice, int cell, double voltage) {
+    public void setVoltageOfBms(int bmsDevice, int cell, double voltage) {
         bmsDevices[bmsDevice].setVoltage(cell, voltage);
     }
 
+    /**
+     * Update voltage of cell of given cell
+     *
+     * @param bmsDevice cell position in segment (numbers show from 0)
+     */
+    public double getVoltage(int bmsDevice, int cell) {
+        return bmsDevices[bmsDevice].getVoltage(cell);
+    }
+
+    public double getMinVoltage(int bmsDevice) {
+        return bmsDevices[bmsDevice].getMinVoltage();
+    }
+
+    public double getAvgVoltage(int bmsDevice) {
+        return bmsDevices[bmsDevice].getAvgVoltage();
+    }
+
+    public double getMaxVoltage(int bmsDevice) {
+        return bmsDevices[bmsDevice].getMaxVoltage();
+    }
 }

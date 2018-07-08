@@ -1,5 +1,7 @@
 package com.raceup.ed.bms.models.battery;
 
+import java.util.NoSuchElementException;
+
 public class BmsDevice implements BmsControllable {
     private double[] voltages;
     private double temperature1;
@@ -80,5 +82,53 @@ public class BmsDevice implements BmsControllable {
             sum += voltage;
         }
         return sum / voltages.length;
+    }
+
+    public double getMinVoltage() throws NoSuchElementException {
+        double result = Double.MAX_VALUE;
+        for (double voltage : voltages) {
+            if (voltage > 0 && voltage < result) {
+                result = voltage;
+            }
+        }
+
+        if (result == Double.MAX_VALUE) {
+            throw new NoSuchElementException("Cannot find min");
+        }
+
+        return result;
+    }
+
+    public double getMaxVoltage() throws NoSuchElementException {
+        double result = Double.MIN_VALUE;
+        for (double voltage : voltages) {
+            if (voltage > 0 && voltage < result) {
+                result = voltage;
+            }
+        }
+
+        if (result == Double.MIN_VALUE) {
+            throw new NoSuchElementException("Cannot find max");
+        }
+
+        return result;
+    }
+
+    public double getAvgVoltage() throws NoSuchElementException {
+        double result = 0.0;
+        int samples = 0;
+        for (double voltage : voltages) {
+            if (voltage > 0 && voltage < result) {
+                result += voltage;
+                samples += 1;
+            }
+        }
+
+        if (result == 0.0) {
+            throw new NoSuchElementException("Cannot find avg");
+        }
+
+        result /= samples;
+        return result;
     }
 }

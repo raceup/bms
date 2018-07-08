@@ -52,8 +52,17 @@ public class Pack implements BmsControllable {
      *
      * @return length of list of segments
      */
-    private int getNumberOfSegments() {
+    public int getNumberOfSegments() {
         return segments.length;
+    }
+
+    /**
+     * Number of segments in battery pack
+     *
+     * @return length of list of segments
+     */
+    public int getNumberOfBms() {
+        return getNumberOfBmsPerSegment() * getNumberOfSegments();
     }
 
     /*
@@ -90,6 +99,16 @@ public class Pack implements BmsControllable {
         );
     }
 
+    public double getTemperature1(int bms) {
+        return segments[getSegmentOfBms(bms)].getTemperature1OfBms(
+                getBmsIndex(bms));
+    }
+
+    public double getTemperature2(int bms) {
+        return segments[getSegmentOfBms(bms)].getTemperature2OfBms(
+                getBmsIndex(bms));
+    }
+
     /**
      * Update voltage of cell of given cell
      *
@@ -112,6 +131,23 @@ public class Pack implements BmsControllable {
             sum += segment.getVoltage();
         }
         return sum;
+    }
+
+    public double getVoltage(int bms, int cell) {
+        return segments[getSegmentOfBms(bms)].getVoltage(
+                getBmsIndex(bms), cell);
+    }
+
+    public double getMinVoltage(int bms) {
+        return segments[getSegmentOfBms(bms)].getMinVoltage(getBmsIndex(bms));
+    }
+
+    public double getMaxVoltage(int bms) {
+        return segments[getSegmentOfBms(bms)].getMaxVoltage(getBmsIndex(bms));
+    }
+
+    public double getAvgVoltage(int bms) {
+        return segments[getSegmentOfBms(bms)].getAvgVoltage(getBmsIndex(bms));
     }
 
     public int getSegmentOfBms(int bms) {

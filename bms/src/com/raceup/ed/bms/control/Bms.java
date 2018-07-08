@@ -55,6 +55,10 @@ public class Bms implements Runnable {
 
     private final Pack batteryPack;  // battery pack settings
 
+    public final Pack getBatteryPack() {
+        return batteryPack;
+    }
+
     /**
      * Create new arduino binding with default baud rate
      *

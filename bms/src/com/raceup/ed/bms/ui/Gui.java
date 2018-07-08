@@ -18,6 +18,7 @@
 package com.raceup.ed.bms.ui;
 
 import com.raceup.ed.bms.control.Bms;
+import com.raceup.ed.bms.models.battery.Pack;
 import com.raceup.ed.bms.models.stream.bms.BmsData;
 import com.raceup.ed.bms.models.stream.bms.BmsValue;
 import com.raceup.ed.bms.ui.panel.data.DataPanel;
@@ -232,6 +233,14 @@ public class Gui extends ApplicationFrame implements Runnable {
     }
 
     public void loop() {
+        Pack battery = bms.getBatteryPack();
+        for (int i = 0; i < battery.getNumberOfBms();
+             i++) {
+            double temperature1 = battery.getTemperature1(i);
+            double temperature2 = battery.getTemperature2(i);
+            double voltage = battery.getTemperature1(i);
+        }
+
         // todo scan all model instead of getting newest data
         ArrayList<BmsData> buffer = bms.getNewestData();
         for (BmsData data : buffer) {

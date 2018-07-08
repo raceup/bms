@@ -26,7 +26,7 @@ public class Bms extends JPanel {
     public static final double[] VOLTAGE_BOUNDS = new double[]{3000.0,
             4200.0};
     public static final double[] TEMPERATURE_BOUNDS = new double[]{0.0,
-            20.0};
+            60.0};
     private final NumAlerter voltageMinLabel = new NumAlerter(
             "DNF ", VOLTAGE_BOUNDS
     );
