@@ -133,6 +133,15 @@ public class ArduinoSerial implements SerialPortEventListener {
         }
     }
 
+    public void sendSerialDataOrFail(String data, int times) {
+        for (int i = 0; i < times; i++) {
+            try {
+                sendSerialDataOrFail(data);
+            } catch (Exception e) {
+            }
+        }
+    }
+
     @Override
     public void finalize() {
         try {
