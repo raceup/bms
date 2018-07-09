@@ -7,7 +7,7 @@ public class BmsDevice implements BmsControllable {
     public static final double[] VOLTAGE_BOUNDS = new double[]{3000.0,
             4200.0};
     public static final double[] TOT_VOLTAGE_BOUNDS = new double[]{
-            432.0, 604.8};
+            426.0, 596.4};
     public static final double[] TEMPERATURE_BOUNDS = new double[]{0.0,
             60.0};
     private double[] voltages;
