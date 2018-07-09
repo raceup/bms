@@ -88,7 +88,7 @@ public class BmsDevice implements BmsControllable {
         for (double voltage : voltages) {
             sum += voltage;
         }
-        return sum / voltages.length;
+        return sum;
     }
 
     public double getMinVoltage() throws NoSuchElementException {
