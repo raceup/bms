@@ -52,7 +52,7 @@ public class Gui extends ApplicationFrame implements Runnable {
             THIS_PACKAGE.getClass().getResource(ICON_PATH)
     );
     private static final String TAG = "Gui";
-    private ModePanel modePanel = new ModePanel();
+    private ModePanel modePanel;
     private DataPanel dataPanel;  // ui panels
     private InfoPanel infoPanel = new InfoPanel();
     private Bms bms;
@@ -97,6 +97,7 @@ public class Gui extends ApplicationFrame implements Runnable {
      */
     private void setup() {
         dataPanel = new DataPanel(8, 3);
+        modePanel = new ModePanel(bms);
 
         setIconImage(appIcon);  // set icon
         System.setProperty(APP_NAME_SETTINGS, "YOLO Bms Desktop");

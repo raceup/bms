@@ -1,11 +1,11 @@
 package com.raceup.ed.bms.ui.panel.stream;
 
+import com.raceup.ed.bms.control.Bms;
 import com.raceup.ed.bms.control.BmsOperatingMode;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ItemEvent;
-import java.util.HashMap;
 
 import static com.raceup.ed.bms.control.Bms.OPERATING_MODE;
 
@@ -13,38 +13,41 @@ import static com.raceup.ed.bms.control.Bms.OPERATING_MODE;
  * Selects BMS operating mode
  */
 public class ModePanel extends JPanel {
-    private JComboBox<String> modeChooser;
-    private HashMap<String, BmsOperatingMode.OperatingMode> modeCommandBms = new HashMap<>();
+    private static final BmsOperatingMode.OperatingMode[] OPERATING_MODES = new BmsOperatingMode
+            .OperatingMode[]{
+            BmsOperatingMode.OperatingMode.NORMAL,
+            BmsOperatingMode.OperatingMode.BALANCE,
+            BmsOperatingMode.OperatingMode.SLEEP,
+            BmsOperatingMode.OperatingMode.DEBUG
+    };
 
-    public ModePanel() {
+    private JComboBox<String> modeChooser;
+
+    public ModePanel(Bms bms) {
         super();
 
-        setup();
+        setup(bms);
         setupLayout();
     }
 
-    private void setup() {
+    private void setup(Bms bms) {
         modeChooser = new JComboBox<>();
-        BmsOperatingMode.OperatingMode[] modes = new BmsOperatingMode
-                .OperatingMode[]{
-                BmsOperatingMode.OperatingMode.NORMAL,
-                BmsOperatingMode.OperatingMode.BALANCE,
-                BmsOperatingMode.OperatingMode.SLEEP,
-                BmsOperatingMode.OperatingMode.DEBUG
-        };
-
-        for (BmsOperatingMode.OperatingMode key : modes) {
+        for (BmsOperatingMode.OperatingMode key : OPERATING_MODES) {
             BmsOperatingMode mode = OPERATING_MODE.get(key);
             String description = mode.getDescription();
             modeChooser.addItem(description);
-            modeCommandBms.put(description, key);
         }
 
         modeChooser.addItemListener(itemEvent -> {
             if (itemEvent.getStateChange() == ItemEvent.SELECTED) {
                 String item = (String) itemEvent.getItem();
-                System.out.println("SELECTED: " + item + " (" +
-                        modeCommandBms.get(item) + ")");
+                for (BmsOperatingMode.OperatingMode key : OPERATING_MODES) {
+                    BmsOperatingMode mode = OPERATING_MODE.get(key);
+                    String description = mode.getDescription();
+                    if (description.equals(item)) {
+                        bms.setMode(key);
+                    }
+                }
             }
         });
         modeChooser.setSelectedIndex(0);

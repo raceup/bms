@@ -107,7 +107,8 @@ public class Bms implements Runnable {
         }
     }
 
-    private void setMode(BmsOperatingMode.OperatingMode mode) {
+    public void setMode(BmsOperatingMode.OperatingMode mode) {
+        System.out.println(mode.toString());
         BmsOperatingMode command = OPERATING_MODE.get(mode);
         arduino.sendSerialDataOrFail(command.getArduinoCommand());
     }
