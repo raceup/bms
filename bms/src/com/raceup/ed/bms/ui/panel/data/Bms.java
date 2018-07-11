@@ -132,10 +132,11 @@ public class Bms extends JPanel {
      */
     void showDialog(String title) {
         final int cells = 6;
-        final String[] titles = new String[cells];
+        final String[] titles = new String[cells + 1];
         for (int i = 0; i < cells; i++) {
             titles[i] = "Cell " + Integer.toString(i) + " (mv)";
         }
+        titles[titles.length - 1] = "Avg temperature (C°)";
         ChartFrame dialog = new ChartFrame(title, titles);
         dialog.setLocationRelativeTo(null);  // center in screen
 
@@ -143,6 +144,7 @@ public class Bms extends JPanel {
             for (int i = 0; i < cells; i++) {
                 dialog.updateOrFail(i, battery.getVoltage(indexInBms, i));
             }
+            dialog.updateOrFail(cells, battery.getTemperature(indexInBms));
         });  // timer to update dialog values
         updater.start();
     }

@@ -141,6 +141,11 @@ public class Pack implements BmsControllable {
                 getBmsIndex(bms));
     }
 
+    public double getTemperature(int bms) {
+        double sum = getTemperature1(bms) + getTemperature2(bms);
+        return sum / 2.0;
+    }
+
     /**
      * Update voltage of cell of given cell
      *
