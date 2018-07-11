@@ -62,7 +62,7 @@ public class BmsData {
      * @return True iff data represents a log
      */
     public boolean isStatusType() {
-        return false;  // todo ask gorgo
+        return getType().equals("status");
     }
 
     /**

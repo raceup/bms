@@ -19,6 +19,7 @@ package com.raceup.ed.bms.control;
 
 import com.raceup.ed.bms.models.battery.Pack;
 import com.raceup.ed.bms.models.stream.bms.BmsData;
+import com.raceup.ed.bms.models.stream.bms.BmsLog;
 import com.raceup.ed.bms.models.stream.bms.BmsValue;
 import com.raceup.ed.bms.models.stream.serial.ArduinoSerial;
 import org.json.JSONObject;
@@ -36,8 +37,10 @@ public class Bms implements Runnable {
     private ArduinoSerial arduino;
     private boolean stopRequest = false;
     private static final int REPEAT_COMMAND = 10;
+    private String currentStatus;
 
     public static final HashMap<BmsOperatingMode.OperatingMode, BmsOperatingMode> OPERATING_MODE;
+
     static {
         OPERATING_MODE = new HashMap<>();
         OPERATING_MODE.put(BmsOperatingMode.OperatingMode.NORMAL,
@@ -108,6 +111,10 @@ public class Bms implements Runnable {
         }
     }
 
+    private void updateStatusLog(BmsLog log) {
+        currentStatus = log.getValue();
+    }
+
     public void setMode(BmsOperatingMode.OperatingMode mode) {
         System.out.println(mode.toString());
         BmsOperatingMode command = OPERATING_MODE.get(mode);
@@ -150,9 +157,16 @@ public class Bms implements Runnable {
     public void loop() {
         ArrayList<BmsData> newestData = getNewestData();
         for (BmsData data : newestData) {
-            if (data != null && data.isValueType()) {
-                updateBatteryPack(new BmsValue(data));
-            }
+            if (data != null)
+                if (data.isValueType()) {
+                    updateBatteryPack(new BmsValue(data));
+                } else if (data.isStatusType()) {
+                    updateStatusLog(new BmsLog(data));
+                }
         }
+    }
+
+    public String getCurrentStatus() {
+        return currentStatus;
     }
 }

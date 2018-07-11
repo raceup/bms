@@ -20,6 +20,7 @@ public class ModePanel extends JPanel {
             BmsOperatingMode.OperatingMode.SLEEP,
             BmsOperatingMode.OperatingMode.DEBUG
     };
+    private JLabel statusLabel = new JLabel("DNF");
 
     private JComboBox<String> modeChooser;
 
@@ -60,5 +61,14 @@ public class ModePanel extends JPanel {
         add(Box.createRigidArea(new Dimension(10, 0)));
         add(modeChooser);
         add(Box.createRigidArea(new Dimension(0, 10)));
+        add(new JLabel("Current status:"));
+        add(statusLabel);
+    }
+
+    public void updateStatus(String status) {
+        try {
+            statusLabel.setText(status);
+        } catch (Exception e) {
+        }
     }
 }

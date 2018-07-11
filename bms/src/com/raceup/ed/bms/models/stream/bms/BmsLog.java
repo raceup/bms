@@ -32,57 +32,12 @@ public class BmsLog extends BmsData {
     }
 
     /**
-     * Get type of log
-     *
-     * @return type of log, one of [Status, Alert, Fault, Log]
-     */
-    public String getTypeOfLog() {
-        return getType();
-    }
-
-    /**
      * Getter for data value
      *
      * @return parsed data value
      */
     public String getValue() {
         return value;
-    }
-
-    /**
-     * Check if data is a status log
-     *
-     * @return True iff data is a status log
-     */
-    public boolean isStatus() {
-        return getTypeOfLog().equals("Status");
-    }
-
-    /**
-     * Check if data is a alert log
-     *
-     * @return True iff data is a alert log
-     */
-    public boolean isAlert() {
-        return getTypeOfLog().equals("Alert");
-    }
-
-    /**
-     * Check if data is a fault log
-     *
-     * @return True iff data is a fault log
-     */
-    public boolean isFault() {
-        return getTypeOfLog().equals("Fault");
-    }
-
-    /**
-     * Check if data is a simple log
-     *
-     * @return True iff data is a simple log
-     */
-    public boolean isLog() {
-        return getTypeOfLog().equals("Log");
     }
 
     /**

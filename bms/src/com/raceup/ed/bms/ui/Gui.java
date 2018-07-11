@@ -227,6 +227,8 @@ public class Gui extends ApplicationFrame implements Runnable {
         for (int i = 0; i < battery.getNumberOfBms(); i++) {
             updateBmsDevice(battery.getCurrentValues(i), i);
         }
+
+        modePanel.updateStatus(bms.getCurrentStatus());
     }
 
     private void updateInfoPanel(HashMap<String, Double> info) {
