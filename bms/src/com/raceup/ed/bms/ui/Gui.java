@@ -19,8 +19,6 @@ package com.raceup.ed.bms.ui;
 
 import com.raceup.ed.bms.control.Bms;
 import com.raceup.ed.bms.models.battery.Pack;
-import com.raceup.ed.bms.models.stream.bms.BmsData;
-import com.raceup.ed.bms.models.stream.bms.BmsValue;
 import com.raceup.ed.bms.ui.panel.data.DataPanel;
 import com.raceup.ed.bms.ui.panel.data.InfoPanel;
 import com.raceup.ed.bms.ui.panel.stream.ModePanel;
@@ -123,21 +121,6 @@ public class Gui extends ApplicationFrame implements Runnable {
         add(Box.createRigidArea(new Dimension(0, 10)));
         add(dataPanel);
         setJMenuBar(createMenuBar());  // set menu-bar
-    }
-
-    /**
-     * Fetch newest data from bms and updates screen
-     *
-     * @param data new data with which update log frame
-     */
-    private void updateDataFrameOrFail(BmsData data) {
-        try {
-            if (data.isValueType()) {
-                dataPanel.update(new BmsValue(data));
-            }
-        } catch (Exception e) {
-            System.err.println("Ui " + e.toString());
-        }
     }
 
     /**

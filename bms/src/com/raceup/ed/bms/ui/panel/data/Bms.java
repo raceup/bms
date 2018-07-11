@@ -16,6 +16,9 @@
 
 package com.raceup.ed.bms.ui.panel.data;
 
+import com.raceup.ed.bms.models.battery.Pack;
+import com.raceup.ed.bms.ui.frame.chart.ChartFrame;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -42,9 +45,13 @@ public class Bms extends JPanel {
             "Temp 2 (C°)", "DNF", TEMPERATURE_BOUNDS, BoxLayout.LINE_AXIS
     );
     private JButton button;
+    private final int indexInBms;
+    private Pack battery;
 
-    Bms(int indexInBms) {
+    Bms(int indexInBms, Pack battery) {
+        this.indexInBms = indexInBms;
         button = new JButton(Integer.toString(indexInBms + 1));
+        this.battery = battery;
         setup();
     }
 
@@ -85,6 +92,11 @@ public class Bms extends JPanel {
      * Add to panel all widgets
      */
     private void setup() {
+        button.addActionListener(e -> showDialog("BMS " + Integer.toString(indexInBms) + " cells"));
+        setupLayout();
+    }
+
+    private void setupLayout() {
         setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
         JPanel up = new JPanel();
         up.setLayout(new BoxLayout(up, BoxLayout.LINE_AXIS));
@@ -111,5 +123,27 @@ public class Bms extends JPanel {
         add(up);
         add(Box.createRigidArea(new Dimension(0, 10)));
         add(down);
+    }
+
+    /**
+     * Show dialog with more info about cell
+     *
+     * @param title title of dialog
+     */
+    void showDialog(String title) {
+        final int cells = 6;
+        final String[] titles = new String[cells];
+        for (int i = 0; i < cells; i++) {
+            titles[i] = "Cell " + Integer.toString(i) + " (mv)";
+        }
+        ChartFrame dialog = new ChartFrame(title, titles);
+        dialog.setLocationRelativeTo(null);  // center in screen
+
+        Timer updater = new Timer(100, e -> {
+            for (int i = 0; i < cells; i++) {
+                dialog.updateOrFail(i, battery.getVoltage(indexInBms, i));
+            }
+        });  // timer to update dialog values
+        updater.start();
     }
 }

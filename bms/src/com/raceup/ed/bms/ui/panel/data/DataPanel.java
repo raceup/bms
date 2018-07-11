@@ -17,6 +17,7 @@
 
 package com.raceup.ed.bms.ui.panel.data;
 
+import com.raceup.ed.bms.models.battery.Pack;
 import com.raceup.ed.bms.models.stream.bms.BmsValue;
 
 import javax.swing.*;
@@ -28,10 +29,12 @@ import java.awt.*;
 public class DataPanel extends JPanel {
     private Bms[] bmsDevices;
 
-    public DataPanel(int numberOfSegments, int numberOfBmsPerSegment) {
+    public DataPanel(Pack battery) {
         super();
+        int numberOfSegments = battery.getNumberOfSegments();
+        int numberOfBmsPerSegment = battery.getNumberOfBmsPerSegment();
         bmsDevices = new Bms[numberOfSegments * numberOfBmsPerSegment];
-        setup(numberOfSegments, numberOfBmsPerSegment);
+        setup(battery);
     }
 
     /**
@@ -91,18 +94,18 @@ public class DataPanel extends JPanel {
 
     /**
      * Setup ui and widgets
-     *
-     * @param numberOfBmsPerSegment list of number of bmsDevices per segment
      */
-    private void setup(int numberOfSegments, int numberOfBmsPerSegment) {
+    private void setup(Pack battery) {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));  // vertical
+        int numberOfSegments = battery.getNumberOfSegments();
+        int numberOfBmsPerSegment = battery.getNumberOfBmsPerSegment();
         for (int row = 0; row < numberOfSegments; row++) {
             JPanel segment = new JPanel();
             segment.setLayout(new BoxLayout(segment, BoxLayout.X_AXIS));
 
             for (int column = 0; column < numberOfBmsPerSegment; column++) {
                 int bmsNumber = row * numberOfBmsPerSegment + column;
-                bmsDevices[bmsNumber] = new Bms(bmsNumber);
+                bmsDevices[bmsNumber] = new Bms(bmsNumber, battery);
                 segment.add(bmsDevices[bmsNumber]);
                 segment.add(Box.createRigidArea(new Dimension(50, 0)));
             }
