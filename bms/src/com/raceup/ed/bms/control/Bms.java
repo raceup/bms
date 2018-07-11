@@ -104,11 +104,7 @@ public class Bms implements Runnable {
                 batteryPack.setTemperature2(bms, value);
             }
         } else if (data.isVoltage()) {
-            if (bms == 1 || bms == 21 && data.getCell() == 5) {
-                // there is no cell
-            } else {
-                batteryPack.setVoltage(bms, data.getCell() - 1, value);
-            }
+            batteryPack.setVoltage(bms, data.getCell() - 1, value);
         }
     }
 

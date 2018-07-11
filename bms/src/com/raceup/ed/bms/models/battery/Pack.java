@@ -152,6 +152,12 @@ public class Pack implements BmsControllable {
      * @param value      new voltage reading
      */
     public void setVoltage(int bms, int cell, double value) {
+        if (bms == 1 || bms == 21) {
+            if (cell == 5) {
+                return;
+            }
+        }
+
         segments[getSegmentOfBms(bms)].setVoltageOfBms(
                 getBmsIndex(bms), cell, value
         );
