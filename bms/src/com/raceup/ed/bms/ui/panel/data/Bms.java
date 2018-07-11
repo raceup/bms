@@ -134,10 +134,10 @@ public class Bms extends JPanel {
         final int cells = 6;
         final String[] titles = new String[cells];
         for (int i = 0; i < cells; i++) {
-            titles[i] = "Cell " + Integer.toString(i) + " (mv)";
+            titles[i] = "Cell " + Integer.toString(i + 1) + " (mv)";
         }
         ChartFrame dialog = new ChartFrame("Bms " + Integer.toString
-                (indexInBms) + " voltages",
+                (indexInBms + 1) + " voltages",
                 titles);
         dialog.setLocationRelativeTo(null);  // center in screen
 
@@ -150,17 +150,15 @@ public class Bms extends JPanel {
     }
 
     void showTemperatureDialog() {
-        final int cells = 6;
-        final String[] titles = new String[]{"Avg temperature (C°)"};
+        final String[] titles = new String[]{"Temperature 1 (C°)",
+                "Temperature 2 (C°)"};
         ChartFrame dialog = new ChartFrame("Bms " + Integer.toString
-                (indexInBms) + " temperature", titles);
+                (indexInBms + 1) + " temperature", titles);
         dialog.setLocationRelativeTo(null);  // center in screen
 
         Timer updater = new Timer(100, e -> {
-            for (int i = 0; i < cells; i++) {
-                dialog.updateOrFail(i, battery.getVoltage(indexInBms, i));
-            }
-            dialog.updateOrFail(cells, battery.getTemperature(indexInBms));
+            dialog.updateOrFail(0, battery.getTemperature1(indexInBms));
+            dialog.updateOrFail(1, battery.getTemperature2(indexInBms));
         });  // timer to update dialog values
         updater.start();
     }
