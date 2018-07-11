@@ -92,7 +92,7 @@ public class Bms extends JPanel {
      * Add to panel all widgets
      */
     private void setup() {
-        button.addActionListener(e -> showDialog("BMS " + Integer.toString(indexInBms) + " cells"));
+        button.addActionListener(e -> showDialogs());
         setupLayout();
     }
 
@@ -125,19 +125,35 @@ public class Bms extends JPanel {
         add(down);
     }
 
-    /**
-     * Show dialog with more info about cell
-     *
-     * @param title title of dialog
-     */
-    void showDialog(String title) {
+    void showDialogs() {
+        showVoltageDialog();
+        showTemperatureDialog();
+    }
+
+    void showVoltageDialog() {
         final int cells = 6;
-        final String[] titles = new String[cells + 1];
+        final String[] titles = new String[cells];
         for (int i = 0; i < cells; i++) {
             titles[i] = "Cell " + Integer.toString(i) + " (mv)";
         }
-        titles[titles.length - 1] = "Avg temperature (C°)";
-        ChartFrame dialog = new ChartFrame(title, titles);
+        ChartFrame dialog = new ChartFrame("Bms " + Integer.toString
+                (indexInBms) + " voltages",
+                titles);
+        dialog.setLocationRelativeTo(null);  // center in screen
+
+        Timer updater = new Timer(100, e -> {
+            for (int i = 0; i < cells; i++) {
+                dialog.updateOrFail(i, battery.getVoltage(indexInBms, i));
+            }
+        });  // timer to update dialog values
+        updater.start();
+    }
+
+    void showTemperatureDialog() {
+        final int cells = 6;
+        final String[] titles = new String[]{"Avg temperature (C°)"};
+        ChartFrame dialog = new ChartFrame("Bms " + Integer.toString
+                (indexInBms) + " temperature", titles);
         dialog.setLocationRelativeTo(null);  // center in screen
 
         Timer updater = new Timer(100, e -> {
@@ -148,4 +164,5 @@ public class Bms extends JPanel {
         });  // timer to update dialog values
         updater.start();
     }
+
 }

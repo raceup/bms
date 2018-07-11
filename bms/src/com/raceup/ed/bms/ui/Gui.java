@@ -94,7 +94,7 @@ public class Gui extends ApplicationFrame implements Runnable {
      * Setup ui and backend
      */
     private void setup() {
-        dataPanel = new DataPanel(8, 3);
+        dataPanel = new DataPanel(bms.getBatteryPack());
         modePanel = new ModePanel(bms);
 
         setIconImage(appIcon);  // set icon
