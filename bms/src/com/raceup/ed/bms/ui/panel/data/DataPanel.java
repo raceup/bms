@@ -19,6 +19,7 @@ package com.raceup.ed.bms.ui.panel.data;
 
 import com.raceup.ed.bms.models.battery.Pack;
 import com.raceup.ed.bms.models.stream.bms.BmsValue;
+import com.raceup.ed.bms.ui.frame.chart.ChartFrame;
 
 import javax.swing.*;
 import java.awt.*;
@@ -28,9 +29,12 @@ import java.awt.*;
  */
 public class DataPanel extends JPanel {
     private Bms[] bmsDevices;
+    private JButton chartButton = new JButton("Total voltage");
+    private Pack battery;
 
     public DataPanel(Pack battery) {
         super();
+        this.battery = battery;
         int numberOfSegments = battery.getNumberOfSegments();
         int numberOfBmsPerSegment = battery.getNumberOfBmsPerSegment();
         bmsDevices = new Bms[numberOfSegments * numberOfBmsPerSegment];
@@ -96,7 +100,16 @@ public class DataPanel extends JPanel {
      * Setup ui and widgets
      */
     private void setup(Pack battery) {
+        chartButton.addActionListener(e -> showDialog());
+
+        setupLayout(battery);
+    }
+
+    private void setupLayout(Pack battery) {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));  // vertical
+        add(chartButton);
+        add(Box.createRigidArea(new Dimension(0, 10)));
+
         int numberOfSegments = battery.getNumberOfSegments();
         int numberOfBmsPerSegment = battery.getNumberOfBmsPerSegment();
         for (int row = 0; row < numberOfSegments; row++) {
@@ -113,5 +126,16 @@ public class DataPanel extends JPanel {
             add(segment, BorderLayout.AFTER_LAST_LINE);
             add(Box.createRigidArea(new Dimension(0, 20)));  // add spacing
         }
+    }
+
+    private void showDialog() {
+        final String[] titles = new String[]{"Avg pack total voltage (mv)"};
+        ChartFrame dialog = new ChartFrame("Total voltage", titles);
+        dialog.setLocationRelativeTo(null);  // center in screen
+
+        Timer updater = new Timer(100, e -> {
+            dialog.updateOrFail(0, battery.getVoltage());
+        });  // timer to update dialog values
+        updater.start();
     }
 }
