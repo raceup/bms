@@ -39,7 +39,7 @@ public class Bms implements Runnable {
     private boolean stopRequest = false;
     private static final int WAIT_TIME = 100;
     private static final int WAIT_LOOP = 250;
-    private static final int MAX_RETRIES = 50;
+    private static final int MAX_RETRIES = 10;
     private BmsStatus status = new BmsStatus(null);
 
     public static final HashMap<BmsOperatingMode.OperatingMode, BmsOperatingMode> OPERATING_MODE;
@@ -120,8 +120,9 @@ public class Bms implements Runnable {
 
     public void setMode(BmsOperatingMode.OperatingMode mode) {
         BmsOperatingMode command = OPERATING_MODE.get(mode);
+        System.out.println("attempting " + command.getDescription());
         int attemptNumber = 0;
-        while (!status.hasChanged() && attemptNumber < MAX_RETRIES) {
+        while (attemptNumber < MAX_RETRIES) {
             arduino.sendSerialDataOrFail(command.getArduinoCommand());
             try {
                 Thread.sleep(WAIT_TIME);

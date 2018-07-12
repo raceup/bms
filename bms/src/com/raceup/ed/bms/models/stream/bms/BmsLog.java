@@ -30,17 +30,8 @@ public class BmsLog extends BmsData {
      * @param data generic data type
      */
     public BmsLog(BmsData data) {
-        super(data.getType(), Integer.toString(data.getBms()), data.value);
+        super(data.getType(), Integer.toString(data.getBms()), data.getRawValue());
         time = System.currentTimeMillis();
-    }
-
-    /**
-     * Getter for data value
-     *
-     * @return parsed data value
-     */
-    public String getValue() {
-        return value;
     }
 
     /**
@@ -50,7 +41,7 @@ public class BmsLog extends BmsData {
      */
     @Override
     public String toString() {
-        return getValue();
+        return getRawValue();
     }
 
     public long getTime() {

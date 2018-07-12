@@ -22,7 +22,7 @@ import org.json.JSONObject;
  * Generic data coming from arduino
  */
 public class BmsData {
-    final String value;  // value of bms of segment
+    private final String value;  // value of bms of segment
     private final String type;  // type of data
     private final int bms;  // number of bms broadcasting value
     public static final String TYPE_KEY = "type";
@@ -108,5 +108,9 @@ public class BmsData {
      */
     public int getBms() {
         return bms;
+    }
+
+    public String getRawValue() {
+        return value;
     }
 }
