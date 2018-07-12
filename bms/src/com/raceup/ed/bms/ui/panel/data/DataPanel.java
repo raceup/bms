@@ -29,7 +29,7 @@ import java.awt.*;
  */
 public class DataPanel extends JPanel {
     private Bms[] bmsDevices;
-    private JButton chartButton = new JButton("Total voltage");
+    private JButton chartButton = new JButton("Show chart");
     private Pack battery;
 
     public DataPanel(Pack battery) {
@@ -100,7 +100,7 @@ public class DataPanel extends JPanel {
      * Setup ui and widgets
      */
     private void setup(Pack battery) {
-        chartButton.addActionListener(e -> showDialog());
+        chartButton.addActionListener(e -> showDialogs());
 
         setupLayout(battery);
     }
@@ -128,13 +128,33 @@ public class DataPanel extends JPanel {
         }
     }
 
-    private void showDialog() {
-        final String[] titles = new String[]{"Avg pack total voltage (mv)"};
-        ChartFrame dialog = new ChartFrame("Total voltage", titles);
+    private void showDialogs() {
+        showVoltageDialog();
+        showTemperatureDialog();
+    }
+
+    private void showVoltageDialog() {
+        final String[] titles = new String[]{
+                "Avg pack total voltage (mv)"
+        };
+        ChartFrame dialog = new ChartFrame("Battery pack", titles);
         dialog.setLocationRelativeTo(null);  // center in screen
 
         Timer updater = new Timer(100, e -> {
             dialog.updateOrFail(0, battery.getVoltage());
+        });  // timer to update dialog values
+        updater.start();
+    }
+
+    private void showTemperatureDialog() {
+        final String[] titles = new String[]{
+                "Avg pack temperature (C°)"
+        };
+        ChartFrame dialog = new ChartFrame("Battery pack", titles);
+        dialog.setLocationRelativeTo(null);  // center in screen
+
+        Timer updater = new Timer(100, e -> {
+            dialog.updateOrFail(0, battery.getTemperature());
         });  // timer to update dialog values
         updater.start();
     }

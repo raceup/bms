@@ -22,6 +22,8 @@ package com.raceup.ed.bms.models.stream.bms;
  * Informs anyone of its status.
  */
 public class BmsLog extends BmsData {
+    private final long time;
+
     /**
      * Cast from generic data to value
      *
@@ -29,6 +31,7 @@ public class BmsLog extends BmsData {
      */
     public BmsLog(BmsData data) {
         super(data.getType(), Integer.toString(data.getBms()), data.value);
+        time = System.currentTimeMillis();
     }
 
     /**
@@ -48,5 +51,9 @@ public class BmsLog extends BmsData {
     @Override
     public String toString() {
         return getValue();
+    }
+
+    public long getTime() {
+        return time;
     }
 }
