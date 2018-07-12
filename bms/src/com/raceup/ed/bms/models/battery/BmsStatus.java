@@ -7,20 +7,25 @@ public class BmsStatus {
     private BmsLog lastStatus;
 
     public BmsStatus(BmsLog currentStatus) {
-        updateStatus(currentStatus);
+        update(currentStatus);
 
         this.currentStatus = currentStatus;
     }
 
-    private void updateStatus(BmsLog currentStatus) {
+    public void update(BmsLog currentStatus) {
         lastStatus = currentStatus;
     }
 
     public boolean hasChanged() {
-        return currentStatus.getTime() != lastStatus.getTime();
+        return currentStatus == null || lastStatus == null || currentStatus.getTime() != lastStatus.getTime();
+
     }
 
     public String getStatus() {
-        return currentStatus.getValue();
+        if (currentStatus != null) {
+            return currentStatus.getValue();
+        }
+
+        return null;
     }
 }

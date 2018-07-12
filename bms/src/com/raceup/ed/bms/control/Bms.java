@@ -17,6 +17,7 @@
 
 package com.raceup.ed.bms.control;
 
+import com.raceup.ed.bms.models.battery.BmsStatus;
 import com.raceup.ed.bms.models.battery.Pack;
 import com.raceup.ed.bms.models.stream.bms.BmsData;
 import com.raceup.ed.bms.models.stream.bms.BmsLog;
@@ -33,11 +34,12 @@ import java.util.HashMap;
  * Provides data from arduino serial port
  */
 public class Bms implements Runnable {
-    public static final String TAG = "Bms";  // app settings
+    public static final String TAG = "BMS";  // app settings
     private ArduinoSerial arduino;
     private boolean stopRequest = false;
-    private static final int REPEAT_COMMAND = 10;
-    private String currentStatus;
+    private static final int WAIT_TIME = 50;
+    private static final int WAIT_LOOP = 250;
+    private BmsStatus status = new BmsStatus(null);
 
     public static final HashMap<BmsOperatingMode.OperatingMode, BmsOperatingMode> OPERATING_MODE;
 
@@ -111,14 +113,19 @@ public class Bms implements Runnable {
         }
     }
 
-    private void updateStatusLog(BmsLog log) {
-        currentStatus = log.getValue();
+    private void updateStatus(BmsLog log) {
+        status.update(log);
     }
 
     public void setMode(BmsOperatingMode.OperatingMode mode) {
-        System.out.println(mode.toString());
         BmsOperatingMode command = OPERATING_MODE.get(mode);
-        arduino.sendSerialDataOrFail(command.getArduinoCommand(), REPEAT_COMMAND);
+        while (!status.hasChanged()) {  // keep sending command to arduino
+            arduino.sendSerialDataOrFail(command.getArduinoCommand());
+            try {
+                Thread.sleep(WAIT_TIME);
+            } catch (Exception e) {
+            }
+        }
     }
 
     public void setNormalMode() {
@@ -147,7 +154,7 @@ public class Bms implements Runnable {
         while (!stopRequest) {
             try {
                 loop();
-                Thread.sleep(250);
+                Thread.sleep(WAIT_LOOP);
             } catch (Exception e) {
                 System.err.println(TAG + e.toString());
             }
@@ -161,12 +168,12 @@ public class Bms implements Runnable {
                 if (data.isValueType()) {
                     updateBatteryPack(new BmsValue(data));
                 } else if (data.isStatusType()) {
-                    updateStatusLog(new BmsLog(data));
+                    updateStatus(new BmsLog(data));
                 }
         }
     }
 
     public String getCurrentStatus() {
-        return currentStatus;
+        return status.getStatus();
     }
 }
