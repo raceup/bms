@@ -24,6 +24,8 @@ import com.raceup.ed.bms.ui.Gui;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
+import static com.raceup.ed.bms.utils.Os.setNativeLookAndFeelOrFail;
+
 /**
  * App driver program
  * Run BmsGUI or simple BmsUtils monitor here
@@ -44,6 +46,8 @@ class App {
     }
 
     private void setup() {
+        setNativeLookAndFeelOrFail();
+
         try {
             battery = new Pack(8, 3);
         } catch (Exception e) {
