@@ -5,14 +5,24 @@ import java.io.PrintStream;
 import static com.raceup.ed.bms.utils.Utils.convertTime;
 
 public class Logger {
-    public String TAG = "LOGGER";
+    public final String TAG;
+    protected final PrintStream errors = System.err;
+    protected final PrintStream output = System.out;
+
+    public Logger() {
+        this("LOGGER");
+    }
+
+    public Logger(String tag) {
+        TAG = tag;
+    }
 
     protected void logAction(String message) {
-        log(System.out, message);
+        log(output, message);
     }
 
     protected void logError(String message) {
-        log(System.err, message);
+        log(errors, message);
     }
 
     protected void log(PrintStream out, String message) {

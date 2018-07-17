@@ -17,6 +17,7 @@
 package com.raceup.ed.bms;
 
 import com.raceup.ed.bms.control.Bms;
+import com.raceup.ed.bms.logging.Debugger;
 import com.raceup.ed.bms.models.battery.Pack;
 import com.raceup.ed.bms.models.stream.serial.ArduinoSerial;
 import com.raceup.ed.bms.ui.Gui;
@@ -30,13 +31,14 @@ import static com.raceup.ed.bms.utils.Os.setNativeLookAndFeelOrFail;
  * App driver program
  * Run BmsGUI or simple BmsUtils monitor here
  */
-class App {
+class App extends Debugger {
     private Pack battery;
     private ArduinoSerial arduino;
     private Bms bms;
     private Gui ui;
 
     public App() {
+        super("APP", true);
         setup();
     }
 
@@ -57,6 +59,7 @@ class App {
         try {
             arduino = new ArduinoSerial(115200);
         } catch (Exception e) {
+            logError(e.getMessage());
             System.err.println("Error while opening Arduino serial");
         }
 
@@ -87,7 +90,6 @@ class App {
             Thread thread = new Thread(ui);  // start thread
             thread.start();
         } catch (Exception e) {
-            e.printStackTrace();
             System.err.println("Error while opening UI");
         }
     }
