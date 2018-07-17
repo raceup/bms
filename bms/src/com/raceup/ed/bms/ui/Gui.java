@@ -85,7 +85,6 @@ public class Gui extends ApplicationFrame implements Runnable {
     }
 
     private void startMonitorBms() {
-        bms.setup();  // start backend
         bmsThread = new Thread(bms);
         bmsThread.start();
     }

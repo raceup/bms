@@ -53,20 +53,19 @@ class App extends Debugger {
         try {
             battery = new Pack(8, 3);
         } catch (Exception e) {
-            System.err.println("Error while creating battery model");
+            logException(e);
         }
 
         try {
             arduino = new ArduinoSerial(115200);
         } catch (Exception e) {
-            logError(e.getMessage());
-            System.err.println("Error while opening Arduino serial");
+            logException(e);
         }
 
         try {
             bms = new Bms(arduino, battery);
         } catch (Exception e) {
-            System.err.println("Error while creating control");
+            logException(e);
         }
 
         try {
@@ -78,7 +77,7 @@ class App extends Debugger {
                 }
             });
         } catch (Exception e) {
-            System.err.println("Error while creating UI");
+            logException(e);
         }
     }
 
@@ -90,7 +89,7 @@ class App extends Debugger {
             Thread thread = new Thread(ui);  // start thread
             thread.start();
         } catch (Exception e) {
-            System.err.println("Error while opening UI");
+            logException(e);
         }
     }
 }

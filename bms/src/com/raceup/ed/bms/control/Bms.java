@@ -17,6 +17,7 @@
 
 package com.raceup.ed.bms.control;
 
+import com.raceup.ed.bms.logging.Debugger;
 import com.raceup.ed.bms.models.battery.BmsStatus;
 import com.raceup.ed.bms.models.battery.Pack;
 import com.raceup.ed.bms.models.stream.bms.BmsData;
@@ -33,11 +34,9 @@ import java.util.HashMap;
  * Battery management system (with multithreading support)
  * Provides data from arduino serial port
  */
-public class Bms implements Runnable {
-    public static final String TAG = "BMS";  // app settings
+public class Bms extends Debugger implements Runnable {
     private ArduinoSerial arduino;
     private boolean stopRequest = false;
-    private static final int WAIT_TIME = 100;
     private static final int WAIT_LOOP = 250;
     private static final int MAX_RETRIES = 10;
     private BmsStatus status = new BmsStatus(null);
@@ -72,6 +71,7 @@ public class Bms implements Runnable {
      * @param batteryPack virtual battery pock to monitor
      */
     public Bms(ArduinoSerial arduino, Pack batteryPack) {
+        super("BMS", true);
         this.arduino = arduino;
         this.batteryPack = batteryPack;  // create battery pack model
 
@@ -120,23 +120,7 @@ public class Bms implements Runnable {
 
     public void setMode(BmsOperatingMode.OperatingMode mode) {
         BmsOperatingMode command = OPERATING_MODE.get(mode);
-        int attemptNumber = 0;
-        while (attemptNumber < MAX_RETRIES) {
-            arduino.sendSerialDataOrFail(command.getArduinoCommand());
-            try {
-                Thread.sleep(WAIT_TIME);
-            } catch (Exception e) {
-            }
-            attemptNumber += 1;
-        }
-
-        if (attemptNumber == MAX_RETRIES) {
-            System.err.println("Max # of attempts reached! Giving up sending" +
-                    " Arduino command");
-        } else {
-            System.out.println("Attempt # " + attemptNumber + " successful! " +
-                    "Sent Arduino command!");
-        }
+        arduino.sendSerialData(command.getArduinoCommand(), MAX_RETRIES);
     }
 
     public void setNormalMode() {

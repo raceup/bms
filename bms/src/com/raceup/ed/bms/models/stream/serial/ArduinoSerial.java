@@ -17,6 +17,7 @@
 
 package com.raceup.ed.bms.models.stream.serial;
 
+import com.raceup.ed.bms.logging.Debugger;
 import jssc.SerialPort;
 import jssc.SerialPortEvent;
 import jssc.SerialPortEventListener;
@@ -28,9 +29,10 @@ import java.util.NoSuchElementException;
 /**
  * Manage Arduino byte stream
  */
-public class ArduinoSerial implements SerialPortEventListener {
+public class ArduinoSerial extends Debugger implements SerialPortEventListener {
     private static final String TAG = "ArduinoSerial";
     // between 2 updates
+    private static final int WAIT_TIME = 100;
     protected final int BAUD_RATE;  // reading baud rate
     private volatile String rawBuffer = "";
     private SerialPort serialPort;  // serial port reading raw data from
@@ -42,9 +44,14 @@ public class ArduinoSerial implements SerialPortEventListener {
      * @param BAUD_RATE symbol read rate
      */
     public ArduinoSerial(int BAUD_RATE) {
+        super("ARDUINO SERIAL", true);
         this.BAUD_RATE = BAUD_RATE;  // baud rate to read data
 
-        setup();
+        try {
+            setup();
+        } catch (Exception e) {
+            logException(e);
+        }
     }
 
     public void close() {
@@ -124,21 +131,27 @@ public class ArduinoSerial implements SerialPortEventListener {
      *
      * @param data data to send
      */
-    public void sendSerialDataOrFail(String data) {
-        try {
-            serialPort.writeBytes(data.getBytes());
-        } catch (Exception e) {
-            System.err.println("ArduinoSerial cannot send data " + data + " " +
-                    "because:\n" + e.toString());
-        }
+    public void sendSerialData(String data) throws SerialPortException {
+        serialPort.writeBytes(data.getBytes());
     }
 
-    public void sendSerialDataOrFail(String data, int times) {
-        for (int i = 0; i < times; i++) {
+    public void sendSerialData(String data, int maxTimes) {
+        int attemptNumber = 0;
+        while (attemptNumber < maxTimes) {
             try {
-                sendSerialDataOrFail(data);
+                sendSerialData(data);
+                Thread.sleep(WAIT_TIME);
             } catch (Exception e) {
             }
+            attemptNumber += 1;
+        }
+
+        if (attemptNumber == maxTimes) {
+            logError("Max # of attempts reached! Giving up sending" +
+                    " Arduino command");
+        } else {
+            logAction("Attempt # " + attemptNumber + " successful! " +
+                    "Sent Arduino command!");
         }
     }
 

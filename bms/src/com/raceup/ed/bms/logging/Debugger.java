@@ -21,6 +21,16 @@ public class Debugger extends Logger {
         }
     }
 
+    protected void logException(Exception e) {
+        logError("-- START OF STACK TRACE ---");
+        logError(e.toString());
+        StackTraceElement[] stack = e.getStackTrace();
+        for (int i = 0; i < stack.length; i++) {
+            logError(stack[i].toString());
+        }
+        logError("-- END OF STACK TRACE ---");
+    }
+
     @Override
     protected void log(PrintStream out, String message) {
         if (debug) {
