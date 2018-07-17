@@ -120,7 +120,6 @@ public class Bms implements Runnable {
 
     public void setMode(BmsOperatingMode.OperatingMode mode) {
         BmsOperatingMode command = OPERATING_MODE.get(mode);
-        System.out.println("attempting " + command.getDescription());
         int attemptNumber = 0;
         while (attemptNumber < MAX_RETRIES) {
             arduino.sendSerialDataOrFail(command.getArduinoCommand());

@@ -87,6 +87,7 @@ class App {
             Thread thread = new Thread(ui);  // start thread
             thread.start();
         } catch (Exception e) {
+            e.printStackTrace();
             System.err.println("Error while opening UI");
         }
     }
